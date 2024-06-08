@@ -1,0 +1,23 @@
+.artplayer-app {
+    width: 100%;
+    height: 570px;
+}
+
+@media screen and (max-width: 870px) {
+    .artplayer-app {
+        height: 520px;
+        width: auto;
+    }
+}
+@media screen and (max-width: 711px) {
+    .artplayer-app {
+        height: 400px;
+        width: auto;
+    }
+}
+@media screen and (max-width: 580px) {
+    .artplayer-app {
+        height: 250px;
+        width: auto;
+    }
+}

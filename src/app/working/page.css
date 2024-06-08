@@ -1,0 +1,32 @@
+.gogoanime-error img {
+  width: 500px;
+  display: inline;
+  height: 400px;
+  object-fit: cover;
+
+  width: 400px;
+  border-radius: 50%;
+}
+.hji {
+  font-size: 30px;
+  font-weight: 700;
+
+}
+.gogoanime-error {
+  align-items: center;
+}
+@media screen and (max-width: 700px) {
+  .hji {
+    font-size: 20px;
+    font-weight: 500;
+    margin-bottom: 50px;
+  }
+  .gogoanime-error img {
+    display: inline;
+    height: 200px;
+    object-fit: cover;
+  
+    width: 200px;
+    border-radius: 50%;
+  }
+}
