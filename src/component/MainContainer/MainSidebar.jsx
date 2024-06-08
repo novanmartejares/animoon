@@ -1,6 +1,6 @@
 import React from "react";
 import Genre from "../Genre/Genre";
-import TopTenAnime from "../../../../anito/src/component/TopTen/TopTenAnime";
+import TopTenAnime from "@/component/TopTen/TopTenAnime";
 export default function MainSidebar(props) {
   let hour = props.hour
   let min = props.min

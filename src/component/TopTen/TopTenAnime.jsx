@@ -4,9 +4,9 @@ import "./top-ten.css";
 import { FaClosedCaptioning } from "react-icons/fa";
 import Link from "next/link";
 import { easeOut, motion } from "framer-motion";
-import useAnimationOnce from "../../../../anito/src/hooks/useAnimationOnce";
-import LazyImage from "../../../../anito/src/utils/LazyImage";
-import useAnime from "../../../../anito/src/hooks/useAnime";
+import useAnimationOnce from "@/hooks/useAnimationOnce";
+import LazyImage from "@/utils/LazyImage";
+import useAnime from "@/hooks/useAnime";
 import { AiFillAudio } from "react-icons/ai";
 export default function TopTenAnime(props) {
   let hour = props.hour

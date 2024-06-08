@@ -4,8 +4,8 @@ import LoadingSpinner from "@/component/loadingSpinner";
 import "./genre.css";
 import Link from "next/link";
 import { easeOut, motion } from "framer-motion";
-import useAnimationOnce from "../../../../anito/src/hooks/useAnimationOnce";
-import useAnime from "../../../../anito/src/hooks/useAnime";
+import useAnimationOnce from "@/hooks/useAnimationOnce";
+import useAnime from "@/hooks/useAnime";
 export default function Genre(props) {
   const { getHome } = useAnime();
   const [genree, setGenree] = useState(null);

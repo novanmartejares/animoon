@@ -5,7 +5,7 @@ import Link from "next/link";
 import MouseOverCard from "./MouseOverCard";
 import { FaClosedCaptioning, FaPlayCircle } from "react-icons/fa";
 import { easeOut, motion, useInView } from "framer-motion";
-import LazyImage from "../../../../anito/src/utils/LazyImage";
+import LazyImage from "@/utils/LazyImage";
 import { AiFillAudio } from "react-icons/ai";
 export default function Card(props) {
   const cardRef = useRef(null);
