@@ -1,5 +1,5 @@
 import axios from "axios";
-import { redis } from "../../../../../../anito/src/lib/rediscache";
+import { redis } from "@/lib/rediscache";
 import { NextResponse } from "next/server";
 
 axios.interceptors.request.use((config) => {

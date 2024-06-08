@@ -5,7 +5,7 @@ import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import "swiper/css/navigation";
-import "./trending.css";
+import "./Trending.css";
 import Link from "next/link";
 import { easeOut, motion, useInView } from "framer-motion";
 import LazyImage from "../../utils/LazyImage";
