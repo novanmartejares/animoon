@@ -13,7 +13,6 @@ import {
 } from "react-icons/fa";
 import Share from "../Share/Share";
 import useAnime from "@/hooks/useAnime";
-import LazyImage from "../../../../anito/src/utils/LazyImage";
 import Image from "next/image";
 import { AiFillAudio } from "react-icons/ai";
 export default function Details(props) {
