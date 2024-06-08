@@ -110,7 +110,7 @@ export default function Hero(props) {
                       <FaPlayCircle size={12} /> Watch Now
                     </Link>
                     <Link
-                      href={`/details/kitsu/${el.id}`}
+                      href={`/${el.id}`}
                       onClick={() => window.scrollTo({ top: 0 })}
                       className="btn-secondary hero-button"
                     >
