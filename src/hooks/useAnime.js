@@ -6,7 +6,7 @@ export default function useAnime() {
     const json = await data.json();
     return json;
   }
-  async function getHome(hours,minute,hour,min) {
+  async function getHome(hours, minute, hour, min) {
     const data = await fetch(
       location.origin + "/api/anime/home",
       (hours === hour && minute === min) ||
@@ -30,16 +30,18 @@ export default function useAnime() {
       );
       const data = await resp.json();
       console.log(data);
-      return data
+      return data;
     }
   }
-  async function getTopAiring(hours,minute,hour,min) {
-    const data = await fetch(location.origin + "/api/anime/airing",
-    (hours === hour && minute === min) ||
-      (hours === hour && minute + 1 === min) ||
-      (hour < 18 ? hour === hours + 5 && minute === min : "")
-      ? { cache: "no-store" }
-      : { cache: "force-cache" });
+  async function getTopAiring(hours, minute, hour, min) {
+    const data = await fetch(
+      location.origin + "/api/anime/airing",
+      (hours === hour && minute === min) ||
+        (hours === hour && minute + 1 === min) ||
+        (hour < 18 ? hour === hours + 5 && minute === min : "")
+        ? { cache: "no-store" }
+        : { cache: "force-cache" }
+    );
     if (data.length > 0) {
       let json = await data.json();
       console.log(json);
@@ -57,16 +59,18 @@ export default function useAnime() {
       );
       const data = await resp.json();
       console.log(data);
-      return data
+      return data;
     }
   }
-  async function getTopUpcoming(hours,minute,hour,min) {
-    const data = await fetch(location.origin + "/api/anime/complete",
-    (hours === hour && minute === min) ||
-      (hours === hour && minute + 1 === min) ||
-      (hour < 18 ? hour === hours + 5 && minute === min : "")
-      ? { cache: "no-store" }
-      : { cache: "force-cache" });
+  async function getTopUpcoming(hours, minute, hour, min) {
+    const data = await fetch(
+      location.origin + "/api/anime/complete",
+      (hours === hour && minute === min) ||
+        (hours === hour && minute + 1 === min) ||
+        (hour < 18 ? hour === hours + 5 && minute === min : "")
+        ? { cache: "no-store" }
+        : { cache: "force-cache" }
+    );
     if (data.length > 0) {
       let json = await data.json();
       console.log(json);
@@ -84,16 +88,18 @@ export default function useAnime() {
       );
       const data = await resp.json();
       console.log(data);
-      return data
+      return data;
     }
   }
-  async function getTopPopular(hours,minute,hour,min) {
-    const data = await fetch(location.origin + "/api/anime/popular",
-    (hours === hour && minute === min) ||
-      (hours === hour && minute + 1 === min) ||
-      (hour < 18 ? hour === hours + 5 && minute === min : "")
-      ? { cache: "no-store" }
-      : { cache: "force-cache" });
+  async function getTopPopular(hours, minute, hour, min) {
+    const data = await fetch(
+      location.origin + "/api/anime/popular",
+      (hours === hour && minute === min) ||
+        (hours === hour && minute + 1 === min) ||
+        (hour < 18 ? hour === hours + 5 && minute === min : "")
+        ? { cache: "no-store" }
+        : { cache: "force-cache" }
+    );
     if (data.length > 0) {
       let json = await data.json();
       console.log(json);
@@ -111,16 +117,18 @@ export default function useAnime() {
       );
       const data = await resp.json();
       console.log(data);
-      return data
+      return data;
     }
   }
-  async function getTopFavorite(hours,minute,hour,min) {
-    const data = await fetch(location.origin + "/api/anime/favourite",
-    (hours === hour && minute === min) ||
-      (hours === hour && minute + 1 === min) ||
-      (hour < 18 ? hour === hours + 5 && minute === min : "")
-      ? { cache: "no-store" }
-      : { cache: "force-cache" });
+  async function getTopFavorite(hours, minute, hour, min) {
+    const data = await fetch(
+      location.origin + "/api/anime/favourite",
+      (hours === hour && minute === min) ||
+        (hours === hour && minute + 1 === min) ||
+        (hour < 18 ? hour === hours + 5 && minute === min : "")
+        ? { cache: "no-store" }
+        : { cache: "force-cache" }
+    );
     if (data.length > 0) {
       let json = await data.json();
       console.log(json);
@@ -138,7 +146,7 @@ export default function useAnime() {
       );
       const data = await resp.json();
       console.log(data);
-      return data
+      return data;
     }
   }
   async function getInfo(id) {
@@ -155,7 +163,7 @@ export default function useAnime() {
       );
       const data = await resp.json();
       console.log(data);
-      return data
+      return data;
     }
   }
   async function getSearch(id) {
@@ -189,13 +197,15 @@ export default function useAnime() {
     console.log(json);
     return json;
   }
-  async function getAnimeInfo(id,hours,minute,hour,min) {
-    let data = await fetch(location.origin + `/api/anime/infoT/` + id,
-    (hours === hour && minute === min) ||
-      (hours === hour && minute + 1 === min) ||
-      (hour < 18 ? hour === hours + 5 && minute === min : "")
-      ? { cache: "no-store" }
-      : { cache: "force-cache" });
+  async function getAnimeInfo(id, hours, minute, hour, min) {
+    let data = await fetch(
+      location.origin + `/api/anime/infoT/` + id,
+      (hours === hour && minute === min) ||
+        (hours === hour && minute + 1 === min) ||
+        (hour < 18 ? hour === hours + 5 && minute === min : "")
+        ? { cache: "no-store" }
+        : { cache: "force-cache" }
+    );
     if (data.length > 0) {
       let json = await data.json();
       console.log(json);
@@ -213,7 +223,7 @@ export default function useAnime() {
       );
       const data = await resp.json();
       console.log(data);
-      return data
+      return data;
     }
   }
 
@@ -226,13 +236,15 @@ export default function useAnime() {
     return json;
   }
 
-  async function getTopOva(hours,minute,hour,min) {
-    const data = await fetch(location.origin + "/api/anime/ova",
-    (hours === hour && minute === min) ||
-      (hours === hour && minute + 1 === min) ||
-      (hour < 18 ? hour === hours + 5 && minute === min : "")
-      ? { cache: "no-store" }
-      : { cache: "force-cache" });
+  async function getTopOva(hours, minute, hour, min) {
+    const data = await fetch(
+      location.origin + "/api/anime/ova",
+      (hours === hour && minute === min) ||
+        (hours === hour && minute + 1 === min) ||
+        (hour < 18 ? hour === hours + 5 && minute === min : "")
+        ? { cache: "no-store" }
+        : { cache: "force-cache" }
+    );
     if (data.length > 0) {
       let json = await data.json();
       console.log(json);
@@ -250,16 +262,18 @@ export default function useAnime() {
       );
       const data = await resp.json();
       console.log(data);
-      return data
+      return data;
     }
   }
-  async function getTopOna(hours,minute,hour,min) {
-    const data = await fetch(location.origin + "/api/anime/ona",
-    (hours === hour && minute === min) ||
-      (hours === hour && minute + 1 === min) ||
-      (hour < 18 ? hour === hours + 5 && minute === min : "")
-      ? { cache: "no-store" }
-      : { cache: "force-cache" });
+  async function getTopOna(hours, minute, hour, min) {
+    const data = await fetch(
+      location.origin + "/api/anime/ona",
+      (hours === hour && minute === min) ||
+        (hours === hour && minute + 1 === min) ||
+        (hour < 18 ? hour === hours + 5 && minute === min : "")
+        ? { cache: "no-store" }
+        : { cache: "force-cache" }
+    );
     if (data.length > 0) {
       let json = await data.json();
       console.log(json);
@@ -277,16 +291,18 @@ export default function useAnime() {
       );
       const data = await resp.json();
       console.log(data);
-      return data
+      return data;
     }
   }
-  async function getTopMovies(hours,minute,hour,min) {
-    const data = await fetch(location.origin + "/api/anime/movie",
-    (hours === hour && minute === min) ||
-      (hours === hour && minute + 1 === min) ||
-      (hour < 18 ? hour === hours + 5 && minute === min : "")
-      ? { cache: "no-store" }
-      : { cache: "force-cache" });
+  async function getTopMovies(hours, minute, hour, min) {
+    const data = await fetch(
+      location.origin + "/api/anime/movie",
+      (hours === hour && minute === min) ||
+        (hours === hour && minute + 1 === min) ||
+        (hour < 18 ? hour === hours + 5 && minute === min : "")
+        ? { cache: "no-store" }
+        : { cache: "force-cache" }
+    );
     if (data.length > 0) {
       let json = await data.json();
       console.log(json);
@@ -304,16 +320,18 @@ export default function useAnime() {
       );
       const data = await resp.json();
       console.log(data);
-      return data
+      return data;
     }
   }
-  async function getLatestEpi(hours,minute,hour,min) {
-    const data = await fetch(location.origin + "/api/anime/latestepi",
-    (hours === hour && minute === min) ||
-      (hours === hour && minute + 1 === min) ||
-      (hour < 18 ? hour === hours + 5 && minute === min : "")
-      ? { cache: "no-store" }
-      : { cache: "force-cache" });
+  async function getLatestEpi(hours, minute, hour, min) {
+    const data = await fetch(
+      location.origin + "/api/anime/latestepi",
+      (hours === hour && minute === min) ||
+        (hours === hour && minute + 1 === min) ||
+        (hour < 18 ? hour === hours + 5 && minute === min : "")
+        ? { cache: "no-store" }
+        : { cache: "force-cache" }
+    );
     if (data.length > 0) {
       let json = await data.json();
       console.log(json);
@@ -331,16 +349,18 @@ export default function useAnime() {
       );
       const data = await resp.json();
       console.log(data);
-      return data
+      return data;
     }
   }
-  async function getNewAnime(hours,minute,hour,min) {
-    const data = await fetch(location.origin + "/api/anime/newanime",
-    (hours === hour && minute === min) ||
-      (hours === hour && minute + 1 === min) ||
-      (hour < 18 ? hour === hours + 5 && minute === min : "")
-      ? { cache: "no-store" }
-      : { cache: "force-cache" });
+  async function getNewAnime(hours, minute, hour, min) {
+    const data = await fetch(
+      location.origin + "/api/anime/newanime",
+      (hours === hour && minute === min) ||
+        (hours === hour && minute + 1 === min) ||
+        (hour < 18 ? hour === hours + 5 && minute === min : "")
+        ? { cache: "no-store" }
+        : { cache: "force-cache" }
+    );
     if (data.length > 0) {
       let json = await data.json();
       console.log(json);
@@ -358,16 +378,18 @@ export default function useAnime() {
       );
       const data = await resp.json();
       console.log(data);
-      return data
+      return data;
     }
   }
-  async function getUpcoming(hours,minute,hour,min) {
-    const data = await fetch(location.origin + "/api/anime/upcoming",
-    (hours === hour && minute === min) ||
-      (hours === hour && minute + 1 === min) ||
-      (hour < 18 ? hour === hours + 5 && minute === min : "")
-      ? { cache: "no-store" }
-      : { cache: "force-cache" });
+  async function getUpcoming(hours, minute, hour, min) {
+    const data = await fetch(
+      location.origin + "/api/anime/upcoming",
+      (hours === hour && minute === min) ||
+        (hours === hour && minute + 1 === min) ||
+        (hour < 18 ? hour === hours + 5 && minute === min : "")
+        ? { cache: "no-store" }
+        : { cache: "force-cache" }
+    );
     if (data.length > 0) {
       let json = await data.json();
       console.log(json);
@@ -385,16 +407,18 @@ export default function useAnime() {
       );
       const data = await resp.json();
       console.log(data);
-      return data
+      return data;
     }
   }
-  async function getTopSpecial(hours,minute,hour,min) {
-    const data = await fetch(location.origin + "/api/anime/special",
-    (hours === hour && minute === min) ||
-      (hours === hour && minute + 1 === min) ||
-      (hour < 18 ? hour === hours + 5 && minute === min : "")
-      ? { cache: "no-store" }
-      : { cache: "force-cache" });
+  async function getTopSpecial(hours, minute, hour, min) {
+    const data = await fetch(
+      location.origin + "/api/anime/special",
+      (hours === hour && minute === min) ||
+        (hours === hour && minute + 1 === min) ||
+        (hour < 18 ? hour === hours + 5 && minute === min : "")
+        ? { cache: "no-store" }
+        : { cache: "force-cache" }
+    );
     if (data.length > 0) {
       let json = await data.json();
       console.log(json);
@@ -412,10 +436,10 @@ export default function useAnime() {
       );
       const data = await resp.json();
       console.log(data);
-      return data
+      return data;
     }
   }
-  async function getRandomAnime(hours,minute,hour,min) {
+  async function getRandomAnime(hours, minute, hour, min) {
     const data = await fetch(
       "https://api-aniwatch.onrender.com/anime/random?page=1",
       { cache: "force-cache" }
@@ -432,7 +456,7 @@ export default function useAnime() {
       );
       const data = await resp.json();
       console.log(data);
-      return data
+      return data;
     }
   }
   async function getAZ(id) {
@@ -453,7 +477,8 @@ export default function useAnime() {
   }
   async function getSuggest(id) {
     const respu = await fetch(
-      `https://api-aniwatch.onrender.com/anime/search/suggest?q=${id}`,{cache: 'force-cache'}
+      `https://api-aniwatch.onrender.com/anime/search/suggest?q=${id}`,
+      { cache: "force-cache" }
     );
     const datau = await respu.json();
     return datau;
@@ -469,13 +494,18 @@ export default function useAnime() {
   }
 
   async function getEpisodesAnify(id) {
-    const resp = await fetch(
-      `https://api.anify.tv/sources?providerId=gogoanime&watchId=%2F${id}&episodeNumber=10&id=148969&subType=sub&server=gogocdn`,
-      { cache: "force-cache" }
-    );
-    const data = await resp.json();
-    console.log(data);
-    return data;
+    try {
+      const resp = await fetch(
+        `https://api.anify.tv/sources?providerId=gogoanime&watchId=%2F${id}&episodeNumber=10&id=148969&subType=sub&server=gogocdn`,
+        { cache: "force-cache" }
+      );
+
+      const data = await resp.json();
+      console.log(data);
+      return data;
+    } catch (error) {
+      return [];
+    }
   }
   return {
     getEpisodeGogo,
