@@ -68,7 +68,6 @@ export default function WatchAnime(props) {
   let i = 0;
   for (i > 0; i < props.data.episodes.length; i++) {
     if (props.data?.episodes[i].episodeId.includes(props?.epis?.toString())) {
-      console.log(props.data.episodes[i].number);
       epiod = props.data.episodes[i].number;
     }
   }
@@ -142,7 +141,6 @@ export default function WatchAnime(props) {
    */
 
   if (localStorage.getItem(`Watched-${props.anId.toString()}`)) {
-    console.log(localStorage.getItem(`Watched-${props.anId.toString()}`));
     // split the existing values into an array
     let vals = localStorage
       .getItem(`Watched-${props.anId.toString()}`)
@@ -202,7 +200,6 @@ export default function WatchAnime(props) {
    * if dubAnime is available then it sets the subIsSelected state to false
    *
    */
-  console.log(props.data);
 
   // Server and episode buttons to change the respective item
   const serverButtons = servers?.map((el, idx) => {
@@ -223,6 +220,10 @@ export default function WatchAnime(props) {
     setSelectedEpisode(epiod - 1);
   }, []);
 
+  const changeEpi = (id) => {
+    window.location.href = `/watch/${id}`;
+  }
+
   const episodeButtons = episodeList?.map((el, idx) => {
     return (
       <span
@@ -239,11 +240,13 @@ export default function WatchAnime(props) {
               : ""
             : `${el.isFiller ? "fillero" : "evenL"}`
         } ${
-          localStorage
-            .getItem(`Watched-${props.anId.toString()}`)
-            .split(",")
-            .includes(el.episodeId)
-            ? "idk"
+          localStorage.getItem(`Watched-${props.anId.toString()}`)
+            ? localStorage
+                .getItem(`Watched-${props.anId.toString()}`)
+                .split(",")
+                .includes(el.episodeId)
+              ? "idk"
+              : "common"
             : "common"
         }`}
         key={el.id}
@@ -252,7 +255,7 @@ export default function WatchAnime(props) {
             ? { minWidth: "100%", borderRadius: 0 }
             : null
         }
-        onClick={() => setSelectedEpisode(epiod - 1)}
+        onClick={() => setSelectedEpisode(epiod - 1) & changeEpi(el.episodeId)}
       >
         <Link href={`/watch/${el.episodeId}`} as={`/watch/${el.episodeId}`}>
           {episodeList.length <= 24 ? (
@@ -361,7 +364,9 @@ export default function WatchAnime(props) {
                   {props.datao?.anime?.info.stats.type}
                 </div>
                 <div className="doto">&#x2022;</div>
-                <div className="namo">Watching {props.datao?.anime?.info?.name}</div>
+                <div className="namo">
+                  Watching {props.datao?.anime?.info?.name}
+                </div>
               </div>
               <div className="d-flex new-con">
                 <img
@@ -688,17 +693,17 @@ export default function WatchAnime(props) {
                             <div className="seasonal">
                               {props?.datao?.seasons?.map((sea) => (
                                 <>
-                                <Link href={`/${sea.id}`}>
-                                  <div className="season h-[70px]">
-                                    <img
-                                      className="seasonal-background"
-                                      src={sea.poster}
-                                      alt="pop"
-                                    />
-                                    {sea.title.length < 15
-                                      ? sea.title
-                                      : sea.title.slice(0, 15) + "..."}
-                                  </div>
+                                  <Link href={`/${sea.id}`}>
+                                    <div className="season h-[70px]">
+                                      <img
+                                        className="seasonal-background"
+                                        src={sea.poster}
+                                        alt="pop"
+                                      />
+                                      {sea.title.length < 15
+                                        ? sea.title
+                                        : sea.title.slice(0, 15) + "..."}
+                                    </div>
                                   </Link>
                                 </>
                               ))}
