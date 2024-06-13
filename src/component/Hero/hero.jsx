@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { startTransition, useEffect, useState } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "./hero.css";
 import "swiper/css";
@@ -25,34 +25,40 @@ import { easeOut, motion } from "framer-motion";
 import LazyImage from "../../utils/LazyImage";
 // configure Swiper to use modules
 export default function Hero(props) {
-  const [data, setData] = useState(null);
-  let hour = props.hour
-  let min = props.min
-  let hours = props.hours
-  let minute = props.minute
+  const [data, setData] = useState(props.data);
+  let hour = props.hour;
+  let min = props.min;
+  let hours = props.hours;
+  let minute = props.minute;
 
-  const { getHome} = useAnime();
+  const { getHome } = useAnime();
   let kat = null;
   const fetchLub = async () => {
-    const dat = await getHome(hours,minute,hour,min);
+    const dat = await getHome(hours, minute, hour, min);
     kat = dat;
     console.log(dat);
-    setData(dat);
-    return dat;
+    if (dat.length > 0) {
+      setData(dat);
+    }
   };
 
   useEffect(() => {
     fetchLub();
   }, []);
 
-  
-
   let item = [];
 
   const heroSlide =
     data?.spotlightAnimes &&
     data?.spotlightAnimes?.map((el, idx) => {
-      const myArray = localStorage.getItem(`Rewatch-${el.id}`) ? localStorage.getItem(`Rewatch-${el.id}`).split(',') : [];
+      const myArray = localStorage.getItem(`Rewatch-${el.id}`)
+        ? localStorage.getItem(`Rewatch-${el.id}`).split(",")
+        : [];
+      const startN = () => {
+        if (!localStorage.getItem(`Rewo-${el.id}`)) {
+          window.location.href = `watchi/${el.id}`;
+        }
+      };
       item = el.name;
 
       return (
@@ -102,9 +108,17 @@ export default function Hero(props) {
                   </p>
                   <div className="button-wrapper">
                     <Link
-                      onClick={() => window.scrollTo({ top: 0 })}
-                      href={localStorage.getItem(el.id) ? `/watch/${localStorage.getItem(`Rewo-${el.id}`)}` : `/watchi/${el.id}`}
-                      as={localStorage.getItem(el.id) ? `/watch/${localStorage.getItem(`Rewo-${el.id}`)}` : `/watchi/${el.id}`}
+                      onClick={() => window.scrollTo({ top: 0 }) & startN()}
+                      href={
+                        localStorage.getItem(`Rewo-${el.id}`)
+                          ? `/watch/${localStorage.getItem(`Rewo-${el.id}`)}`
+                          : `/watchi/${el.id}`
+                      }
+                      as={
+                        localStorage.getItem(`Rewo-${el.id}`)
+                          ? `/watch/${localStorage.getItem(`Rewo-${el.id}`)}`
+                          : `/watchi/${el.id}`
+                      }
                       className="btn-primary hero-button"
                     >
                       <FaPlayCircle size={12} /> Watch Now

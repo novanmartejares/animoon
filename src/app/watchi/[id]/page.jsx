@@ -5,7 +5,7 @@ export default async function page({ params, searchParams }) {
   const epis = searchParams.ep;
 
   const resp = await fetch(
-    `https://api-aniwatch.onrender.com/anime/episodes/${params.id}`
+    `https://aniwatch-api-8fti.onrender.com/anime/episodes/${params.id}`
   );
   const data = await resp.json();
 
@@ -20,24 +20,24 @@ export default async function page({ params, searchParams }) {
   }
   const epiox = searchParams.ep;
   const respo = await fetch(
-    `https://api-aniwatch.onrender.com/anime/servers?episodeId=${epId}`
+    `https://aniwatch-api-8fti.onrender.com/anime/servers?episodeId=${epId}`
   );
   const datal = await respo?.json();
 
   const serverId =
     datal?.sub.length > 0 ? datal?.sub[0]?.serverId : datal?.raw[0]?.serverId;
   const respi = await fetch(
-    `https://api-aniwatch.onrender.com/anime/episode-srcs?id=${epId}&serverId=${serverId}&category=sub`
+    `https://aniwatch-api-8fti.onrender.com/anime/episode-srcs?id=${epId}&serverId=${serverId}&category=sub`
   );
   const datai = await respi.json();
 
   const respl = await fetch(
-    `https://api-aniwatch.onrender.com/anime/info?id=${params.id}`
+    `https://aniwatch-api-8fti.onrender.com/anime/info?id=${params.id}`
   );
   const datao = await respl.json();
 
   const respu = await fetch(
-    `https://api-aniwatch.onrender.com/anime/search/suggest?q=${params.id}`
+    `https://aniwatch-api-8fti.onrender.com/anime/search/suggest?q=${params.id}`
   );
   const datau = await respu.json();
   console.log(datau);

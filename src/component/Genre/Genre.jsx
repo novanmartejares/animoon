@@ -8,19 +8,21 @@ import useAnimationOnce from "@/hooks/useAnimationOnce";
 import useAnime from "@/hooks/useAnime";
 export default function Genre(props) {
   const { getHome } = useAnime();
-  const [genree, setGenree] = useState(null);
-  let hour = props.hour
-  let min = props.min
-  let hours = props.hours
-  let minute = props.minute
+  const [genree, setGenree] = useState(props.data?.genres);
+  let hour = props.hour;
+  let min = props.min;
+  let hours = props.hours;
+  let minute = props.minute;
   const fetchFub = async () => {
-    const dat = await getHome(hours,minute,hour,min);
+    const dat = await getHome(hours, minute, hour, min);
     console.log(dat);
-    setGenree(dat.genres);
+    if (dat.length > 0) {
+      setGenree(dat.genres);
+    }
   };
-  useEffect(()=>{
-    fetchFub()
-  },[])
+  useEffect(() => {
+    fetchFub();
+  }, []);
   const [isCollapsed, setIsCollapsed] = useState(true);
   const containerRef = useRef(null);
   const containerInView = useAnimationOnce(containerRef);

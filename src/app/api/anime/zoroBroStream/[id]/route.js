@@ -24,9 +24,9 @@ export async function GET(req, { params }) {
     console.log("using redis");
     cached = await redis.get(`zoroBro-${params.id}`);
   }
-  if (cached) {
+  if (cached && JSON.parse(cached) && JSON.parse(cached).length > 0) {
     return NextResponse.json(JSON.parse(cached));
-  } else {
+  } if (cached && JSON.parse(cached) && JSON.parse(cached).length < 1 || !cached) {
     const data = await fetchRecent(params.id);
     if (data) {
       if (redis) {

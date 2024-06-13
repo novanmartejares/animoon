@@ -11,7 +11,7 @@ import { easeOut, motion, useInView } from "framer-motion";
 import LazyImage from "../../utils/LazyImage";
 import useAnime from "@/hooks/useAnime";
 export default function Trending(props) {
-  const [data, setData] = useState(null);
+  const [data, setData] = useState(props.data.trendingAnimes);
   let hour = props.hour
   let min = props.min
   let hours = props.hours
@@ -20,7 +20,9 @@ export default function Trending(props) {
   const fetchLub = async () => {
     const dat = await getHome(hour,min,hours,minute);
     console.log(dat);
-    setData(dat.trendingAnimes);
+    if (dat.length > 0) {
+      setData(dat.trendingAnimes);
+    }
   };
   useEffect(() => {
     fetchLub();
@@ -30,6 +32,11 @@ export default function Trending(props) {
   const animeCard = data?.map((el, idx) => {
     const item = el.id;
     const title = el.name || item.titles.en_jp;
+    const startN = () => {
+      if (!localStorage.getItem(`Rewo-${el.id}`)) {
+        window.location.href = `watchi/${el.id}`;
+      }
+    };
 
     return (
       <SwiperSlide key={el.id} className="trending-slide">
@@ -58,7 +65,7 @@ export default function Trending(props) {
             <span>{el.rank > 9 ? el.rank : "0" + (el.rank)}</span>
           </motion.div>
           <Link
-            onClick={() => window.scrollTo({ top: 0 })}
+            onClick={() => window.scrollTo({ top: 0 }) & startN()}
             href={`${localStorage.getItem(`Rewo-${el.id}`) ? `/watch/${localStorage.getItem(`Rewo-${el.id}`)}` : `watchi/${el.id}`}`}
           >
             <LazyImage

@@ -117,13 +117,16 @@
   max-height: 100px;
   overflow-y: auto;
 }
+.specif {
+  margin-bottom: 0px;
+}
 .namo {
   padding: 2px 4px;
   width: fit-content;
   font-weight: 500;
   font-size: 15px;
   align-items: center;
-  color: rgb(207, 218, 214);
+  color: rgb(164, 180, 175);
 }
 .homo {
   padding: 2px 4px;

@@ -6,7 +6,7 @@ import ContentList from "./ContentList";
 import useAnime from "@/hooks/useAnime";
 
 export default function Featured(props) {
-  const [upcoming, setUpcoming] = useState(null);
+  const [upcoming, setUpcoming] = useState(props.dataComp);
   let hour = props.hour
   let min = props.min
   let hours = props.hours
@@ -16,28 +16,36 @@ export default function Featured(props) {
   const fetchPub = async () => {
     const dat = await getTopUpcoming(hours,minute,hour,min);
     console.log(dat);
-    setUpcoming(dat);
+    if (dat.length > 0) {
+      setUpcoming(dat);
+    }
   };
 
-  const [airing, setAiring] = useState(null);
+  const [airing, setAiring] = useState(props.dataAiring);
   const fetchFub = async () => {
     const dat = await getTopAiring(hours,minute,hour,min);
     console.log(dat);
-    setAiring(dat);
+    if (dat.length > 0) {
+      setAiring(dat);
+    }
   };
 
-  const [popular, setPopular] = useState(null);
+  const [popular, setPopular] = useState(props.dataPopular);
   const fetchCub = async () => {
     const dat = await getTopPopular(hours,minute,hour,min);
     console.log(dat);
-    setPopular(dat);
+    if (dat.length > 0) {
+      setPopular(dat);
+    }
   };
 
-  const [favorite, setFavorite] = useState(null);
+  const [favorite, setFavorite] = useState(props.dataFavourite);
   const fetchXub = async () => {
     const dat = await getTopFavorite(hours,minute,hour,min);
     console.log(dat);
-    setFavorite(dat);
+    if (dat.length > 0) {
+      setFavorite(dat);
+    }
   };
 
   useEffect(() => {

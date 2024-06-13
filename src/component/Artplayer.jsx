@@ -59,7 +59,7 @@ function ArtPlayer(props, { ...rest }) {
     const art = new Artplayer({
       title: "hahahaha",
       container: ".artplayer-app",
-      url: uri ? uri : urt,
+      url: uri,
       type: "m3u8",
       plugins: [
         artplayerPluginHlsQuality({
@@ -216,6 +216,11 @@ function ArtPlayer(props, { ...rest }) {
           console.log("art.switch yehhh!!");
         }
       }
+      if (!uri) {
+        if (!art.url) {
+          art.switchUrl(urt);
+        }
+      }
       art.on("video:timeupdate", () => {
         if (props.onn3 === "On") {
           if (
@@ -282,7 +287,7 @@ function ArtPlayer(props, { ...rest }) {
           // split the existing values into an array
           let vals = localStorage.getItem(props.anId.toString()).split(",");
 
-          localStorage.setItem(`Rewatch-${props.anId.toString()}`, props.epId)
+          localStorage.setItem(`Rewatch-${props.anId.toString()}`, props.epId);
 
           // if the value has not already been added
           if (!vals.includes(props.epId.toString())) {

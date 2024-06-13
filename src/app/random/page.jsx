@@ -10,34 +10,36 @@ export default async function page({ params, searchParams }) {
   let datp = null;
   if (uiui <= 16) {
     const resp = await fetch(
-      `https://api-aniwatch.onrender.com/anime/random?page=1`,{next:{revalidate: 60}}
+      `https://aniwatch-api-8fti.onrender.com/anime/random?page=1`,{next:{revalidate: 60}}
     );
     const dat = await resp.json();
     const x = uiui || 0;
     const idd = dat?.animes[x]?.id;
 
     const respo = await fetch(
-      `https://api-aniwatch.onrender.com/anime/info?id=${idd}`,{next:{revalidate: 60}}
+      `https://aniwatch-api-8fti.onrender.com/anime/info?id=${idd}`,{next:{revalidate: 60}}
     );
     const daty = await respo.json();
     datp = daty;
   } else {
     const respt = await fetch(
-      `https://api-aniwatch.onrender.com/anime/random?page=1`,{next:{revalidate: 60}}
+      `https://aniwatch-api-8fti.onrender.com/anime/random?page=1`,{next:{revalidate: 60}}
     );
     const datyu = await respt.json();
     const xi = uiui || 0;
     const iddp = datyu?.animes[xi]?.id;
 
     const respo = await fetch(
-      `https://api-aniwatch.onrender.com/anime/info?id=${iddp}`,{next:{revalidate: 60}}
+      `https://aniwatch-api-8fti.onrender.com/anime/info?id=${iddp}`,{next:{revalidate: 60}}
     );
     const daty = await respo.json();
     datp = daty;
   }
+  const respl = await fetch("https://aniwatch-api-8fti.onrender.com/anime/home");
+  const data = await respl.json();
   return (
     <div>
-      <DynamicTopTen uiui={datp} />
+      <DynamicTopTen uiui={datp} rand={uiui} data={data}/>
     </div>
   );
 }

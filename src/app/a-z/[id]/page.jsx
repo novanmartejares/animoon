@@ -9,5 +9,8 @@ export default async function page({ params }) {
     cache: "force-cache",
   });
   let json = await data.json();
-  return <div><DynamicAZ el={json}/></div>;
+
+  const resp = await fetch("https://aniwatch-api-8fti.onrender.com/anime/home");
+  const datal = await resp.json();
+  return <div><DynamicAZ el={json} data={datal}/></div>;
 }

@@ -8,8 +8,8 @@ export default function MainSidebar(props) {
   let minute = props.minute
   return (
     <div className="d-flex-fd-column">
-      <Genre isInNavbar={false} hours={hours} minute={minute} hour={hour} min={min} />
-      <TopTenAnime hours={hours} minute={minute} hour={hour} min={min} />
+      <Genre isInNavbar={false} hours={hours} minute={minute} hour={hour} min={min} data={props.data}/>
+      <TopTenAnime hours={hours} minute={minute} hour={hour} min={min} data={props.data}/>
     </div>
   );
 }

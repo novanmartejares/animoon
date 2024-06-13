@@ -6,7 +6,7 @@ export async function middleware(request) {
     console.log(request.nextUrl.pathname.replace("/watchi/", ""));
 
     const resp = await fetch(
-      `https://api-aniwatch.onrender.com/anime/episodes/${request.nextUrl.pathname.replace(
+      `https://aniwatch-api-8fti.onrender.com/anime/episodes/${request.nextUrl.pathname.replace(
         "/watchi/",
         ""
       )}`

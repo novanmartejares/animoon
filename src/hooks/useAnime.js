@@ -20,17 +20,10 @@ export default function useAnime() {
       console.log(json);
       return json;
     } else {
-      const resp = await fetch(
-        "https://api-aniwatch.onrender.com/anime/home",
-        (hours === hour && minute === min) ||
-          (hours === hour && minute + 1 === min) ||
-          (hour < 18 ? hour === hours + 5 && minute === min : "")
-          ? { cache: "no-store" }
-          : { cache: "force-cache" }
-      );
-      const data = await resp.json();
-      console.log(data);
-      return data;
+      const data = await fetch(location.origin + "/api/anime/home", {cache: 'no-store'})
+      let json = await data.json();
+      console.log(json);
+      return json;
     }
   }
   async function getTopAiring(hours, minute, hour, min) {
@@ -42,25 +35,9 @@ export default function useAnime() {
         ? { cache: "no-store" }
         : { cache: "force-cache" }
     );
-    if (data.length > 0) {
-      let json = await data.json();
-      console.log(json);
-      return json;
-    } else {
-      // categories -> "most-favorite", "most-popular", "subbed-anime", "dubbed-anime", "recently-updated", "recently-added", "top-upcoming", "top-airing", "movie", "special", "ova", "ona", "tv", "completed"
-
-      const resp = await fetch(
-        "https://api-aniwatch.onrender.com/anime/top-airing?page=1",
-        (hours === hour && minute === min) ||
-          (hours === hour && minute + 1 === min) ||
-          (hour < 18 ? hour === hours + 5 && minute === min : "")
-          ? { cache: "no-store" }
-          : { cache: "force-cache" }
-      );
-      const data = await resp.json();
-      console.log(data);
-      return data;
-    }
+    let json = await data.json();
+    console.log(json);
+    return json;
   }
   async function getTopUpcoming(hours, minute, hour, min) {
     const data = await fetch(
@@ -76,19 +53,10 @@ export default function useAnime() {
       console.log(json);
       return json;
     } else {
-      // categories -> "most-favorite", "most-popular", "subbed-anime", "dubbed-anime", "recently-updated", "recently-added", "top-upcoming", "top-airing", "movie", "special", "ova", "ona", "tv", "completed"
-
-      const resp = await fetch(
-        "https://api-aniwatch.onrender.com/anime/completed?page=1",
-        (hours === hour && minute === min) ||
-          (hours === hour && minute + 1 === min) ||
-          (hour < 18 ? hour === hours + 5 && minute === min : "")
-          ? { cache: "no-store" }
-          : { cache: "force-cache" }
-      );
-      const data = await resp.json();
-      console.log(data);
-      return data;
+      const datal = await fetch(location.origin + "/api/anime/complete", {cache: 'no-store'})
+      let json = await datal.json();
+      console.log(json);
+      return json;
     }
   }
   async function getTopPopular(hours, minute, hour, min) {
@@ -105,19 +73,10 @@ export default function useAnime() {
       console.log(json);
       return json;
     } else {
-      // categories -> "most-favorite", "most-popular", "subbed-anime", "dubbed-anime", "recently-updated", "recently-added", "top-upcoming", "top-airing", "movie", "special", "ova", "ona", "tv", "completed"
-
-      const resp = await fetch(
-        "https://api-aniwatch.onrender.com/anime/most-popular?page=1",
-        (hours === hour && minute === min) ||
-          (hours === hour && minute + 1 === min) ||
-          (hour < 18 ? hour === hours + 5 && minute === min : "")
-          ? { cache: "no-store" }
-          : { cache: "force-cache" }
-      );
-      const data = await resp.json();
-      console.log(data);
-      return data;
+      const data = await fetch(location.origin + "/api/anime/popular", {cache: 'no-store'})
+      let json = await data.json();
+      console.log(json);
+      return json;
     }
   }
   async function getTopFavorite(hours, minute, hour, min) {
@@ -134,37 +93,17 @@ export default function useAnime() {
       console.log(json);
       return json;
     } else {
-      // categories -> "most-favorite", "most-popular", "subbed-anime", "dubbed-anime", "recently-updated", "recently-added", "top-upcoming", "top-airing", "movie", "special", "ova", "ona", "tv", "completed"
-
-      const resp = await fetch(
-        "https://api-aniwatch.onrender.com/anime/most-favorite?page=1",
-        (hours === hour && minute === min) ||
-          (hours === hour && minute + 1 === min) ||
-          (hour < 18 ? hour === hours + 5 && minute === min : "")
-          ? { cache: "no-store" }
-          : { cache: "force-cache" }
-      );
-      const data = await resp.json();
-      console.log(data);
-      return data;
+      const data = await fetch(location.origin + "/api/anime/favourite", {cache: 'no-store'})
+      let json = await data.json();
+      console.log(json);
+      return json;
     }
   }
   async function getInfo(id) {
     const data = await fetch(location.origin + "/api/anime/info/" + id);
-    if (data.length > 0) {
-      let json = await data.json();
-      console.log(json);
-      return json;
-    } else {
-      // categories -> "most-favorite", "most-popular", "subbed-anime", "dubbed-anime", "recently-updated", "recently-added", "top-upcoming", "top-airing", "movie", "special", "ova", "ona", "tv", "completed"
-
-      const resp = await fetch(
-        "https://api-aniwatch.onrender.com/anime/most?page=1"
-      );
-      const data = await resp.json();
-      console.log(data);
-      return data;
-    }
+    let json = await data.json();
+    console.log(json);
+    return json;
   }
   async function getSearch(id) {
     const data = await fetch(
@@ -211,19 +150,10 @@ export default function useAnime() {
       console.log(json);
       return json;
     } else {
-      // categories -> "most-favorite", "most-popular", "subbed-anime", "dubbed-anime", "recently-updated", "recently-added", "top-upcoming", "top-airing", "movie", "special", "ova", "ona", "tv", "completed"
-
-      const resp = await fetch(
-        `https://api-aniwatch.onrender.com/anime/info?id=${id}`,
-        (hours === hour && minute === min) ||
-          (hours === hour && minute + 1 === min) ||
-          (hour < 18 ? hour === hours + 5 && minute === min : "")
-          ? { cache: "no-store" }
-          : { cache: "force-cache" }
-      );
-      const data = await resp.json();
-      console.log(data);
-      return data;
+      const data = await fetch(location.origin + "/api/anime/infoT/" + id, {cache: 'no-store'})
+      let json = await data.json();
+      console.log(json);
+      return json;
     }
   }
 
@@ -250,19 +180,10 @@ export default function useAnime() {
       console.log(json);
       return json;
     } else {
-      // categories -> "most-favorite", "most-popular", "subbed-anime", "dubbed-anime", "recently-updated", "recently-added", "top-upcoming", "top-airing", "movie", "special", "ova", "ona", "tv", "completed"
-
-      const resp = await fetch(
-        "https://api-aniwatch.onrender.com/anime/ova?page=1",
-        (hours === hour && minute === min) ||
-          (hours === hour && minute + 1 === min) ||
-          (hour < 18 ? hour === hours + 5 && minute === min : "")
-          ? { cache: "no-store" }
-          : { cache: "force-cache" }
-      );
-      const data = await resp.json();
-      console.log(data);
-      return data;
+      const data = await fetch(location.origin + "/api/anime/ova", {cache: 'no-store'})
+      let json = await data.json();
+      console.log(json);
+      return json;
     }
   }
   async function getTopOna(hours, minute, hour, min) {
@@ -279,19 +200,10 @@ export default function useAnime() {
       console.log(json);
       return json;
     } else {
-      // categories -> "most-favorite", "most-popular", "subbed-anime", "dubbed-anime", "recently-updated", "recently-added", "top-upcoming", "top-airing", "movie", "special", "ova", "ona", "tv", "completed"
-
-      const resp = await fetch(
-        "https://api-aniwatch.onrender.com/anime/ona?page=1",
-        (hours === hour && minute === min) ||
-          (hours === hour && minute + 1 === min) ||
-          (hour < 18 ? hour === hours + 5 && minute === min : "")
-          ? { cache: "no-store" }
-          : { cache: "force-cache" }
-      );
-      const data = await resp.json();
-      console.log(data);
-      return data;
+      const data = await fetch(location.origin + "/api/anime/ona", {cache: 'no-store'})
+      let json = await data.json();
+      console.log(json);
+      return json;
     }
   }
   async function getTopMovies(hours, minute, hour, min) {
@@ -308,19 +220,10 @@ export default function useAnime() {
       console.log(json);
       return json;
     } else {
-      // categories -> "most-favorite", "most-popular", "subbed-anime", "dubbed-anime", "recently-updated", "recently-added", "top-upcoming", "top-airing", "movie", "special", "ova", "ona", "tv", "completed"
-
-      const resp = await fetch(
-        "https://api-aniwatch.onrender.com/anime/movie?page=1",
-        (hours === hour && minute === min) ||
-          (hours === hour && minute + 1 === min) ||
-          (hour < 18 ? hour === hours + 5 && minute === min : "")
-          ? { cache: "no-store" }
-          : { cache: "force-cache" }
-      );
-      const data = await resp.json();
-      console.log(data);
-      return data;
+      const data = await fetch(location.origin + "/api/anime/movie", {cache: 'no-store'})
+      let json = await data.json();
+      console.log(json);
+      return json;
     }
   }
   async function getLatestEpi(hours, minute, hour, min) {
@@ -337,19 +240,10 @@ export default function useAnime() {
       console.log(json);
       return json;
     } else {
-      // categories -> "most-favorite", "most-popular", "subbed-anime", "dubbed-anime", "recently-updated", "recently-added", "top-upcoming", "top-airing", "movie", "special", "ova", "ona", "tv", "completed"
-
-      const resp = await fetch(
-        "https://api-aniwatch.onrender.com/anime/recently-updated?page=1",
-        (hours === hour && minute === min) ||
-          (hours === hour && minute + 1 === min) ||
-          (hour < 18 ? hour === hours + 5 && minute === min : "")
-          ? { cache: "no-store" }
-          : { cache: "force-cache" }
-      );
-      const data = await resp.json();
-      console.log(data);
-      return data;
+      const data = await fetch(location.origin + "/api/anime/latestepi", {cache: 'no-store'})
+      let json = await data.json();
+      console.log(json);
+      return json;
     }
   }
   async function getNewAnime(hours, minute, hour, min) {
@@ -366,19 +260,10 @@ export default function useAnime() {
       console.log(json);
       return json;
     } else {
-      // categories -> "most-favorite", "most-popular", "subbed-anime", "dubbed-anime", "recently-updated", "recently-added", "top-upcoming", "top-airing", "movie", "special", "ova", "ona", "tv", "completed"
-
-      const resp = await fetch(
-        "https://api-aniwatch.onrender.com/anime/recently-added?page=1",
-        (hours === hour && minute === min) ||
-          (hours === hour && minute + 1 === min) ||
-          (hour < 18 ? hour === hours + 5 && minute === min : "")
-          ? { cache: "no-store" }
-          : { cache: "force-cache" }
-      );
-      const data = await resp.json();
-      console.log(data);
-      return data;
+      const data = await fetch(location.origin + "/api/anime/newanime", {cache: 'no-store'})
+      let json = await data.json();
+      console.log(json);
+      return json;
     }
   }
   async function getUpcoming(hours, minute, hour, min) {
@@ -395,19 +280,10 @@ export default function useAnime() {
       console.log(json);
       return json;
     } else {
-      // categories -> "most-favorite", "most-popular", "subbed-anime", "dubbed-anime", "recently-updated", "recently-added", "top-upcoming", "top-airing", "movie", "special", "ova", "ona", "tv", "completed"
-
-      const resp = await fetch(
-        "https://api-aniwatch.onrender.com/anime/top-upcoming?page=1",
-        (hours === hour && minute === min) ||
-          (hours === hour && minute + 1 === min) ||
-          (hour < 18 ? hour === hours + 5 && minute === min : "")
-          ? { cache: "no-store" }
-          : { cache: "force-cache" }
-      );
-      const data = await resp.json();
-      console.log(data);
-      return data;
+      const data = await fetch(location.origin + "/api/anime/upcoming", {cache: 'no-store'})
+      let json = await data.json();
+      console.log(json);
+      return json;
     }
   }
   async function getTopSpecial(hours, minute, hour, min) {
@@ -424,40 +300,20 @@ export default function useAnime() {
       console.log(json);
       return json;
     } else {
-      // categories -> "most-favorite", "most-popular", "subbed-anime", "dubbed-anime", "recently-updated", "recently-added", "top-upcoming", "top-airing", "movie", "special", "ova", "ona", "tv", "completed"
-
-      const resp = await fetch(
-        "https://api-aniwatch.onrender.com/anime/special?page=1",
-        (hours === hour && minute === min) ||
-          (hours === hour && minute + 1 === min) ||
-          (hour < 18 ? hour === hours + 5 && minute === min : "")
-          ? { cache: "no-store" }
-          : { cache: "force-cache" }
-      );
-      const data = await resp.json();
-      console.log(data);
-      return data;
+      const data = await fetch(location.origin + "/api/anime/special", {cache: 'no-store'})
+      let json = await data.json();
+      console.log(json);
+      return json;
     }
   }
   async function getRandomAnime(hours, minute, hour, min) {
     const data = await fetch(
-      "https://api-aniwatch.onrender.com/anime/random?page=1",
+      "https://aniwatch-api-8fti.onrender.com/anime/random?page=1",
       { cache: "force-cache" }
     );
-    if (data.length > 0) {
-      let json = await data.json();
-      console.log(json);
-      return json;
-    } else {
-      // categories -> "most-favorite", "most-popular", "subbed-anime", "dubbed-anime", "recently-updated", "recently-added", "top-upcoming", "top-airing", "movie", "special", "ova", "ona", "tv", "completed"
-
-      const resp = await fetch(
-        "https://api-aniwatch.onrender.com/anime/random?page=1"
-      );
-      const data = await resp.json();
-      console.log(data);
-      return data;
-    }
+    let json = await data.json();
+    console.log(json);
+    return json;
   }
   async function getAZ(id) {
     const data = await fetch(`https://api.jikan.moe/v4/anime?letter=${id}`, {
@@ -469,7 +325,7 @@ export default function useAnime() {
   }
   async function getEpiZoro(id) {
     const resp = await fetch(
-      `https://api-aniwatch.onrender.com/anime/episodes/${id}`
+      `https://aniwatch-api-8fti.onrender.com/anime/episodes/${id}`
     );
     const data = await resp.json();
     console.log(data);
@@ -477,7 +333,7 @@ export default function useAnime() {
   }
   async function getSuggest(id) {
     const respu = await fetch(
-      `https://api-aniwatch.onrender.com/anime/search/suggest?q=${id}`,
+      `https://aniwatch-api-8fti.onrender.com/anime/search/suggest?q=${id}`,
       { cache: "force-cache" }
     );
     const datau = await respu.json();
@@ -485,7 +341,7 @@ export default function useAnime() {
   }
   async function getZoroStream(episo, server, sub) {
     const resp = await fetch(
-      `https://api-aniwatch.onrender.com/anime/episode-srcs?id=${episo}&serverId=${server}&category=${sub}`,
+      `https://aniwatch-api-8fti.onrender.com/anime/episode-srcs?id=${episo}&serverId=${server}&category=${sub}`,
       { cache: "force-cache" }
     );
     const data = await resp.json();
@@ -527,11 +383,11 @@ export default function useAnime() {
     getAZ,
     getEpiZoro,
     getSuggest,
-    getZoroStream,
     getEpisodesAnify,
     getLatestEpi,
     getNewAnime,
     getUpcoming,
+    getZoroStream,
     getZoroBroStream,
   };
 }

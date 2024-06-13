@@ -20,8 +20,8 @@ export default function SearchResults(props) {
       transition={{ duration: 0.5, ease: "easeOut" }}
     >
       <div className="sidebar-wrapper d-flex-fd-column">
-        <Genre />
-        <TopTenAnime />
+        <Genre data={props.data}/>
+        <TopTenAnime data={props.data}/>
       </div>
       <div className="collections-wrapper">
         {!props.el ? (

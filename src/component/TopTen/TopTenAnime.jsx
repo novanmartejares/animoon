@@ -9,18 +9,20 @@ import LazyImage from "@/utils/LazyImage";
 import useAnime from "@/hooks/useAnime";
 import { AiFillAudio } from "react-icons/ai";
 export default function TopTenAnime(props) {
-  let hour = props.hour
-  let min = props.min
-  let hours = props.hours
-  let minute = props.minute
+  let hour = props.hour;
+  let min = props.min;
+  let hours = props.hours;
+  let minute = props.minute;
   const ref = useRef(null);
   const containerInView = useAnimationOnce(ref);
   const { getHome } = useAnime();
-  const [datal, setDatal] = useState(null);
+  const [datal, setDatal] = useState(props.data);
   const fetchPub = async () => {
-    const dat = await getHome(hour,min,hours,minute);
+    const dat = await getHome(hour, min, hours, minute);
     console.log(dat);
-    setDatal(dat);
+    if (dat.length > 0) {
+      setDatal(dat);
+    }
   };
   useEffect(() => {
     fetchPub();
@@ -61,7 +63,7 @@ export default function TopTenAnime(props) {
                 href={`/${el.id}`}
                 className="trans-03"
               >
-                {title.length < 30 ? title : title.slice(0,30) + '...'}
+                {title.length < 30 ? title : title.slice(0, 30) + "..."}
               </Link>
             </span>
             <div className="episode-info d-flex ">
@@ -76,7 +78,7 @@ export default function TopTenAnime(props) {
               ) : (
                 ""
               )}
-             <div className="dotoo">&#x2022;</div>
+              <div className="dotoo">&#x2022;</div>
               <div className="show-type">TV</div>
             </div>
           </div>

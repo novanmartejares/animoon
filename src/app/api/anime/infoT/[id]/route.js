@@ -10,7 +10,7 @@ axios.interceptors.request.use((config) => {
 async function fetchRecent(id) {
   try {
     const { data } = await axios.get(
-      `https://api-aniwatch.onrender.com/anime/info?id=${id}`
+      `https://aniwatch-api-8fti.onrender.com/anime/info?id=${id}`
     );
     return data;
   } catch (error) {
@@ -25,7 +25,7 @@ export async function GET(req, { params }) {
     console.log("using redis");
     cached = await redis.get(`info-${params.id}`);
   }
-  if (cached) {
+  if (cached && JSON.parse(cached) && JSON.parse(cached).length > 0) {
     return NextResponse.json(JSON.parse(cached));
   } else {
     const data = await fetchRecent(params.id);

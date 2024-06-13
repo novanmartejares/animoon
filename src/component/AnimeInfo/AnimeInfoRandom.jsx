@@ -15,8 +15,10 @@ import Share from "../Share/Share";
 import useAnime from "@/hooks/useAnime";
 import Image from "next/image";
 import { AiFillAudio } from "react-icons/ai";
+import { useRouter } from "next/navigation";
 export default function Details(props) {
   let [counter, setCounter] = useState(0);
+  const Router = useRouter();
 
   // Function is called everytime increment button is clicked
   const handleClick1 = () => {
@@ -39,23 +41,16 @@ export default function Details(props) {
       <Link
         className="genre-button"
         key={genre}
-        href={`/grid/genre?id=${genre}&name=${genre}`}
+        href={`/genre?id=${genre}&name=${genre}`}
       >
         {genre}
-      </Link>
-    );
-  });
-  const licensors = gnt?.moreInfo?.producers?.map((licensor) => {
-    return (
-      <Link key={licensor} href={`/grid/${licensor}/${licensor}`}>
-        {licensor + ", "}
       </Link>
     );
   });
 
   const producers = gnt?.moreInfo?.producers?.map((producer) => {
     return (
-      <Link key={producer} href={`/grid/${producer}/${producer}`}>
+      <Link key={producer} href={`/producer?name=${producer}`}>
         {producer + ", "}
       </Link>
     );
@@ -64,6 +59,13 @@ export default function Details(props) {
   const studios = gnt?.moreInfo?.studios;
 
   const synonyms = gnt?.info.name;
+  const details = () => {
+    if (props.rand) {
+      window.location.href = `/${gnt.info.id}`;
+    } else {
+      Router.push("/working");
+    }
+  };
 
   const vv = counter < 19 ? counter : (counter = 0);
   return gnt?.info?.poster ? (
@@ -99,7 +101,9 @@ export default function Details(props) {
 
             <div className="anime-details-content d-flex-fd-column">
               <div className="flex gap-1 items-center specif">
-                <div className="homo">Home</div>
+                <Link href={"/"}>
+                  <div className="homo">Home</div>
+                </Link>
                 <div className="dotoi">&#x2022;</div>
                 <div className="homo">{gnt.info.stats.type}</div>
                 <div className="doto">&#x2022;</div>
@@ -142,8 +146,12 @@ export default function Details(props) {
                 >
                   <FaPlayCircle size={12} /> Watch Now
                 </Link>
-                <button className="btn-secondary  hero-button">
-                  Details <FaPlus size={12} />
+                <button
+                  className="btn-secondary  hero-button"
+                  onClick={() => details()}
+                >
+                  {props.rand ? "Details" : "Add to List"}
+                  <FaPlus size={12} />
                 </button>
               </div>
               <p>
@@ -195,7 +203,6 @@ export default function Details(props) {
             </p>
             <p>
               <b>Premiered:</b> {gnt?.moreInfo?.premiered || "Season: ?" + " "}
-              {gnt?.moreInfo?.premiered || "Year: ?"}
             </p>
           </div>
           <div className="details-header-genre">
@@ -210,12 +217,10 @@ export default function Details(props) {
               {producers}
             </p>
             <p>
-              <b>Licensors: </b>
-              {licensors}
-            </p>
-            <p>
               <b>Studios: </b>
-              {studios}
+              <Link href={`/producer?name=${gnt.moreInfo.studios}`}>
+                {studios}
+              </Link>
             </p>
           </div>
         </div>

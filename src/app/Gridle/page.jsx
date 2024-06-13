@@ -24,8 +24,8 @@ export default function GenreSidebar(props) {
         }
       >
         <div className="sidebar-wrapper d-flex-fd-column">
-          <Genre />
-          <TopTenAnime />
+          <Genre data={props.datal}/>
+          <TopTenAnime data={props.datal}/>
         </div>
         <div className="collections-wrapper">
           {!props.data ? (

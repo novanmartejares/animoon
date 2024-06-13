@@ -3,7 +3,7 @@ import Card from "../Card/Card";
 import "./main-container.css";
 export default function AnimeCollection(props) {
   const cards = props?.data?.map((data, idx) => {
-    return <Card key={data.id} data={data} delay={idx * 0.05} />;
+    return <Card key={data.id} data={data} delay={idx * 0.05} collectionName={props.collectionName}/>;
   });
   return (
     <div className="anime-collection-wrapper">

@@ -1,15 +1,15 @@
 "use client";
-import React, { useEffect } from "react";
+import React, { Suspense, useEffect } from "react";
 import { useState } from "react";
 import "./watch-anime.css";
 import RecommendedTopTen from "@/layouts/RecommendedTopTen";
 import Share from "@/component/Share/Share";
 import LoadingSpinner from "@/component/loadingSpinner";
 import { easeOut, motion } from "framer-motion";
+import loading from "../../../public/placeholder.gif";
+import { lazy } from "react";
 
 import Error from "@/component/AnimeNotFound/Error";
-
-import ArtPlayer from "@/component/Artplayer";
 import Link from "next/link";
 import Image from "next/image";
 import { AiFillAudio } from "react-icons/ai";
@@ -23,6 +23,7 @@ import useAnime from "@/hooks/useAnime";
 import { BsFillSkipForwardFill, BsSkipBackwardFill } from "react-icons/bs";
 import { HiOutlineSignal } from "react-icons/hi2";
 import { useRouter } from "next/navigation";
+const ArtPlayer = lazy(() => import("@/component/Artplayer"));
 export default function WatchAnime(props) {
   const router = useRouter();
   const [descIsCollapsed, setDescIsCollapsed] = useState(true);
@@ -50,7 +51,7 @@ export default function WatchAnime(props) {
   const [selectedEpisode, setSelectedEpisode] = useState(0);
   const [quality, setQuality] = useState("default");
   const [data, setData] = useState([]);
-  const [datag, setDatag] = useState([]);
+  const [datag, setDatag] = useState(props.gogoST || []);
   const [fatag, setFatag] = useState([]);
   const [gogoServe, setGogoServe] = useState("GogoCdn");
   const [onn1, setOnn1] = useState(
@@ -103,6 +104,7 @@ export default function WatchAnime(props) {
   const getData = (data) => {
     if (data) {
       if (epiod < props.data.episodes.length) {
+        setEpNumb(props.data.episodes[epiod].number);
         router.push(`/watch/${props.data.episodes[epiod].episodeId}`);
       }
     }
@@ -220,9 +222,29 @@ export default function WatchAnime(props) {
     setSelectedEpisode(epiod - 1);
   }, []);
 
+  const [epNumb, setEpNumb] = useState(epiod);
+  const backward = () => {
+    window.history.replaceState(
+      null,
+      "anime",
+      `/watch/${props.data.episodes[epiod - 2]?.episodeId}`
+    );
+    router.push(`/watch/${props.data.episodes[epiod - 2]?.episodeId}`);
+    setEpNumb(props.data.episodes[epiod - 2].number);
+  };
+  const forward = () => {
+    window.history.replaceState(
+      null,
+      "anime",
+      `/watch/${props.data.episodes[epiod]?.episodeId}`
+    );
+    router.push(`/watch/${props.data.episodes[epiod]?.episodeId}`);
+    setEpNumb(props.data.episodes[epiod].number);
+  };
   const changeEpi = (id) => {
-    window.location.href = `/watch/${id}`;
-  }
+    window.history.replaceState(null, "anime", `/watch/${id}`);
+    router.push(`/watch/${id}`);
+  };
 
   const episodeButtons = episodeList?.map((el, idx) => {
     return (
@@ -255,7 +277,12 @@ export default function WatchAnime(props) {
             ? { minWidth: "100%", borderRadius: 0 }
             : null
         }
-        onClick={() => setSelectedEpisode(epiod - 1) & changeEpi(el.episodeId)}
+        onClick={() =>
+          setSelectedEpisode(epiod - 1) &
+          changeEpi(el.episodeId) &
+          setEpNumb(el.number) &
+          window.scrollTo({ top: 0 })
+        }
       >
         <Link href={`/watch/${el.episodeId}`} as={`/watch/${el.episodeId}`}>
           {episodeList.length <= 24 ? (
@@ -275,8 +302,7 @@ export default function WatchAnime(props) {
       </span>
     );
   });
-  const { getZoroStream, getEpisodeGogo, getEpisodesAnify, getZoroBroStream } =
-    useAnime();
+  const { getZoroStream, getEpisodeGogo, getEpisodeAnify } = useAnime();
   const sub = subIsSelected === true ? "sub" : "dub";
   const fetchLub = async () => {
     const dat = await getZoroStream(props.epId, serverId, sub);
@@ -290,23 +316,42 @@ export default function WatchAnime(props) {
   console.log(props.dataj);
 
   const fetchUub = async () => {
-    try {
-      const gogoId = subIsSelected
+    const caseId = props.caseEP
+      ? subIsSelected
         ? "/" +
           (
-            props.jname
+            props.caseEP
               .replace(":", "")
               .toLocaleLowerCase()
               .replaceAll(" ", "-") + `-episode-${epiod}`
           ).replace(/[^a-zA-Z0-9\-]/g, "")
         : "/" +
           (
-            props.jname
+            props.caseEP
               .replace(":", "")
               .toLocaleLowerCase()
               .replaceAll(" ", "-") + `-dub-episode-${epiod}`
-          ).replace(/[^a-zA-Z0-9\-]/g, "");
-      const dat = await getEpisodeGogo(gogoId);
+          ).replace(/[^a-zA-Z0-9\-]/g, "")
+      : "";
+
+    const gogoId = subIsSelected
+      ? "/" +
+        (
+          props.jname
+            .replace(":", "")
+            .toLocaleLowerCase()
+            .replaceAll(" ", "-") + `-episode-${epiod}`
+        ).replace(/[^a-zA-Z0-9\-]/g, "")
+      : "/" +
+        (
+          props.jname
+            .replace(":", "")
+            .toLocaleLowerCase()
+            .replaceAll(" ", "-") + `-dub-episode-${epiod}`
+        ).replace(/[^a-zA-Z0-9\-]/g, "");
+    const totoId = props.caseEP ? subIsSelected ? caseId : gogoId : gogoId;
+    try {
+      const dat = await getEpisodeGogo(totoId);
       setDatag(dat);
     } catch (error) {
       console.error(error); // You might send an exception to your error tracker like AppSignal
@@ -316,27 +361,46 @@ export default function WatchAnime(props) {
 
   useEffect(() => {
     fetchUub();
-  }, [subIsSelected, selectedEpisode, epiod]);
+  }, [subIsSelected, selectedEpisode, epiod, gogoServe]);
   const fetchNub = async () => {
-    try {
-      const gogoId = subIsSelected
+    const caseId = props.caseEP
+      ? subIsSelected
         ? "/" +
           (
-            props.jname
+            props.caseEP
               .replace(":", "")
               .toLocaleLowerCase()
               .replaceAll(" ", "-") + `-episode-${epiod}`
           ).replace(/[^a-zA-Z0-9\-]/g, "")
         : "/" +
           (
-            props.jname
+            props.caseEP
               .replace(":", "")
               .toLocaleLowerCase()
               .replaceAll(" ", "-") + `-dub-episode-${epiod}`
-          ).replace(/[^a-zA-Z0-9\-]/g, "");
-      console.log(gogoId);
-      const dat = await getEpisodesAnify(gogoId);
+          ).replace(/[^a-zA-Z0-9\-]/g, "")
+      : "";
+
+    const gogoId = subIsSelected
+      ? "/" +
+        (
+          props.jname
+            .replace(":", "")
+            .toLocaleLowerCase()
+            .replaceAll(" ", "-") + `-episode-${epiod}`
+        ).replace(/[^a-zA-Z0-9\-]/g, "")
+      : "/" +
+        (
+          props.jname
+            .replace(":", "")
+            .toLocaleLowerCase()
+            .replaceAll(" ", "-") + `-dub-episode-${epiod}`
+        ).replace(/[^a-zA-Z0-9\-]/g, "");
+    const totoId = props.caseEP ? subIsSelected ? caseId : gogoId : gogoId;
+    try {
+      const dat = await getEpisodeAnify(totoId);
       setFatag(dat);
+      console.log(dat);
     } catch (error) {
       console.error(error); // You might send an exception to your error tracker like AppSignal
       setFatag([]);
@@ -345,7 +409,7 @@ export default function WatchAnime(props) {
 
   useEffect(() => {
     fetchNub();
-  }, [subIsSelected, selectedEpisode, epiod]);
+  }, [subIsSelected, selectedEpisode, epiod, gogoServe]);
 
   return (
     <>
@@ -357,14 +421,14 @@ export default function WatchAnime(props) {
         >
           {props?.data?.episodes.length > 0 ? (
             <div style={{ marginTop: "65px" }} className="watch-container">
-              <div className="flex gap-1 items-center specif">
-                <div className="homo">Home</div>
-                <div className="dotoi">&#x2022;</div>
-                <div className="homo">
-                  {props.datao?.anime?.info.stats.type}
-                </div>
-                <div className="doto">&#x2022;</div>
-                <div className="namo">
+              <div className="flex gap-1 items-center pecif">
+                <Link href={"/"}>
+                  <div className="omo">Home</div>
+                </Link>
+                <div className="otoi">&#x2022;</div>
+                <div className="omo">{props.datao?.anime?.info.stats.type}</div>
+                <div className="oto">&#x2022;</div>
+                <div className="amo">
                   Watching {props.datao?.anime?.info?.name}
                 </div>
               </div>
@@ -400,26 +464,57 @@ export default function WatchAnime(props) {
                   <div className="video-player">
                     <div className="hls-container">
                       {props.datai?.sources?.length > 0 || datag ? (
-                        <ArtPlayer
-                          data={data}
-                          datag={gogoServe === "GogoCdn" ? datag : fatag}
-                          isGogo={props.isGogo}
-                          epId={props.epId}
-                          anId={props.anId}
-                          onn1={onn1}
-                          onn2={onn2}
-                          onn3={onn3}
-                          getData={getData}
-                          dataj={props.dataj}
-                          sub={sub}
-                        />
+                        <Suspense
+                          fallback={
+                            <Image
+                              src={loading}
+                              style={{
+                                display: "block",
+                                height: 100,
+                                width: 100,
+                                margin: "auto",
+                              }}
+                            />
+                          }
+                        >
+                          {epNumb === epiod ? (
+                            <ArtPlayer
+                              data={data}
+                              datag={gogoServe === "GogoCdn" ? datag : fatag}
+                              isGogo={props.isGogo}
+                              epId={props.epId}
+                              anId={props.anId}
+                              onn1={onn1}
+                              onn2={onn2}
+                              onn3={onn3}
+                              getData={getData}
+                              dataj={props.dataj}
+                              sub={sub}
+                            />
+                          ) : (
+                            <div
+                              className="d-flex a-center j-center"
+                              style={{ height: "100%" }}
+                            >
+                              <Image
+                                src={loading}
+                                style={{
+                                  display: "block",
+                                  height: 100,
+                                  width: 100,
+                                  margin: "auto",
+                                }}
+                              />
+                            </div>
+                          )}
+                        </Suspense>
                       ) : (
                         <div
                           className="d-flex a-center j-center"
                           style={{ height: "100%" }}
                         >
-                          <img
-                            src=""
+                          <Image
+                            src={loading}
                             style={{
                               display: "block",
                               height: 100,
@@ -485,14 +580,24 @@ export default function WatchAnime(props) {
                                 props.data.episodes[epiod - 2]?.episodeId
                               }`}
                             >
-                              <div className="backw">
+                              <div
+                                className="backw"
+                                onClick={() =>
+                                  backward() & window.scrollTo({ top: 0 })
+                                }
+                              >
                                 <FaBackward />
                               </div>
                             </Link>
                             <Link
                               href={`/watch/${props.data.episodes[epiod]?.episodeId}`}
                             >
-                              <div className="fordw">
+                              <div
+                                className="fordw"
+                                onClick={() =>
+                                  forward() & window.scrollTo({ top: 0 })
+                                }
+                              >
                                 <FaForward />
                               </div>
                             </Link>
@@ -507,7 +612,11 @@ export default function WatchAnime(props) {
                         <div className="flex compIno">
                           <div className="flex flex-col items-center epIno containIno flex-wrap">
                             <div className="ino1">You are watching</div>
-                            <div className="ino2">{`Episode ${epiod}`}</div>
+                            <div className="ino2">{`${
+                              props.data?.episodes[epiod]?.isFiller === true
+                                ? "Filler"
+                                : ""
+                            } Episode ${epiod}`}</div>
                             <div className="ino3">
                               If current server doesn't work please try other
                               servers beside.
@@ -544,7 +653,8 @@ export default function WatchAnime(props) {
                                             onClick={() =>
                                               setServerId(el.serverId) &
                                               setSelectedServer(idx) &
-                                              setSubIsSelected(true)
+                                              setSubIsSelected(true) &
+                                              window.scrollTo({ top: 0 })
                                             }
                                           >
                                             {no.serverName}
@@ -572,7 +682,8 @@ export default function WatchAnime(props) {
                                               onClick={() =>
                                                 setServerId(el.serverId) &
                                                 setSelectedServer(idx) &
-                                                setSubIsSelected(false)
+                                                setSubIsSelected(false) &
+                                                window.scrollTo({ top: 0 })
                                               }
                                             >
                                               {no.serverName}
@@ -604,7 +715,8 @@ export default function WatchAnime(props) {
                                           onClick={() =>
                                             setServerId(el.serverId) &
                                             setSelectedServer(idx) &
-                                            setSubIsSelected(false)
+                                            setSubIsSelected(false) &
+                                            window.scrollTo({ top: 0 })
                                           }
                                         >
                                           {no.serverName}
@@ -641,7 +753,8 @@ export default function WatchAnime(props) {
                                         onClick={() =>
                                           setSelectedServer(idx) &
                                           setSubIsSelected(true) &
-                                          setGogoServe(no)
+                                          setGogoServe(no) &
+                                          window.scrollTo({ top: 0 })
                                         }
                                       >
                                         {no}
@@ -669,7 +782,8 @@ export default function WatchAnime(props) {
                                           onClick={() =>
                                             setSelectedServer(idx) &
                                             setSubIsSelected(false) &
-                                            setGogoServe(no)
+                                            setGogoServe(no) &
+                                            window.scrollTo({ top: 0 })
                                           }
                                         >
                                           {no}
@@ -694,7 +808,11 @@ export default function WatchAnime(props) {
                               {props?.datao?.seasons?.map((sea) => (
                                 <>
                                   <Link href={`/${sea.id}`}>
-                                    <div className="season h-[70px]">
+                                    <div
+                                      className={`season h-[70px] ${
+                                        sea.isCurrent === true ? "currento" : ""
+                                      }`}
+                                    >
                                       <img
                                         className="seasonal-background"
                                         src={sea.poster}
@@ -816,7 +934,11 @@ export default function WatchAnime(props) {
             }}
           />
 
-          <RecommendedTopTen doIt={"doit"} datap={props.datao} />
+          <RecommendedTopTen
+            doIt={"doit"}
+            datap={props.datao}
+            data={props.datapp}
+          />
         </motion.div>
       ) : (
         ""

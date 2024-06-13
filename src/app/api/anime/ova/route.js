@@ -10,7 +10,7 @@ axios.interceptors.request.use((config) => {
 async function fetchRecent() {
   try {
     const { data } = await axios.get(
-      `https://api-aniwatch.onrender.com/anime/ova?page=1`
+      `https://aniwatch-api-8fti.onrender.com/anime/ova?page=1`
     );
     return data;
   } catch (error) {
@@ -25,7 +25,7 @@ export async function GET(req) {
     console.log("using redis");
     cached = await redis.get("ova");
   }
-  if (cached) {
+  if (cached && JSON.parse(cached) && JSON.parse(cached).length > 0) {
     return NextResponse.json(JSON.parse(cached));
   } else {
     const data = await fetchRecent();

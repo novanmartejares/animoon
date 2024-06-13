@@ -20,6 +20,13 @@ export default function Card(props) {
     const listener = window.addEventListener("resize", setWidth);
     return () => window.removeEventListener(listener, setWidth);
   });
+  const startN = () => {
+    if (props.collectionName !== "Top Upcoming") {
+      if (!localStorage.getItem(`Rewo-${anime.id}`)) {
+        window.location.href = `watchi/${anime.id}`;
+      }
+    }
+  };
 
   return (
     <motion.div
@@ -33,13 +40,15 @@ export default function Card(props) {
     >
       <Link
         href={`${
-          localStorage.getItem(`Rewo-${anime.id}`)
-            ? `/watch/${localStorage.getItem(`Rewo-${anime.id}`)}`
-            : `/watchi/${anime.id}`
+          props.collectionName !== "Top Upcoming"
+            ? localStorage.getItem(`Rewo-${anime.id}`)
+              ? `/watch/${localStorage.getItem(`Rewo-${anime.id}`)}`
+              : `/watchi/${anime.id}`
+            : `/${anime.id}`
         }`}
         key={anime.id}
         className="anime-card d-flex"
-        onClick={() => window.scrollTo({ top: 0 })}
+        onClick={() => window.scrollTo({ top: 0 }) & startN()}
       >
         <div className={`anime-card-img-wrapper  `}>
           {screenWidth > 1150 && (

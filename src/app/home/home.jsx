@@ -23,7 +23,7 @@ const DynamicMain = dynamic(
   {}
 );
 
-export default function Homeo() {
+export default function Homeo(props) {
   const [time, setTime] = useState(new Date());
   const [hours, setHours] = useState(0);
   const [minute, setMinute] = useState(0);
@@ -50,10 +50,14 @@ export default function Homeo() {
       // the key doesn't exist yet, add it and the new value
       localStorage.setItem("first-hour", time.getHours().toString());
     }
-    if (time.getHours()===23 && time.getMinutes === 1) {
-      localStorage.removeItem("first-hour")
+    if (time.getHours() === 23 && time.getMinutes === 1) {
+      localStorage.removeItem("first-hour");
     }
-    setHours(localStorage.getItem("first-hour") ? parseInt(localStorage.getItem("first-hour").split(",")[0]) : 0);
+    setHours(
+      localStorage.getItem("first-hour")
+        ? parseInt(localStorage.getItem("first-hour").split(",")[0])
+        : 0
+    );
 
     if (localStorage.getItem("first-minute")) {
       // split the existing values into an array
@@ -73,11 +77,15 @@ export default function Homeo() {
       // the key doesn't exist yet, add it and the new value
       localStorage.setItem("first-minute", time.getMinutes().toString());
     }
-    if (time.getHours()===23 && time.getMinutes === 1) {
-      localStorage.removeItem("first-minute")
+    if (time.getHours() === 23 && time.getMinutes === 1) {
+      localStorage.removeItem("first-minute");
     }
 
-    setMinute(localStorage.getItem("first-minute") ? parseInt(localStorage.getItem("first-minute").split(",")[0]) : 0);
+    setMinute(
+      localStorage.getItem("first-minute")
+        ? parseInt(localStorage.getItem("first-minute").split(",")[0])
+        : 0
+    );
 
     if (localStorage.getItem("first-second")) {
       // split the existing values into an array
@@ -97,10 +105,14 @@ export default function Homeo() {
       // the key doesn't exist yet, add it and the new value
       localStorage.setItem("first-second", time.getSeconds().toString());
     }
-    if (time.getHours()===23 && time.getMinutes === 1) {
-      localStorage.removeItem("first-second")
+    if (time.getHours() === 23 && time.getMinutes === 1) {
+      localStorage.removeItem("first-second");
     }
-    setSecond(localStorage.getItem("first-second") ? parseInt(localStorage.getItem("first-second").split(",")[0]) : 0);
+    setSecond(
+      localStorage.getItem("first-second")
+        ? parseInt(localStorage.getItem("first-second").split(",")[0])
+        : 0
+    );
   }, []);
   const hour = time.getHours();
   const min = time.getMinutes();
@@ -109,17 +121,27 @@ export default function Homeo() {
   if (
     (
       second < 35
-        ? ((hours<18 ? (hour === hours + 6) : hour === 21 ) && min === minute && sec === second + 20)
-        : ((hours<18 ? (hour === hours + 6) : hour === 21 ) && min === minute && sec === 20)
+        ? (hours < 18 ? hour === hours + 6 : hour === 21) &&
+          min === minute &&
+          sec === second + 20
+        : (hours < 18 ? hour === hours + 6 : hour === 21) &&
+          min === minute &&
+          sec === 20
     )
-      ? (second < 35
-        ? ((hours<18 ? (hour === hours + 6) : hour === 21 ) && min === minute && sec === second + 20)
-        : ((hours<18 ? (hour === hours + 6) : hour === 21 ) && min === minute && sec === 20))
-      : (second < 35
-      ? ((hours<18 ? (hour === hours + 6) : hour === 21 ) &&
+      ? second < 35
+        ? (hours < 18 ? hour === hours + 6 : hour === 21) &&
+          min === minute &&
+          sec === second + 20
+        : (hours < 18 ? hour === hours + 6 : hour === 21) &&
+          min === minute &&
+          sec === 20
+      : second < 35
+      ? (hours < 18 ? hour === hours + 6 : hour === 21) &&
         (minute < 60 ? min === minute + 1 : min === 1) &&
-        sec === second + 20)
-      : ((hours<18 ? (hour === hours + 6) : hour === 21 ) && min === minute && sec === 20))
+        sec === second + 20
+      : (hours < 18 ? hour === hours + 6 : hour === 21) &&
+        min === minute &&
+        sec === 20
   ) {
     window.location.reload();
   }
@@ -132,11 +154,42 @@ export default function Homeo() {
       animate={{ x: [-window.innerWidth / 2, 0], opacity: 1 }}
       transition={{ duration: 0.5, ease: "easeOut" }}
     >
-      <DynamicHero hours={hours} minute={minute} hour={hour} min={min} />
-      <DynamicTrend hours={hours} minute={minute} hour={hour} min={min} />
+      <DynamicHero
+        hours={hours}
+        minute={minute}
+        hour={hour}
+        min={min}
+        data={props.data}
+      />
+      <DynamicTrend
+        hours={hours}
+        minute={minute}
+        hour={hour}
+        min={min}
+        data={props.data}
+      />
       <Share />
-      <DynamicFeature hours={hours} minute={minute} hour={hour} min={min}/>
-      <DynamicMain hours={hours} minute={minute} hour={hour} min={min}/>
+      <DynamicFeature
+        hours={hours}
+        minute={minute}
+        hour={hour}
+        min={min}
+        data={props.data}
+        dataAiring={props.dataAiring}
+        dataFavourite={props.dataFavourite}
+        dataPopular={props.dataPopular}
+        dataComp={props.dataComp}
+      />
+      <DynamicMain
+        hours={hours}
+        minute={minute}
+        hour={hour}
+        min={min}
+        data={props.data}
+        dataLatest={props.dataLatest}
+        dataNew={props.dataNew}
+        dataUpcoming={props.dataUpcoming}
+      />
     </motion.div>
   );
 }

@@ -11,7 +11,7 @@ export default async function page({ params }) {
   const idd = params.id;
 
   const respo = await fetch(
-    `https://api-aniwatch.onrender.com/anime/search/suggest?q=${idd}`,
+    `https://aniwatch-api-8fti.onrender.com/anime/search/suggest?q=${idd}`,
     { next: { revalidate: 600 } }
   );
   const daty = await respo.json();
@@ -46,15 +46,18 @@ export default async function page({ params }) {
   });
   console.log(animeI);
   const resp = await fetch(
-    `https://api-aniwatch.onrender.com/anime/info?id=${animeI}`,
+    `https://aniwatch-api-8fti.onrender.com/anime/info?id=${animeI}`,
     { next: { revalidate: 600 } }
   );
   const dat = await resp.json();
   let datp = dat;
 
+  const respp = await fetch("https://aniwatch-api-8fti.onrender.com/anime/home");
+  const data = await respp.json();
+
   return (
     <div>
-      <DynamicTopTen uiui={datp} />
+      <DynamicTopTen uiui={datp} data={data}/>
     </div>
   );
 }

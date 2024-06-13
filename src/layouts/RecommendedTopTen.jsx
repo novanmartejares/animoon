@@ -19,7 +19,7 @@ export default function RecommendedTopTen(props) {
 
   return (
     <>
-      {props.doIt ? "" : <Details lata={getData} uiui={props.uiui} />}
+      {props.doIt ? "" : <Details lata={getData} uiui={props.uiui} rand={props.rand}/>}
 
       <motion.div
         className=" main-container d-flex"
@@ -31,8 +31,8 @@ export default function RecommendedTopTen(props) {
         }
       >
         <div className="sidebar-wrapper d-flex-fd-column">
-          <Genre />
-          <TopTenAnime />
+          <Genre data={props.data}/>
+          <TopTenAnime data={props.data}/>
         </div>
         <div
           className=" collections-wrapper d-flex  "
