@@ -15,54 +15,88 @@ export default async function page({ params, searchParams }) {
   const min = time.getMonth();
 
   const sec = time.getFullYear();
+  let dataS = [];
+  try {
+    const respS = await fetch(
+      `https://aniwatch-api-8fti.onrender.com/anime/schedule?date=${sec.toString()}-${
+        min < 10 ? 0 + min.toString() : min.toString()
+      }-${hour < 10 ? 0 + hour.toString() : hour.toString()}`
+    );
+    dataS = await respS.json();
+    console.log(dataS);
+  } catch (error) {
+    dataS = [];
+  }
 
-  const respS = await fetch(
-    `https://aniwatch-api-8fti.onrender.com/anime/schedule?date=${sec.toString()}-${
-      min < 10 ? 0 + min.toString() : min.toString()
-    }-${hour < 10 ? 0 + hour.toString() : hour.toString()}`
-  );
-  const dataS = await respS.json();
-  console.log(dataS);
-
-  const resp = await fetch(
-    `https://aniwatch-api-8fti.onrender.com/anime/episodes/${params.id}`,
-    { next: { revalidate: 18000 } }
-  );
-  const data = await resp.json();
+  let data = [];
+  try {
+    const respS = await fetch(
+      `https://aniwatch-api-8fti.onrender.com/anime/episodes/${params.id}`
+    );
+    data = await respS.json();
+  } catch (error) {
+    data = [];
+  }
 
   const epId = epis ? params.id + "?ep=" + epis : data?.episodes[0]?.episodeId;
 
-  const respo = await fetch(
-    `https://aniwatch-api-8fti.onrender.com/anime/servers?episodeId=${epId}`,
-    { next: { revalidate: 18000 } }
-  );
-  const datal = await respo?.json();
+  let datal = [];
+  try {
+    const respS = await fetch(
+      `https://aniwatch-api-8fti.onrender.com/anime/servers?episodeId=${epId}`,
+      { next: { revalidate: 18000 } }
+    );
+    datal = await respS.json();
+  } catch (error) {
+    datal = [];
+  }
 
   const serverId =
     datal?.sub.length > 0 ? datal?.sub[0]?.serverId : datal?.raw[0]?.serverId;
-  const respi = await fetch(
-    `https://aniwatch-api-8fti.onrender.com/anime/episode-srcs?id=${epId}&serverId=${serverId}&category=sub`,
-    { next: { revalidate: 18000 } }
-  );
-  const datai = await respi.json();
 
-  const respl = await fetch(
-    `https://aniwatch-api-8fti.onrender.com/anime/info?id=${params.id}`,
-    { next: { revalidate: 18000 } }
-  );
-  const datao = await respl.json();
+  let datai = [];
+  try {
+    const respS = await fetch(
+      `https://aniwatch-api-8fti.onrender.com/anime/episode-srcs?id=${epId}&serverId=${serverId}&category=sub`,
+      { next: { revalidate: 18000 } }
+    );
+    datai = await respS.json();
+  } catch (error) {
+    datai = [];
+  }
 
-  const respu = await fetch(
-    `https://aniwatch-api-8fti.onrender.com/anime/search/suggest?q=${params.id}`,
-    { cache: "force-cache" }
-  );
-  const datau = await respu.json();
+  let datao = [];
+  try {
+    const respS = await fetch(
+      `https://aniwatch-api-8fti.onrender.com/anime/info?id=${params.id}`,
+      { next: { revalidate: 18000 } }
+    );
+    datao = await respS.json();
+  } catch (error) {
+    datao = [];
+  }
 
-  const respj = await fetch(
-    `https://anime-api-five-woad.vercel.app/api/stream?id=${epId}`,
-    {cache: 'force-cache'}
-  );
-  const dataj = await respj.json();
+  let datau = [];
+  try {
+    const respS = await fetch(
+      `https://aniwatch-api-8fti.onrender.com/anime/search/suggest?q=${params.id}`,
+      { cache: "force-cache" }
+    );
+    datau = await respS.json();
+  } catch (error) {
+    datau = [];
+  }
+
+  let dataj = [];
+  try {
+    const respS = await fetch(
+      `https://anime-api-five-woad.vercel.app/api/stream?id=${epId}`,
+      { cache: "force-cache" }
+    );
+    dataj = await respS.json();
+  } catch (error) {
+    dataj = [];
+  }
 
   let jname = "";
   datau &&
@@ -81,9 +115,14 @@ export default async function page({ params, searchParams }) {
       epiod = data.episodes[i].number;
     }
   }
+  let gogoEP = [];
+  try {
+    gogoEP = await gogoanime.search(datao?.anime?.info?.name);
+  } catch (error) {
+    gogoEP = [];
+  }
 
-  const gogoEP = await gogoanime.search(datao?.anime?.info?.name);
-  const caseEP = gogoEP.results[0]?.id || '';
+  const caseEP = gogoEP.results[0]?.id || "";
   let gogoId =
     "/" +
     (
@@ -97,17 +136,23 @@ export default async function page({ params, searchParams }) {
         `-episode-${epiod}`
       ).replace(/[^a-zA-Z0-9\-]/g, "")
     : gogoId;
-    let gogoST = []
-    try {
-      gogoST = await gogoanime.fetchEpisodeSources(caseId);
-    } catch (error) {
-      gogoST = []
-    }
-  
-  const respp = await fetch(
-    "https://aniwatch-api-8fti.onrender.com/anime/home"
-  );
-  const datapp = await respp.json();
+  let gogoST = [];
+  try {
+    gogoST = await gogoanime.fetchEpisodeSources(caseId);
+  } catch (error) {
+    gogoST = [];
+  }
+
+  let datapp = [];
+  try {
+    const respS = await fetch(
+      "https://aniwatch-api-8fti.onrender.com/anime/home",
+      { cache: "no-store" }
+    );
+    datapp = await respS.json();
+  } catch (error) {
+    datapp = [];
+  }
 
   return (
     <div>
