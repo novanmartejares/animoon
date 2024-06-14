@@ -23,7 +23,7 @@ export default function Card(props) {
   const startN = () => {
     if (props.collectionName !== "Top Upcoming") {
       if (!localStorage.getItem(`Rewo-${anime.id}`)) {
-        window.location.href = `watchi/${anime.id}`;
+        window.location.href = `/watchi/${anime.id}`;
       }
     }
   };

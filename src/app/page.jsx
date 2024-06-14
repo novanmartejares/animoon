@@ -5,62 +5,98 @@ const DynamicHome = dynamic(() => import("@/app/home/home"), {
 });
 
 export default async function page() {
-  const resp = await fetch(
-    "https://aniwatch-api-8fti.onrender.com/anime/home",
-    { cache: "no-store" }
-  );
-  const data = await resp.json();
+  let data = []
+  try {
+    const resp = await fetch(
+      "https://aniwatch-api-8fti.onrender.com/anime/home",
+      { cache: "no-store" }
+    );
+    data = await resp.json();
+  } catch (error) {
+    data = []
+  }
+
 
   // categories -> "most-favorite", "most-popular", "subbed-anime", "dubbed-anime", "recently-updated", "recently-added", "top-upcoming", "top-airing", "movie", "special", "ova", "ona", "tv", "completed"
+  let dataAiring = []
+  try {
+    const resp = await fetch(
+      "https://aniwatch-api-8fti.onrender.com/anime/top-airing?page=1",
+      { cache: "no-store" }
+    );
+    dataAiring = await resp.json();
+  } catch (error) {
+    dataAiring = []
+  }
 
-  const respa = await fetch(
-    "https://aniwatch-api-8fti.onrender.com/anime/top-airing?page=1",
-    { cache: "no-store" }
-  );
-  const dataAiring = await respa.json();
-  console.log(dataAiring);
+  let dataFavourite = []
+  try {
+    const resp = await fetch(
+      "https://aniwatch-api-8fti.onrender.com/anime/most-favorite?page=1",
+      { cache: "no-store" }
+    );
+    dataFavourite = await resp.json();
+  } catch (error) {
+    dataFavourite = []
+  }
 
-  const respb = await fetch(
-    "https://aniwatch-api-8fti.onrender.com/anime/most-favorite?page=1",
-    { cache: "no-store" }
-  );
-  const dataFavourite = await respb.json();
-  console.log(dataFavourite);
 
-  const respc = await fetch(
-    "https://aniwatch-api-8fti.onrender.com/anime/most-popular?page=1",
-    { cache: "no-store" }
-  );
-  const dataPopular = await respc.json();
-  console.log(dataPopular);
+  let dataPopular = []
+  try {
+    const resp = await fetch(
+      "https://aniwatch-api-8fti.onrender.com/anime/most-popular?page=1",
+      { cache: "no-store" }
+    );
+    dataPopular = await resp.json();
+  } catch (error) {
+    dataPopular = []
+  }
 
-  const respd = await fetch(
-    "https://aniwatch-api-8fti.onrender.com/anime/completed?page=1",
-    { cache: "no-store" }
-  );
-  const dataComp = await respd.json();
-  console.log(dataComp);
 
-  const respe = await fetch(
-    "https://aniwatch-api-8fti.onrender.com/anime/recently-updated?page=1",
-    { cache: "no-store" }
-  );
-  const dataLatest = await respe.json();
-  console.log(dataLatest);
+  let dataComp = []
+  try {
+    const resp = await fetch(
+      "https://aniwatch-api-8fti.onrender.com/anime/most-popular?page=1",
+      { cache: "no-store" }
+    );
+    dataComp = await resp.json();
+  } catch (error) {
+    dataComp = []
+  }
 
-  const respf = await fetch(
-    "https://aniwatch-api-8fti.onrender.com/anime/recently-added?page=1",
-    { cache: "no-store" }
-  );
-  const dataNew = await respf.json();
-  console.log(dataNew);
+  let dataLatest = []
+  try {
+    const resp = await fetch(
+      "https://aniwatch-api-8fti.onrender.com/anime/recently-updated?page=1",
+      { cache: "no-store" }
+    );
+    dataLatest = await resp.json();
+  } catch (error) {
+    dataLatest = []
+  }
 
-  const respg = await fetch(
-    "https://aniwatch-api-8fti.onrender.com/anime/top-upcoming?page=1",
-    { cache: "no-store" }
-  );
-  const dataUpcoming = await respg.json();
-  console.log(dataUpcoming);
+  let dataNew = []
+  try {
+    const resp = await fetch(
+      "https://aniwatch-api-8fti.onrender.com/anime/recently-added?page=1",
+      { cache: "no-store" }
+    );
+    dataNew = await resp.json();
+  } catch (error) {
+    dataNew = []
+  }
+
+  let dataUpcoming = []
+  try {
+    const resp = await fetch(
+      "https://aniwatch-api-8fti.onrender.com/anime/top-upcoming?page=1",
+      { cache: "no-store" }
+    );
+    dataUpcoming = await resp.json();
+  } catch (error) {
+    dataUpcoming = []
+  }
+
   return (
     <div>
       <DynamicHome

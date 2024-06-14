@@ -623,9 +623,8 @@ export default function WatchAnime(props) {
                             </div>
                           </div>
                           <div className=" flex flex-col serves">
-                            {!props.datag &&
-                            !props.datag.sources &&
-                            props.datag.sources.length < 1 ? (
+                            {props.gogoST &&
+                            props.gogoST.length < 1 ? (
                               <>
                                 {props.datal.sub ? (
                                   <>
@@ -651,7 +650,7 @@ export default function WatchAnime(props) {
                                                 : ""
                                             }`}
                                             onClick={() =>
-                                              setServerId(el.serverId) &
+                                              setServerId(no.serverId) &
                                               setSelectedServer(idx) &
                                               setSubIsSelected(true) &
                                               window.scrollTo({ top: 0 })
@@ -670,7 +669,7 @@ export default function WatchAnime(props) {
                                           <div>:</div>
                                         </div>
                                         <div className="flex flex-wrap gap-2">
-                                          {data.dub.map((no, idx) => (
+                                          {props.datal.dub.map((no, idx) => (
                                             <div
                                               className={`subDub ${
                                                 !subIsSelected
@@ -680,7 +679,7 @@ export default function WatchAnime(props) {
                                                   : ""
                                               }`}
                                               onClick={() =>
-                                                setServerId(el.serverId) &
+                                                setServerId(no.serverId) &
                                                 setSelectedServer(idx) &
                                                 setSubIsSelected(false) &
                                                 window.scrollTo({ top: 0 })
@@ -713,7 +712,7 @@ export default function WatchAnime(props) {
                                               : ""
                                           }`}
                                           onClick={() =>
-                                            setServerId(el.serverId) &
+                                            setServerId(no.serverId) &
                                             setSelectedServer(idx) &
                                             setSubIsSelected(false) &
                                             window.scrollTo({ top: 0 })

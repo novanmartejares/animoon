@@ -97,27 +97,17 @@ export default async function page({ params, searchParams }) {
         `-episode-${epiod}`
       ).replace(/[^a-zA-Z0-9\-]/g, "")
     : gogoId;
-
-  const gogoST = await gogoanime.fetchEpisodeSources(caseId);
-  const fetchData = async () => {
+    let gogoST = []
     try {
-      return await gogoanime.fetchEpisodeSources("naruto-shippuden-episode-1");
+      gogoST = await gogoanime.fetchEpisodeSources(caseId);
     } catch (error) {
-      console.error(error); // You might send an exception to your error tracker like AppSignal
-      return [];
+      gogoST = []
     }
-  };
+  
   const respp = await fetch(
     "https://aniwatch-api-8fti.onrender.com/anime/home"
   );
   const datapp = await respp.json();
-
-  let datag = await fetchData();
-
-  let isGogo = "";
-  if (datag && datag.length > 0) {
-    isGogo = "yes";
-  }
 
   return (
     <div>
@@ -133,9 +123,7 @@ export default async function page({ params, searchParams }) {
         epis={epis}
         jname={jname}
         name={datao?.info?.name}
-        datag={datag}
         caseEP={caseEP}
-        isGogo={isGogo}
         dataj={dataj}
         gogoST={gogoST}
         datapp={datapp}
