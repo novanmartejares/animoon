@@ -1,6 +1,6 @@
 "use client"
 import React from 'react'
-import Error from '@/component/AnimeNotFound/Error'
+import Error from '@/component/SpecialErr/SpecialErr'
 
 const error = () => {
     window.location.reload()
