@@ -117,7 +117,8 @@ export default async function page({ params, searchParams }) {
   }
   let gogoEP = [];
   try {
-    gogoEP = await gogoanime.search(datao?.anime?.info?.name);
+    const gogoTP = await fetch(`https://newgogo.vercel.app/${datao?.anime?.info?.name}?page=1`);
+    gogoEP = gogoTP.json()
   } catch (error) {
     gogoEP = [];
   }
