@@ -20,7 +20,7 @@ export default async function page({ params, searchParams }) {
     const respS = await fetch(
       `https://aniwatch-api-8fti.onrender.com/anime/schedule?date=${sec.toString()}-${
         min < 10 ? 0 + min.toString() : min.toString()
-      }-${hour < 10 ? 0 + hour.toString() : hour.toString()}`
+      }-${hour < 10 ? 0 + hour.toString() : hour.toString()}`,{ next: { revalidate: 3600 } }
     );
     dataS = await respS.json();
     console.log(dataS);
@@ -31,7 +31,7 @@ export default async function page({ params, searchParams }) {
   let data = [];
   try {
     const respS = await fetch(
-      `https://aniwatch-api-8fti.onrender.com/anime/episodes/${params.id}`
+      `https://aniwatch-api-8fti.onrender.com/anime/episodes/${params.id}`,{ next: { revalidate: 3600 } }
     );
     data = await respS.json();
   } catch (error) {
@@ -147,7 +147,7 @@ export default async function page({ params, searchParams }) {
   try {
     const respS = await fetch(
       "https://aniwatch-api-8fti.onrender.com/anime/home",
-      { cache: "no-store" }
+      { next: { revalidate: 3600 } }
     );
     datapp = await respS.json();
   } catch (error) {
