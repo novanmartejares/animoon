@@ -45,7 +45,7 @@ export default function Footer() {
             sizes="3%"
             style={{
               width: "auto",
-              height: window.innerWidth < 700 ? "30px" : "40px",
+              height: window.innerWidth < 700 ? "40px" : "50px",
             }}
           />
         </Link>
@@ -58,10 +58,10 @@ export default function Footer() {
       <div className="alphabet-list d-flex">{links}</div>
       <div className="copyright-text">
         <p>
-          Kaido does not store any files on our server; we only link to the
+          AniMoon does not store any files on our server; we only link to the
           media which is hosted on 3rd party services.
         </p>
-        <p>&copy; Kaido All rights reserved.</p>
+        <p>&copy; AniMoon All rights reserved.</p>
       </div>
     </div>
   );

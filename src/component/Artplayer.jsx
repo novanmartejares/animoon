@@ -24,7 +24,8 @@ function ArtPlayer(props, { ...rest }) {
       });
     setKpSource(props.data);
     setEpSource(props.datag);
-    props.datag.sources &&
+    props.datag &&
+      props.datag.sources &&
       props.datag.sources.map((source) => {
         if (source.quality === "1080p") {
           setUri(source.url);
@@ -59,7 +60,7 @@ function ArtPlayer(props, { ...rest }) {
     const art = new Artplayer({
       title: "hahahaha",
       container: ".artplayer-app",
-      url: uri,
+      url: uri ? uri : urt,
       type: "m3u8",
       plugins: [
         artplayerPluginHlsQuality({
@@ -114,7 +115,6 @@ function ArtPlayer(props, { ...rest }) {
         epSource && epSource.sources
           ? epSource.sources.map((source) => ({
               default: source.quality === "1080p",
-
               html: source.quality,
               url: source.url,
             }))
@@ -191,11 +191,15 @@ function ArtPlayer(props, { ...rest }) {
     }
     const dltr = localStorage.getItem("artplayer_settings");
     if (dltr) {
-      let currentT = JSON.parse(dltr).times[uri ? uri : urt]
+      let currentT = JSON.parse(dltr).times[!ingo ? (uri ? uri : urt) : newUrl]
         ? JSON.parse(dltr).times[uri ? uri : urt]
         : 0;
+      if (!localStorage.getItem("speciality")) {
+        localStorage.setItem("speciality", currentT.toString());
+      }
       art.on("ready", () => {
         art.currentTime = currentT;
+
         if (props.onn1 === "On") {
           art.play();
         } else {
@@ -216,10 +220,16 @@ function ArtPlayer(props, { ...rest }) {
           console.log("art.switch yehhh!!");
         }
       }
-      if (!uri) {
-        if (!art.url) {
-          art.switchUrl(urt);
-        }
+      if (props.gogoServe === "Anify") {
+        props.dataj.results.streamingInfo.map((i) => {
+          if (i?.value?.decryptionResult?.server === "HD-1") {
+            if (i?.value?.decryptionResult?.type === props.sub) {
+              art.switchUrl(i.value.decryptionResult.link);
+              setIngo("yes");
+              setNewUrl(i.value.decryptionResult.link);
+            }
+          }
+        });
       }
       art.on("video:timeupdate", () => {
         if (props.onn3 === "On") {
@@ -311,7 +321,7 @@ function ArtPlayer(props, { ...rest }) {
         art.destroy(false);
       }
     };
-  }, [uri, urt]);
+  }, [uri, urt, props.sub, props.gogoServe]);
 
   //className=" artplayer-app md:h-[800px] h-[250px] w-full"
   return (

@@ -10,7 +10,7 @@ axios.interceptors.request.use((config) => {
 async function fetchRecent(id) {
   try {
     const { data } = await axios.get(
-      `https://anime-api-five-woad.vercel.app/api/stream?id=${id}`
+      `https://vimal-two.vercel.app/api/stream?id=${id}`
     );
     return data;
   } catch (error) {
@@ -26,7 +26,7 @@ export async function GET(req, { params }) {
   }
   if (cached && JSON.parse(cached) && JSON.parse(cached).length > 0) {
     return NextResponse.json(JSON.parse(cached));
-  } if (cached && JSON.parse(cached) && JSON.parse(cached).length < 1 || !cached) {
+  } else {
     const data = await fetchRecent(params.id);
     if (data) {
       if (redis) {

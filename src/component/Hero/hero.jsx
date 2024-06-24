@@ -55,9 +55,7 @@ export default function Hero(props) {
         ? localStorage.getItem(`Rewatch-${el.id}`).split(",")
         : [];
       const startN = () => {
-        if (!localStorage.getItem(`Rewo-${el.id}`)) {
-          window.location.href = `watchi/${el.id}`;
-        }
+
       };
       item = el.name;
 
@@ -120,6 +118,7 @@ export default function Hero(props) {
                           : `/watchi/${el.id}`
                       }
                       className="btn-primary hero-button"
+                      shallow
                     >
                       <FaPlayCircle size={12} /> Watch Now
                     </Link>
@@ -127,6 +126,7 @@ export default function Hero(props) {
                       href={`/${el.id}`}
                       onClick={() => window.scrollTo({ top: 0 })}
                       className="btn-secondary hero-button"
+                      shallow
                     >
                       Details <FaChevronRight size={12} />
                     </Link>

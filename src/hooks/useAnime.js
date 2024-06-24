@@ -127,9 +127,24 @@ export default function useAnime() {
       return [];
     }
   }
+
+  async function getSuggestSearch(id) {
+    try {
+      let data = await fetch(location.origin + "/api/anime/suggest/" + id, {
+        cache: "force-cache",
+      });
+      let json = await data.json();
+
+      console.log(json);
+      return json;
+    } catch (error) {
+      return [];
+    }
+  }
+
   async function getEpisodeAnify(id) {
     let data = await fetch(location.origin + "/api/anime/anify/watch" + id, {
-      cache: "force-cache",
+      cache: 'force-cache',
     });
     let json = await data.json();
 
@@ -389,5 +404,6 @@ export default function useAnime() {
     getUpcoming,
     getZoroStream,
     getZoroBroStream,
+    getSuggestSearch,
   };
 }

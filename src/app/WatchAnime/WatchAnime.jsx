@@ -47,7 +47,7 @@ export default function WatchAnime(props) {
   const [subInfo, setSubInfo] = useState({});
   const [dubInfo, setDubInfo] = useState({});
   const [selectedServer, setSelectedServer] = useState(0);
-  const [serverId, setServerId] = useState("4");
+  const [serverId, setServerId] = useState(4);
   const [selectedEpisode, setSelectedEpisode] = useState(0);
   const [quality, setQuality] = useState("default");
   const [data, setData] = useState([]);
@@ -68,7 +68,7 @@ export default function WatchAnime(props) {
   let epiod = 0;
   let i = 0;
   for (i > 0; i < props.data.episodes.length; i++) {
-    if (props.data?.episodes[i].episodeId.includes(props?.epis?.toString())) {
+    if (props.data?.episodes[i].episodeId.includes(props.epis)) {
       epiod = props.data.episodes[i].number;
     }
   }
@@ -251,7 +251,7 @@ export default function WatchAnime(props) {
       <span
         className={`${
           episodeList.length <= 24 ? "episode-tile" : `episode-tile-blocks`
-        } ${idx === epiod - 1 ? "selected" : ""} ${
+        } ${idx === selectedEpisode ? "selected" : ""} ${
           episodeList.length <= 24
             ? episodeList.length % 2 === 0
               ? idx % 2 === 0
@@ -272,13 +272,14 @@ export default function WatchAnime(props) {
             : "common"
         }`}
         key={el.id}
+        epiod={el.number}
         style={
           episodeList.length <= 24
             ? { minWidth: "100%", borderRadius: 0 }
             : null
         }
         onClick={() =>
-          setSelectedEpisode(epiod - 1) &
+          setSelectedEpisode(el.number) &
           changeEpi(el.episodeId) &
           setEpNumb(el.number) &
           window.scrollTo({ top: 0 })
@@ -354,14 +355,13 @@ export default function WatchAnime(props) {
       const dat = await getEpisodeGogo(totoId);
       setDatag(dat);
     } catch (error) {
-      console.error(error); // You might send an exception to your error tracker like AppSignal
       setDatag([]);
     }
   };
 
   useEffect(() => {
     fetchUub();
-  }, [subIsSelected, selectedEpisode, epiod, gogoServe]);
+  }, [subIsSelected, selectedEpisode, epiod , selectedServer]);
   const fetchNub = async () => {
     const caseId = props.caseEP
       ? subIsSelected
@@ -399,17 +399,16 @@ export default function WatchAnime(props) {
     const totoId = props.caseEP ? subIsSelected ? caseId : gogoId : gogoId;
     try {
       const dat = await getEpisodeAnify(totoId);
-      setFatag(dat);
-      console.log(dat);
+      setFatag([]);
     } catch (error) {
-      console.error(error); // You might send an exception to your error tracker like AppSignal
+   // You might send an exception to your error tracker like AppSignal
       setFatag([]);
     }
   };
 
   useEffect(() => {
     fetchNub();
-  }, [subIsSelected, selectedEpisode, epiod, gogoServe]);
+  }, [subIsSelected, selectedEpisode, epiod, selectedServer]);
 
   return (
     <>
@@ -419,7 +418,7 @@ export default function WatchAnime(props) {
           animate={{ x: [window.innerWidth / 2, 0], opacity: 1 }}
           transition={{ duration: 0.7, ease: easeOut }}
         >
-          {props?.data?.episodes.length > 0 ? (
+          {props?.datao ? (
             <div style={{ marginTop: "65px" }} className="watch-container">
               <div className="flex gap-1 items-center pecif">
                 <Link href={"/"}>
@@ -480,10 +479,12 @@ export default function WatchAnime(props) {
                           {epNumb === epiod ? (
                             <ArtPlayer
                               data={data}
-                              datag={gogoServe === "GogoCdn" ? datag : fatag}
+                              datag={gogoServe === 'GogoCdn' ? datag : fatag}
+                              gogoServe={gogoServe}
                               isGogo={props.isGogo}
                               epId={props.epId}
                               anId={props.anId}
+                              selectedServer={selectedServer}
                               onn1={onn1}
                               onn2={onn2}
                               onn3={onn3}

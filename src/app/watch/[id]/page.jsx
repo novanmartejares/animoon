@@ -8,7 +8,6 @@ export default async function page({ params, searchParams }) {
   const epis = searchParams.ep;
 
   const time = new Date();
-  console.log(time);
 
   const hour = time.getDate();
 
@@ -20,10 +19,10 @@ export default async function page({ params, searchParams }) {
     const respS = await fetch(
       `https://aniwatch-api-8fti.onrender.com/anime/schedule?date=${sec.toString()}-${
         min < 10 ? 0 + min.toString() : min.toString()
-      }-${hour < 10 ? 0 + hour.toString() : hour.toString()}`,{ next: { revalidate: 3600 } }
+      }-${hour < 10 ? 0 + hour.toString() : hour.toString()}`,
+      { next: { revalidate: 3600 } }
     );
     dataS = await respS.json();
-    console.log(dataS);
   } catch (error) {
     dataS = [];
   }
@@ -31,7 +30,8 @@ export default async function page({ params, searchParams }) {
   let data = [];
   try {
     const respS = await fetch(
-      `https://aniwatch-api-8fti.onrender.com/anime/episodes/${params.id}`,{ next: { revalidate: 3600 } }
+      `https://aniwatch-api-8fti.onrender.com/anime/episodes/${params.id}`,
+      { next: { revalidate: 3600 } }
     );
     data = await respS.json();
   } catch (error) {
@@ -90,7 +90,7 @@ export default async function page({ params, searchParams }) {
   let dataj = [];
   try {
     const respS = await fetch(
-      `https://anime-api-five-woad.vercel.app/api/stream?id=${epId}`,
+      `https://vimal-two.vercel.app/api/stream?id=${epId}`,
       { cache: "force-cache" }
     );
     dataj = await respS.json();
@@ -117,13 +117,16 @@ export default async function page({ params, searchParams }) {
   }
   let gogoEP = [];
   try {
-    const gogoTP = await fetch(`https://newgogo.vercel.app/${datao?.anime?.info?.name}?page=1`,{next: {revalidate: 3600}});
-    gogoEP = await gogoTP.json()
+    const gogoTP = await fetch(
+      `https://newgogo.vercel.app/${datao?.anime?.info?.name}?page=1`,
+      { next: { revalidate: 3600 } }
+    );
+    gogoEP = await gogoTP.json();
   } catch (error) {
     gogoEP = [];
   }
 
-  const caseEP = gogoEP.results[0]?.id || "";
+  const caseEP = gogoEP?.results?.length > 0 ? gogoEP.results[0]?.id : "";
   let gogoId =
     "/" +
     (
@@ -139,7 +142,8 @@ export default async function page({ params, searchParams }) {
     : gogoId;
   let gogoST = [];
   try {
-    gogoST = await gogoanime.fetchEpisodeSources(caseId);
+    let gogoSC = await fetch(`https://newgogo.vercel.app/watch/${caseId}`,{cache: 'force-cache'});
+    gogoST = gogoSC.json()
   } catch (error) {
     gogoST = [];
   }

@@ -69,7 +69,6 @@ export default function MainContainer(props) {
             <AnimeCollection
               collectionName="Top Upcoming"
               data={ova?.animes?.slice(0, 12)}
-              doNow='yeah'
             />
           </div>
         </>
