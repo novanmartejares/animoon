@@ -1,5 +1,5 @@
 "use client";
-import React, { startTransition, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "./hero.css";
 import "swiper/css";
@@ -55,7 +55,12 @@ export default function Hero(props) {
         ? localStorage.getItem(`Rewatch-${el.id}`).split(",")
         : [];
       const startN = () => {
-
+        window.location.href = localStorage.getItem(`Rewo-${el.id}`)
+          ? `/watch/${localStorage.getItem(`Rewo-${el.id}`)}`
+          : `/watchi/${el.id}`;
+      };
+      const startD = () => {
+        window.location.href = `/${el.id}`
       };
       item = el.name;
 
@@ -124,7 +129,7 @@ export default function Hero(props) {
                     </Link>
                     <Link
                       href={`/${el.id}`}
-                      onClick={() => window.scrollTo({ top: 0 })}
+                      onClick={() => window.scrollTo({ top: 0 }) & startD()}
                       className="btn-secondary hero-button"
                       shallow
                     >

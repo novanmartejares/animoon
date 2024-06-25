@@ -9,8 +9,13 @@ import MouseOverCard from "../Card/MouseOverCard";
 export default function ContentList(props) {
   const ref = React.useRef(null);
   const isInView = useInView(ref, { once: true });
-
+  const startO = () => {
+    window.location.href = `/grid?name=${props.filterName}&heading=${props.heading}`
+  }
   const list = props?.data?.map((el, idx) => {
+    const startU = () => {
+      window.location.href = `/${el.id}`
+    }
     return (
       <li key={el.id} className="d-flex a-center">
         <LazyImage
@@ -24,7 +29,7 @@ export default function ContentList(props) {
             <Link
               href={`/${el.id}`}
               className="trans-03"
-              onClick={() => window.scrollTo({ top: 0 })}
+              onClick={() => window.scrollTo({ top: 0 }) & startU()}
             >
               {el.name || el.title}
             </Link>
@@ -56,7 +61,7 @@ export default function ContentList(props) {
       <Link
         href={`/grid?name=${props.filterName}&heading=${props.heading}`}
         className="view-more-link"
-        onClick={() => window.scrollTo({ top: 0 })}
+        onClick={() => window.scrollTo({ top: 0 }) & startO()}
       >
         View More
         <FaChevronRight size={14} />

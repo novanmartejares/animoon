@@ -68,7 +68,7 @@ export default function WatchAnime(props) {
   let epiod = 0;
   let i = 0;
   for (i > 0; i < props.data.episodes.length; i++) {
-    if (props.data?.episodes[i].episodeId.includes(props.epis)) {
+    if (props.data?.episodes[i].episodeId === props.epId) {
       epiod = props.data.episodes[i].number;
     }
   }
@@ -251,7 +251,7 @@ export default function WatchAnime(props) {
       <span
         className={`${
           episodeList.length <= 24 ? "episode-tile" : `episode-tile-blocks`
-        } ${idx === selectedEpisode ? "selected" : ""} ${
+        } ${idx === epiod - 1 ? "selected" : ""} ${
           episodeList.length <= 24
             ? episodeList.length % 2 === 0
               ? idx % 2 === 0
@@ -272,14 +272,13 @@ export default function WatchAnime(props) {
             : "common"
         }`}
         key={el.id}
-        epiod={el.number}
         style={
           episodeList.length <= 24
             ? { minWidth: "100%", borderRadius: 0 }
             : null
         }
         onClick={() =>
-          setSelectedEpisode(el.number) &
+          setSelectedEpisode(epiod - 1) &
           changeEpi(el.episodeId) &
           setEpNumb(el.number) &
           window.scrollTo({ top: 0 })

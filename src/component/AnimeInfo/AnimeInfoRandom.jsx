@@ -68,6 +68,11 @@ export default function Details(props) {
   };
 
   const vv = counter < 19 ? counter : (counter = 0);
+  const startN = () => {
+    window.location.href = localStorage.getItem(`Rewo-${gnt.info.id}`)
+      ? `/watch/${localStorage.getItem(`Rewo-${gnt.info.id}`)}`
+      : `watchi/${gnt.info.id}`;
+  };
   return gnt?.info?.poster ? (
     <div className="details-container">
       <div className="details-header">
@@ -143,6 +148,7 @@ export default function Details(props) {
                       : `watchi/${gnt.info.id}`
                   }`}
                   className="btn-primary hero-button"
+                  onClick={() => startN()}
                 >
                   <FaPlayCircle size={12} /> Watch Now
                 </Link>

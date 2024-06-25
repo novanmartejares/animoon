@@ -27,6 +27,9 @@ export default function Footer() {
     return [...links];
   }
   const links = getAlphabets();
+  const startS = () => {
+    window.location.href = '/'
+  }
 
   return (
     <div className="footer-container d-flex-fd-column j-center">
@@ -34,7 +37,7 @@ export default function Footer() {
         <Link
           className="main-element"
           href="/"
-          onClick={() => window.scrollTo({ top: 0 })}
+          onClick={() => window.scrollTo({ top: 0 }) & startS()}
         >
           <Image
             src={logo}

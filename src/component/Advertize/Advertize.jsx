@@ -6,9 +6,9 @@ const Advertize = () => {
   useEffect(() => {
     setInterval(() => setTime(new Date()), 1000);
     if (
-      ((parseInt(localStorage.getItem("openT")) + 30 > 60
+      ((parseInt(localStorage.getItem("openT")) + 10 > 60
         ? parseInt(localStorage.getItem("openT")) - 60
-        : parseInt(localStorage.getItem("openT")) + 30) ===
+        : parseInt(localStorage.getItem("openT")) + 10) ===
         time.getMinutes()) &
       (time.getSeconds === 1)
     ) {

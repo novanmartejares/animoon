@@ -12,13 +12,13 @@ import LazyImage from "../../utils/LazyImage";
 import useAnime from "@/hooks/useAnime";
 export default function Trending(props) {
   const [data, setData] = useState(props.data.trendingAnimes);
-  let hour = props.hour
-  let min = props.min
-  let hours = props.hours
-  let minute = props.minute
+  let hour = props.hour;
+  let min = props.min;
+  let hours = props.hours;
+  let minute = props.minute;
   const { getHome } = useAnime();
   const fetchLub = async () => {
-    const dat = await getHome(hour,min,hours,minute);
+    const dat = await getHome(hour, min, hours, minute);
     console.log(dat);
     if (dat.length > 0) {
       setData(dat.trendingAnimes);
@@ -26,16 +26,16 @@ export default function Trending(props) {
   };
   useEffect(() => {
     fetchLub();
-  },[]);
+  }, []);
   const ref = useRef(null);
   const isInView = useInView(ref);
   const animeCard = data?.map((el, idx) => {
     const item = el.id;
     const title = el.name || item.titles.en_jp;
     const startN = () => {
-      if (!localStorage.getItem(`Rewo-${el.id}`)) {
-        window.location.href = `watchi/${el.id}`;
-      }
+      window.location.href = localStorage.getItem(`Rewo-${el.id}`)
+        ? `/watch/${localStorage.getItem(`Rewo-${el.id}`)}`
+        : `/watchi/${el.id}`;
     };
 
     return (
@@ -62,11 +62,15 @@ export default function Trending(props) {
             <p className="f-poppins">
               {title.length > 15 ? title.slice(0, 15) + "..." : title}
             </p>
-            <span>{el.rank > 9 ? el.rank : "0" + (el.rank)}</span>
+            <span>{el.rank > 9 ? el.rank : "0" + el.rank}</span>
           </motion.div>
           <Link
             onClick={() => window.scrollTo({ top: 0 }) & startN()}
-            href={`${localStorage.getItem(`Rewo-${el.id}`) ? `/watch/${localStorage.getItem(`Rewo-${el.id}`)}` : `watchi/${el.id}`}`}
+            href={`${
+              localStorage.getItem(`Rewo-${el.id}`)
+                ? `/watch/${localStorage.getItem(`Rewo-${el.id}`)}`
+                : `/watchi/${el.id}`
+            }`}
           >
             <LazyImage
               initial={{ opacity: 0 }}

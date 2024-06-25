@@ -29,11 +29,14 @@ export default function Genre(props) {
   const list = isCollapsed ? genree?.slice(0, 18) : genree;
 
   const genreList = list?.map((el, idx) => {
+    const startP = () => {
+      window.location.href = `/genre?id=${el}&name=${el}`
+    }
     return (
       <Link
         key={idx}
         href={`/genre?id=${el}&name=${el}`}
-        onClick={() => window.scrollTo({ top: 0 })}
+        onClick={() => window.scrollTo({ top: 0 }) & startP()}
       >
         <motion.div
           initial={{ opacity: 0 }}
