@@ -96,7 +96,7 @@ export default function NavBar(props) {
                   sizes="3%"
                   style={{
                     width: "auto",
-                    height: window.innerWidth < 700 ? "40px" : "50px",
+                    height: window.innerWidth < 700 ? "30px" : "40px",
                   }}
                   src={logo}
                   className="logo"

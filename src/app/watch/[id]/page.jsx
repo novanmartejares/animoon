@@ -1,10 +1,7 @@
-import React, { cache } from "react";
+import React from "react";
 import WatchAnime from "../../WatchAnime/WatchAnime";
-import { ANIME } from "@consumet/extensions";
 
 export default async function page({ params, searchParams }) {
-  const dub = searchParams.dub;
-  const sub = searchParams.sub;
   const epis = searchParams.ep;
 
   const time = new Date();
@@ -106,8 +103,6 @@ export default async function page({ params, searchParams }) {
         jname = i.jname;
       }
     });
-  console.log(jname);
-  const gogoanime = new ANIME.Gogoanime();
   let epiod = 0;
   let i = 0;
   for (i > 0; i < data.episodes.length; i++) {
@@ -142,8 +137,10 @@ export default async function page({ params, searchParams }) {
     : gogoId;
   let gogoST = [];
   try {
-    let gogoSC = await fetch(`https://newgogo.vercel.app/watch/${caseId}`,{cache: 'force-cache'});
-    gogoST = gogoSC.json()
+    let gogoSC = await fetch(`https://newgogo.vercel.app/watch/${caseId}`, {
+      cache: "force-cache",
+    });
+    gogoST = gogoSC.json();
   } catch (error) {
     gogoST = [];
   }
@@ -165,8 +162,6 @@ export default async function page({ params, searchParams }) {
         data={data}
         datal={datal}
         datai={datai}
-        dub={dub}
-        sub={sub}
         anId={params.id}
         datao={datao}
         epId={epId}

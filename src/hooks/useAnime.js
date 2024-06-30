@@ -1,11 +1,6 @@
 import React from "react";
 
 export default function useAnime() {
-  async function getRecent(id) {
-    const data = await fetch(location.origin + "/api/anime/recent/" + id);
-    const json = await data.json();
-    return json;
-  }
   async function getHome(hours, minute, hour, min) {
     const data = await fetch(
       location.origin + "/api/anime/home",
@@ -382,7 +377,6 @@ export default function useAnime() {
     getEpisodeGogo,
     getEpisodeAnify,
     getInfo,
-    getRecent,
     getHome,
     getTopUpcoming,
     getTopPopular,

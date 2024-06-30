@@ -6,9 +6,9 @@ const Advertize = () => {
   useEffect(() => {
     setInterval(() => setTime(new Date()), 1000);
     if (
-      ((parseInt(localStorage.getItem("openT")) + 10 > 60
+      ((parseInt(localStorage.getItem("openT")) + 5 > 60
         ? parseInt(localStorage.getItem("openT")) - 60
-        : parseInt(localStorage.getItem("openT")) + 10) ===
+        : parseInt(localStorage.getItem("openT")) + 5) ===
         time.getMinutes()) &
       (time.getSeconds === 1)
     ) {
@@ -35,7 +35,7 @@ const Advertize = () => {
     localStorage.setItem("openH", time.getHours().toString());
     localStorage.setItem("truth", "false");
     window.open(
-      "https://www.highcpmgate.com/hnq4sfr7se?key=fa60dc3aeeb0a08aa0476e80986ad233"
+      "https://www.highrevenuenetwork.com/d80kuuaz?key=ae42fe08189651eac2667e11c8e329a2"
     );
   }
 
