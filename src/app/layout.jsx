@@ -10,6 +10,9 @@ const inter = Inter({ subsets: ["latin"] });
 export const metadata = {
   title: "Animoon - Watch free Anime Online English Sub/Dub",
   description: "Explores the world of Animes...",
+  verification: {
+    google: "x0aiWAODNGU-1UA2FXyORfyme9uWJir7mIMu8AMmLm4",
+  },
 };
 
 export default function RootLayout({ children }) {
