@@ -1,6 +1,7 @@
 import { Inter } from "next/font/google";
 import "./globals.css";
 import dynamic from "next/dynamic";
+import Script from "next/script";
 const DynamicNav = dynamic(() => import("@/app/Nav/Nav"), {
   ssr: false,
 });
@@ -14,6 +15,12 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
+      <head>
+        <Script
+          type="text/javascript"
+          src="//pl23672011.highrevenuenetwork.com/35/7f/ae/357fae365ddc1b070a9615b318f066fa.js"
+        />
+      </head>
       <body className={inter.className}>
         <DynamicNav>{children}</DynamicNav>
       </body>

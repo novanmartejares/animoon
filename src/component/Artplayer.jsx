@@ -18,6 +18,14 @@ function ArtPlayer(props, { ...rest }) {
   const [ingo, setIngo] = useState("");
 
   useEffect(() => {
+    props.dataj.results.streamingInfo.map((i) => {
+      if (i?.value?.decryptionResult?.server === "HD-1") {
+        if (i?.value?.decryptionResult?.type === props.sub) {
+          setIngo("yes");
+          setNewUrl(i.value.decryptionResult.link);
+        }
+      }
+    });
     props.data.sources &&
       props.data.sources.map((source) => {
         setUrt(source.url);
@@ -60,7 +68,7 @@ function ArtPlayer(props, { ...rest }) {
     const art = new Artplayer({
       title: "hahahaha",
       container: ".artplayer-app",
-      url: uri ? uri : urt,
+      url: uri,
       type: "m3u8",
       plugins: [
         artplayerPluginHlsQuality({
@@ -191,8 +199,8 @@ function ArtPlayer(props, { ...rest }) {
     }
     const dltr = localStorage.getItem("artplayer_settings");
     if (dltr) {
-      let currentT = JSON.parse(dltr).times[!ingo ? (uri ? uri : urt) : newUrl]
-        ? JSON.parse(dltr).times[uri ? uri : urt]
+      let currentT = JSON.parse(dltr).times[!ingo ? uri : newUrl]
+        ? JSON.parse(dltr).times[!ingo ? uri : newUrl]
         : 0;
       if (!localStorage.getItem("speciality")) {
         localStorage.setItem("speciality", currentT.toString());
@@ -221,15 +229,8 @@ function ArtPlayer(props, { ...rest }) {
         }
       }
       if (props.gogoServe === "Anify") {
-        props.dataj.results.streamingInfo.map((i) => {
-          if (i?.value?.decryptionResult?.server === "HD-1") {
-            if (i?.value?.decryptionResult?.type === props.sub) {
-              art.switchUrl(i.value.decryptionResult.link);
-              setIngo("yes");
-              setNewUrl(i.value.decryptionResult.link);
-            }
-          }
-        });
+        art.switchUrl(newUrl);
+        setIngo("yes");
       }
       art.on("video:timeupdate", () => {
         if (props.onn3 === "On") {
@@ -268,7 +269,7 @@ function ArtPlayer(props, { ...rest }) {
     console.log(clean);
     const dltt = localStorage.getItem("artplayer_settings");
     if (dltt) {
-      if (JSON.parse(dltt).times[uri ? uri : urt]) {
+      if (JSON.parse(dltt).times[uri ? uri : newUrl]) {
         if (localStorage.getItem("recent-episodes")) {
           // split the existing values into an array
           let vals = localStorage.getItem("recent-episodes").split(",");
@@ -291,7 +292,7 @@ function ArtPlayer(props, { ...rest }) {
     }
 
     if (dltt) {
-      if (JSON.parse(dltt).times[!ingo ? (uri ? uri : urt) : newUrl]) {
+      if (JSON.parse(dltt).times[!ingo ? uri : newUrl]) {
         if (localStorage.getItem(props.anId.toString())) {
           console.log(localStorage.getItem(props.anId.toString()));
           // split the existing values into an array
@@ -321,7 +322,7 @@ function ArtPlayer(props, { ...rest }) {
         art.destroy(false);
       }
     };
-  }, [uri, urt, props.sub, props.gogoServe]);
+  }, [uri, newUrl, props.sub, props.gogoServe]);
 
   //className=" artplayer-app md:h-[800px] h-[250px] w-full"
   return (
