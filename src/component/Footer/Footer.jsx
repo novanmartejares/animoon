@@ -48,7 +48,7 @@ export default function Footer() {
             sizes="3%"
             style={{
               width: "auto",
-              height: window.innerWidth < 700 ? "40px" : "50px",
+              height: window.innerWidth < 700 ? "30px" : "40px",
             }}
           />
         </Link>

@@ -19,7 +19,7 @@ export default function RecommendedTopTen(props) {
 
   return (
     <>
-      {props.doIt ? "" : <Details lata={getData} uiui={props.uiui} rand={props.rand}/>}
+      {props.doIt ? "" : <Details lata={getData} uiui={props.uiui} rand={props.rand} ShareUrl={props.ShareUrl} arise={props.arise}/>}
 
       <motion.div
         className=" main-container d-flex"

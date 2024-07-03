@@ -14,9 +14,14 @@ export default async function Producer({ searchParams }) {
   console.log(data);
   const respl = await fetch("https://aniwatch-api-8fti.onrender.com/anime/home");
   const datal = await respl.json();
+
+  const ShareUrl = `https://animoon.me/producer?name=${fiki}`
+
+  const arise = `${fiki} Anime`
+
   return (
     <div>
-      <DynamicCate data={data} name={fiki} dev={hiki} datal={datal}/>
+      <DynamicCate data={data} name={fiki} dev={hiki} datal={datal} ShareUrl={ShareUrl} arise={arise}/>
     </div>
   );
 }

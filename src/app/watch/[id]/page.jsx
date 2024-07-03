@@ -156,6 +156,9 @@ export default async function page({ params, searchParams }) {
     datapp = [];
   }
 
+  const ShareUrl = `https://animoon.me/watch/${epId}`
+  const arise = 'this Episode'
+
   return (
     <div>
       <WatchAnime
@@ -172,6 +175,8 @@ export default async function page({ params, searchParams }) {
         dataj={dataj}
         gogoST={gogoST}
         datapp={datapp}
+        ShareUrl={ShareUrl}
+        arise={arise}
       />
     </div>
   );

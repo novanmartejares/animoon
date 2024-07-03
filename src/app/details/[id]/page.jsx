@@ -55,9 +55,13 @@ export default async function page({ params }) {
   const respp = await fetch("https://aniwatch-api-8fti.onrender.com/anime/home");
   const data = await respp.json();
 
+  const ShareUrl = `https://animoon.me/details/${idd}`
+
+  const arise = 'this Anime'
+
   return (
     <div>
-      <DynamicTopTen uiui={datp} data={data}/>
+      <DynamicTopTen uiui={datp} data={data} ShareUrl={ShareUrl} arise={arise}/>
     </div>
   );
 }

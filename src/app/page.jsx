@@ -93,7 +93,7 @@ export default async function page() {
   } catch (error) {
     dataUpcoming = [];
   }
-
+  const ShareUrl = `https://animoon.me/`
   return (
     <div>
       <DynamicHome
@@ -104,6 +104,7 @@ export default async function page() {
         dataComp={dataComp}
         dataLatest={dataLatest}
         dataNew={dataNew}
+        ShareUrl={ShareUrl}
         dataUpcoming={dataUpcoming}
       />
     </div>

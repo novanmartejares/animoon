@@ -22,9 +22,7 @@
   color: var(--theme);
 }
 .logo {
-  height: 45px;
   margin-inline: 0;
-  margin-top: -20px;
 }
 
 .search-wrapper input {
@@ -292,7 +290,7 @@
   .logo {
     height: 40px;
     margin-inline: 0;
-    margin-top: -10px;
+    margin-top: 10px;
   }
   .floating-search-wrapper {
     top: 50px;

@@ -168,7 +168,7 @@ export default function Homeo(props) {
         min={min}
         data={props.data}
       />
-      <Share />
+      <Share ShareUrl={props.ShareUrl}/>
       <DynamicFeature
         hours={hours}
         minute={minute}

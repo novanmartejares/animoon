@@ -71,7 +71,7 @@ export default function Details(props) {
   const startN = () => {
     window.location.href = localStorage.getItem(`Rewo-${gnt.info.id}`)
       ? `/watch/${localStorage.getItem(`Rewo-${gnt.info.id}`)}`
-      : `watchi/${gnt.info.id}`;
+      : `/watchi/${gnt.info.id}`;
   };
   return gnt?.info?.poster ? (
     <div className="details-container">
@@ -145,7 +145,7 @@ export default function Details(props) {
                   href={`${
                     localStorage.getItem(`Rewo-${gnt.info.id}`)
                       ? `/watch/${localStorage.getItem(`Rewo-${gnt.info.id}`)}`
-                      : `watchi/${gnt.info.id}`
+                      : `/watchi/${gnt.info.id}`
                   }`}
                   className="btn-primary hero-button"
                   onClick={() => startN()}
@@ -176,7 +176,7 @@ export default function Details(props) {
                 you can even watch {gnt.info.name} DUB in HD quality. You can
                 also find {gnt.moreInfo.studios} anime on AniMoon website.
               </p>
-              <Share style={{ padding: 0, margin: 0 }} />
+              <Share style={{ padding: 0, margin: 0 }} ShareUrl={props.ShareUrl} arise={props.arise}/>
             </div>
           </div>
         </div>

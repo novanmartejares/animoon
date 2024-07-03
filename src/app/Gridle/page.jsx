@@ -16,6 +16,8 @@ export default function GenreSidebar(props) {
           marginTop: 80 + "px",
           marginBottom: 0,
         }}
+        ShareUrl={props.ShareUrl}
+        arise={props.arise}
       />
       <div
         className=" main-container d-flex  "

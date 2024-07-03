@@ -916,6 +916,8 @@ export default function WatchAnime(props) {
             style={{
               paddingInline: 20,
             }}
+            ShareUrl={props.ShareUrl}
+            arise={props.arise}
           />
 
           <RecommendedTopTen

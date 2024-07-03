@@ -11,9 +11,13 @@ export default async function page({searchParams}) {
 
     const respl = await fetch("https://aniwatch-api-8fti.onrender.com/anime/home");
     const datal = await respl.json();
+    const ShareUrl = `https://animoon.me/genre?id=${cate}&name=${cate}`
+
+    const arise = `${cate} Anime`
+
   return (
     <div>
-      <DynamicCate data={data} name={cate} datal={datal}/>
+      <DynamicCate data={data} name={cate} datal={datal} ShareUrl={ShareUrl} arise={arise}/>
     </div>
   )
 }
