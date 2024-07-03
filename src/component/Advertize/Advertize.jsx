@@ -24,7 +24,7 @@ const Advertize = () => {
         setAdver("true");
       }
     }
-  }, [time.getMinutes(),time.getDate(),time.getHours()]);
+  }, [time.getMinutes(), time.getDate(), time.getHours()]);
   const [adver, setAdver] = useState(
     localStorage.getItem("truth") ? localStorage.getItem("truth") : "true"
   );
@@ -35,7 +35,7 @@ const Advertize = () => {
     localStorage.setItem("openH", time.getHours().toString());
     localStorage.setItem("truth", "false");
     window.open(
-      "https://www.highrevenuenetwork.com/d80kuuaz?key=ae42fe08189651eac2667e11c8e329a2"
+      "https://www.highrevenuenetwork.com/hnq4sfr7se?key=fa60dc3aeeb0a08aa0476e80986ad233"
     );
   }
 
