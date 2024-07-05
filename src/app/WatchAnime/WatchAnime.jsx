@@ -900,11 +900,11 @@ export default function WatchAnime(props) {
                       </span>
                     </p>
                     <p>
-                      AniMoon is the best site to watch{" "}
+                      KaidoX is the best site to watch{" "}
                       {props.datao.anime.info.name} SUB online, or you can even
                       watch {props.datao.anime.info.name} DUB in HD quality. You
                       can also find {props.datao.anime.moreInfo.studios} anime
-                      on AniMoon website.
+                      on KaidoX website.
                     </p>
                   </div>
                 </div>

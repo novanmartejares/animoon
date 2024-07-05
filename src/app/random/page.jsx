@@ -21,7 +21,7 @@ export default async function page({ params, searchParams }) {
     );
     const daty = await respo.json();
     datp = daty;
-    ShareUrl = `https://animoon.me/${idd}`
+    ShareUrl = `https://kaidox.xyz/${idd}`
   } else {
     const respt = await fetch(
       `https://aniwatch-api-8fti.onrender.com/anime/random?page=1`,{next:{revalidate: 60}}
@@ -35,7 +35,7 @@ export default async function page({ params, searchParams }) {
     );
     const daty = await respo.json();
     datp = daty;
-    ShareUrl = `https://animoon.me/${iddp}`
+    ShareUrl = `https://kaidox.xyz/${iddp}`
   }
   const respl = await fetch("https://aniwatch-api-8fti.onrender.com/anime/home");
   const data = await respl.json();

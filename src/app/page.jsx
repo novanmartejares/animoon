@@ -93,7 +93,7 @@ export default async function page() {
   } catch (error) {
     dataUpcoming = [];
   }
-  const ShareUrl = `https://animoon.me/`
+  const ShareUrl = `https://kaidox.xyz/`
   return (
     <div>
       <DynamicHome

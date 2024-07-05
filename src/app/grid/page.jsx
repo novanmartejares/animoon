@@ -10,7 +10,7 @@ export default async function page({searchParams}) {
     const data = await resp.json();
     const respl = await fetch("https://aniwatch-api-8fti.onrender.com/anime/home");
     const datal = await respl.json();
-    const SearchUrl = `https://animoon.me/grid?name=${cate}&heading=${fiki}`
+    const SearchUrl = `https://kaidox.xyz/grid?name=${cate}&heading=${fiki}`
 
     const arise = `${fiki} Anime`
 

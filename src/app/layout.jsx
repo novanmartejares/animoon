@@ -8,22 +8,17 @@ const DynamicNav = dynamic(() => import("@/app/Nav/Nav"), {
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata = {
-  title: "Animoon - Watch free Anime Online English Sub/Dub",
-  description: "Explores the world of Animes...",
-  verification: {
-    google: "x0aiWAODNGU-1UA2FXyORfyme9uWJir7mIMu8AMmLm4",
-  },
+  title: "KaidoX - Watch free Anime Online English Sub/Dub",
+  description: `KaidoX is the best site to watch
+                      Anime SUB online, or you can even
+                      watch Anime DUB in HD quality. You
+                      can also find UnderRated anime
+                      on KaidoX website.`,
 };
 
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <head>
-        <Script
-          type="text/javascript"
-          src="//pl23672011.highrevenuenetwork.com/35/7f/ae/357fae365ddc1b070a9615b318f066fa.js"
-        />
-      </head>
       <body className={inter.className}>
         <DynamicNav>{children}</DynamicNav>
       </body>

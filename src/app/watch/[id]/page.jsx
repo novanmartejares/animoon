@@ -156,7 +156,7 @@ export default async function page({ params, searchParams }) {
     datapp = [];
   }
 
-  const ShareUrl = `https://animoon.me/watch/${epId}`
+  const ShareUrl = `https://kaidox.xyz/watch/${epId}`
   const arise = 'this Episode'
 
   return (

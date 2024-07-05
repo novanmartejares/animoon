@@ -12,12 +12,15 @@ function ArtPlayer(props, { ...rest }) {
   }
   const [epSource, setEpSource] = useState(null);
   const [kpSource, setKpSource] = useState(null);
+  const [dpSource, setDpSource] = useState(null);
   const [uri, setUri] = useState("");
   const [urt, setUrt] = useState("");
   const [newUrl, setNewUrl] = useState("");
   const [ingo, setIngo] = useState("");
 
   useEffect(() => {
+    props.dataj &&
+    props.dataj.results &&
     props.dataj.results.streamingInfo.map((i) => {
       if (i?.value?.decryptionResult?.server === "HD-1") {
         if (i?.value?.decryptionResult?.type === props.sub) {
@@ -26,6 +29,7 @@ function ArtPlayer(props, { ...rest }) {
         }
       }
     });
+    setDpSource(props.dataj);
     props.data.sources &&
       props.data.sources.map((source) => {
         setUrt(source.url);
@@ -39,8 +43,10 @@ function ArtPlayer(props, { ...rest }) {
           setUri(source.url);
         }
       });
-    console.log(props.datag);
-  }, [props.data, props.datag]);
+  }, [props.data, props.datag, props.dataj]);
+
+
+  console.log('1',newUrl);
   let EngFile = "";
   kpSource &&
     kpSource.tracks &&
@@ -197,14 +203,14 @@ function ArtPlayer(props, { ...rest }) {
     if (getInstance && typeof getInstance === "function") {
       getInstance(art);
     }
+    if (!localStorage.getItem(`new-${props.epId}`)) {
+      localStorage.setItem(`new-${props.epId}`,art.url)
+    }
     const dltr = localStorage.getItem("artplayer_settings");
     if (dltr) {
-      let currentT = JSON.parse(dltr).times[!ingo ? uri : newUrl]
-        ? JSON.parse(dltr).times[!ingo ? uri : newUrl]
+      let currentT = JSON.parse(dltr).times[localStorage.getItem(`new-${props.epId}`)]
+        ? JSON.parse(dltr).times[localStorage.getItem(`new-${props.epId}`)]
         : 0;
-      if (!localStorage.getItem("speciality")) {
-        localStorage.setItem("speciality", currentT.toString());
-      }
       art.on("ready", () => {
         art.currentTime = currentT;
 
@@ -228,6 +234,7 @@ function ArtPlayer(props, { ...rest }) {
           console.log("art.switch yehhh!!");
         }
       }
+
       if (props.gogoServe === "Anify") {
         art.switchUrl(newUrl);
         setIngo("yes");
