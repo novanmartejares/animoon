@@ -54,7 +54,7 @@ export default function Share(props) {
     <div className="share-app d-flex a-center f-poppins" style={props?.style}>
       <Image width={50} height={50} src={share} alt="share" />
       <div>
-        <p className="primary">Share {props.arise ? props.arise : 'KaidoX'}</p>
+        <p className="primary">Share {props.arise ? props.arise : 'Animoon'}</p>
         <p className="secoi">to your friends</p>
       </div>{" "}
       <WhatsappShareButton url={props.ShareUrl}>

@@ -15,7 +15,7 @@ export default async function Producer({ searchParams }) {
   const respl = await fetch("https://aniwatch-api-8fti.onrender.com/anime/home");
   const datal = await respl.json();
 
-  const ShareUrl = `https://kaidox.xyz/producer?name=${fiki}`
+  const ShareUrl = `https://animoon.me/producer?name=${fiki}`
 
   const arise = `${fiki} Anime`
 
