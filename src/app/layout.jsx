@@ -2,6 +2,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import dynamic from "next/dynamic";
 import Script from "next/script";
+import { Analytics } from '@vercel/analytics/react';
 const DynamicNav = dynamic(() => import("@/app/Nav/Nav"), {
   ssr: false,
 });
@@ -21,6 +22,7 @@ export default function RootLayout({ children }) {
     <html lang="en">
       <body className={inter.className}>
         <DynamicNav>{children}</DynamicNav>
+        <Analytics />
       </body>
     </html>
   );
