@@ -7,7 +7,7 @@ import { FaHistory } from "react-icons/fa";
 const MyComponent = () => {
   const [data, setData] = useState([]);
   const datal = [];
-  const arr = localStorage.getItem("Recent-animes").split(",");
+  const arr = localStorage.getItem("Recent-animes") && localStorage.getItem("Recent-animes").split(",");
   arr.map((ii) => {
     let obj = {}; // Create a new object for each iteration
     let newObj = {}; // Create a new object for each iteration
