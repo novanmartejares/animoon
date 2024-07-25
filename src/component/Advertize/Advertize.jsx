@@ -4,50 +4,41 @@ import "./advertize.css";
 
 const Advertize = () => {
   const [time, setTime] = useState(new Date());
-  const [adver, setAdver] = useState(
-    localStorage.getItem("truth") ? localStorage.getItem("truth") : "true"
-  );
+  const [adver, setAdver] = useState("false");
 
   useEffect(() => {
     const interval = setInterval(() => setTime(new Date()), 1000);
 
-    const openT = parseInt(localStorage.getItem("openT")) || 0;
-    const openD = parseInt(localStorage.getItem("openD")) || 0;
-    const openH = parseInt(localStorage.getItem("openH")) || 0;
+    const lastDisplay = localStorage.getItem("lastDisplay");
+    const lastDate = localStorage.getItem("lastDate");
+    const lastHour = localStorage.getItem("lastHour");
 
-    const currentMinutes = time.getMinutes();
     const currentDate = time.getDate();
-    const currentHours = time.getHours();
+    const currentHour = time.getHours();
 
-    const targetMinutes = (openT + 5) % 60;
-
-    const isSameDate = openD === currentDate;
-    const isSameHour = openH === currentHours;
-    const isMinutesConditionMet =
-      openT > 55
-        ? !isSameHour
-        : currentMinutes > targetMinutes;
-
-    console.log(
-      `Current Minutes: ${currentMinutes}, Target Minutes: ${targetMinutes}`
+    const lastDisplayDate = new Date(lastDisplay);
+    const minutesSinceLastDisplay = Math.floor(
+      (time - lastDisplayDate) / (1000 * 60)
     );
-    console.log(`Open Date: ${openD}, Current Date: ${currentDate}`);
-    console.log(`Open Hour: ${openH}, Current Hour: ${currentHours}`);
-    console.log(`Minutes Condition Met: ${isMinutesConditionMet}`);
 
-    if (isSameDate && isSameHour && !isMinutesConditionMet) {
-      setAdver("false");
-    } else {
+    const shouldShowAd =
+      minutesSinceLastDisplay >= 5 ||
+      currentDate !== parseInt(lastDate) ||
+      currentHour !== parseInt(lastHour);
+
+    if (shouldShowAd) {
       setAdver("true");
+    } else {
+      setAdver("false");
     }
 
     return () => clearInterval(interval);
   }, [time]);
 
   function Newtab() {
-    localStorage.setItem("openT", time.getMinutes().toString());
-    localStorage.setItem("openD", time.getDate().toString());
-    localStorage.setItem("openH", time.getHours().toString());
+    localStorage.setItem("lastDisplay", new Date().toISOString());
+    localStorage.setItem("lastDate", time.getDate().toString());
+    localStorage.setItem("lastHour", time.getHours().toString());
     localStorage.setItem("truth", "false");
     window.open(
       "https://www.highrevenuenetwork.com/hnq4sfr7se?key=fa60dc3aeeb0a08aa0476e80986ad233"
