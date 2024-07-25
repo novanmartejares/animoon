@@ -14,18 +14,38 @@ const MyComponent = () => {
 
     const id = ii;
     obj.id = id;
-    obj.poster = localStorage.getItem(`imgUra-${id}`);
-    obj.duration = localStorage.getItem(`duran-${id}`);
-    obj.rating = localStorage.getItem(`ratUra-${id}`);
-    newObj.sub = localStorage.getItem(`subEp-${id}`);
-    newObj.dub = localStorage.getItem(`dubEp-${id}`);
+    obj.poster = localStorage.getItem(`imgUra-${id}`)
+      ? localStorage.getItem(`imgUra-${id}`)
+      : "";
+    obj.duration = localStorage.getItem(`duran-${id}`)
+      ? localStorage.getItem(`duran-${id}`)
+      : "";
+    obj.rating = localStorage.getItem(`ratUra-${id}`)
+      ? localStorage.getItem(`ratUra-${id}`)
+      : "";
+    newObj.sub = localStorage.getItem(`subEp-${id}`)
+      ? localStorage.getItem(`subEp-${id}`)
+      : "";
+    newObj.dub = localStorage.getItem(`dubEp-${id}`)
+      ? localStorage.getItem(`dubEp-${id}`)
+      : "";
     obj.episodes = newObj;
     obj.Secds = JSON.parse(localStorage.getItem("artplayer_settings")).times[
       localStorage.getItem(`newW-${localStorage.getItem(`Rewo-${id}`)}`)
-    ];
-    obj.name = localStorage.getItem(`nameUra-${id}`);
-    obj.episodeId = localStorage.getItem(`Rewo-${id}`);
-    obj.epNo = localStorage.getItem(`epNumo-${id}`);
+    ]
+      ? JSON.parse(localStorage.getItem("artplayer_settings")).times[
+          localStorage.getItem(`newW-${localStorage.getItem(`Rewo-${id}`)}`)
+        ]
+      : "";
+    obj.name = localStorage.getItem(`nameUra-${id}`)
+      ? localStorage.getItem(`nameUra-${id}`)
+      : "";
+    obj.episodeId = localStorage.getItem(`Rewo-${id}`)
+      ? localStorage.getItem(`Rewo-${id}`)
+      : "";
+    obj.epNo = localStorage.getItem(`epNumo-${id}`)
+      ? localStorage.getItem(`epNumo-${id}`)
+      : "";
     datal.push(obj); // Add each obj to the datal array
     console.log(obj);
   });
