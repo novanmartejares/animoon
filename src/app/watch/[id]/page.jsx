@@ -1,6 +1,22 @@
 import React from "react";
 import WatchAnime from "../../WatchAnime/WatchAnime";
 
+export async function generateMetadata({ params }) {
+  const respo = await fetch(
+    `https://aniwatch-api-8fti.onrender.com/anime/info?id=${params.id}`,
+    { next: { revalidate: 60 } }
+  );
+  const daty = await respo.json();
+  return {
+    title: `Watch ${daty.anime.info.name} English Sub/Dub online free on Animoon.me`,
+    description: `Animoom is the best site to watch
+                      ${daty.anime.info.name} SUB online, or you can even
+                      watch ${daty.anime.info.name} DUB in HD quality. You
+                      can also watch under rated anime
+                      on Animoon website.`,
+  };
+}
+
 export default async function page({ params, searchParams }) {
   const epis = searchParams.ep;
 
@@ -72,43 +88,6 @@ export default async function page({ params, searchParams }) {
   } catch (error) {
     datao = [];
   }
-  const arr =
-    "the-demon-slayer-kimetsu-no-yaiba-mugen-train-arc-tv-17914?ep=84111,shinkalion-change-the-world-19150?ep=123247,the-many-sides-of-voice-actor-radio-19121?ep=123284,garouden-the-way-of-the-lone-wolf-19165?ep=124503,remonster-19123?ep=123153,wind-breaker-19136?ep=124211,wind-breaker-19136?ep=123718,classroom-of-the-elite-iii-18880?ep=119983,classroom-of-the-elite-iii-18880?ep=114619,amagi-brilliant-park-wakuwaku-mini-theater-rakugaki-backstage-5174?ep=40728,the-irregular-at-magic-high-school-season-3-19142?ep=123216,overlord-iii-553?ep=10897,assault-lily-bouquet-5584?ep=55034,assault-lily-bouquet-5584?ep=55032,red-data-girl-5354?ep=41379,red-data-girl-5354?ep=41385,the-vexations-of-a-shut-in-vampire-princess-18589?ep=107906,train-to-the-end-of-the-world-special-19197?ep=125456,ayakashi-triangle-special-recap-18360?ep=99784,naruto-shippuden-355?ep=7916,the-night-before-special-the-long-awaited-utopia-7790?ep=108989,the-irregular-at-magic-high-school-season-3-19142?ep=123872,suzumes-doorlocking-18190?ep=100501";
-  const endpoints = arr.split(",");
-  const baseURL = "https://aniwatch-api-8fti.onrender.com/anime/info?id=";
-
-  async function fetchData(endpoint) {
-    try {
-      const response = await fetch(baseURL + endpoint);
-      if (!response.ok) {
-        throw new Error(
-          `Failed to fetch data from ${endpoint}: ${response.status}`
-        );
-      }
-      const data = await response.json();
-      return data;
-    } catch (error) {
-      console.error(error);
-      return null;
-    }
-  }
-
-  // Fetch data from all endpoints
-  async function fetchAllData() {
-    const allData = {};
-    for (const endpoint of endpoints) {
-      const data = await fetchData(endpoint);
-      if (data) {
-        allData[endpoint] = data;
-      }
-    }
-    return allData;
-  }
-
-  // Call the function and handle the result
-  fetchAllData().then((allData) => {
-    console.log(allData);
-  });
 
   let datau = [];
   try {

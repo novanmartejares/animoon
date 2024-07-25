@@ -7,6 +7,20 @@ import WatchList from "@/component/WatchList/WatchList";
 import Settings from "@/component/Settings/Settings";
 import Notification from "@/component/Notification/Notification"
 
+export async function generateMetadata({ params }) {
+  const idd = "Anime";
+
+  return {
+    title: `Watch ${idd} English Sub/Dub online free on Animoon.me , free Anime Streaming`,
+    description: `Animoom is the best site to watch
+                      ${idd} SUB online, or you can even
+                      watch ${idd} DUB in HD quality. You
+                      can also watch under rated anime
+                      on Animoon website.`,
+  };
+}
+
+
 export default async function page({ params, searchParams }) {
   const param = params.id;
   const slabId = param.replace("-", " ");
