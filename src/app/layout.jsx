@@ -1,10 +1,10 @@
 import { Inter } from "next/font/google";
 import "./globals.css";
 import dynamic from "next/dynamic";
+import { ClerkProvider } from "@clerk/nextjs";
 import Script from "next/script";
-import { Analytics } from '@vercel/analytics/react';
-const DynamicNav = dynamic(() => import("@/app/Nav/Nav"), {
-  ssr: false,
+import { Analytics } from "@vercel/analytics/react";
+const DynamicNavic = dynamic(() => import("@/app/Navic/page"), {
 });
 const inter = Inter({ subsets: ["latin"] });
 
@@ -17,13 +17,18 @@ export const metadata = {
                       on Animoon website.`,
 };
 
-export default function RootLayout({ children }) {
+export default async function RootLayout({ children }) {
+
   return (
-    <html lang="en">
-      <body className={inter.className}>
-        <DynamicNav>{children}</DynamicNav>
-        <Analytics />
-      </body>
-    </html>
+    <ClerkProvider>
+      <html lang="en">
+        <body className={inter.className}>
+          <DynamicNavic>
+            {children}
+          </DynamicNavic>
+          <Analytics />
+        </body>
+      </html>
+    </ClerkProvider>
   );
 }

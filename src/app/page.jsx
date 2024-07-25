@@ -53,7 +53,7 @@ export default async function page() {
   let dataComp = [];
   try {
     const resp = await fetch(
-      "https://aniwatch-api-8fti.onrender.com/anime/most-popular?page=1",
+      "https://aniwatch-api-8fti.onrender.com/anime/completed?page=1",
       { next: { revalidate: 3600 } }
     );
     dataComp = await resp.json();

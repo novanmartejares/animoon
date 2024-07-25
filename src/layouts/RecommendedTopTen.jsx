@@ -19,7 +19,17 @@ export default function RecommendedTopTen(props) {
 
   return (
     <>
-      {props.doIt ? "" : <Details lata={getData} uiui={props.uiui} rand={props.rand} ShareUrl={props.ShareUrl} arise={props.arise}/>}
+      {props.doIt ? (
+        ""
+      ) : (
+        <Details
+          lata={getData}
+          uiui={props.uiui}
+          rand={props.rand}
+          ShareUrl={props.ShareUrl}
+          arise={props.arise}
+        />
+      )}
 
       <motion.div
         className=" main-container d-flex"
@@ -31,8 +41,8 @@ export default function RecommendedTopTen(props) {
         }
       >
         <div className="sidebar-wrapper d-flex-fd-column">
-          <Genre data={props.data}/>
-          <TopTenAnime data={props.data}/>
+          <Genre data={props.data} />
+          <TopTenAnime data={props.data} />
         </div>
         <div
           className=" collections-wrapper d-flex  "
@@ -40,10 +50,18 @@ export default function RecommendedTopTen(props) {
             window.innerWidth < 1081 ? { flexDirection: "column-reverse" } : {}
           }
         >
-          {(props.doIt ? !(props?.datap?.recommendedAnimes) : !(dlta && dlta.length > 0)) ? (
+          {(
+            props.doIt
+              ? !props?.datap?.recommendedAnimes
+              : !(dlta && dlta.length > 0)
+          ) ? (
             <LoadingSpinner />
           ) : (
-            <AnimeCollection collectionName="Recommended for you" data={props.doIt ? props.datap?.recommendedAnimes : dlta} />
+            <AnimeCollection
+              collectionName="Recommended for you"
+              data={props.doIt ? props.datap?.recommendedAnimes : dlta}
+              isInGrid={props.doIt ? "" : "true"}
+            />
           )}
         </div>
       </motion.div>

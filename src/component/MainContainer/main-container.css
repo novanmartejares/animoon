@@ -6,11 +6,29 @@
   .collections-wrapper {
     gap: 40px;
   }
-  .anime-collection-wrapper h2 {
+  .heddR {
+    display: flex;
+    align-items: center;
+  }
+  .heddH2 {
     padding-block: 30px;
     color: var(--theme);
     font-size: 20px;
     font-weight: 700;
+    width: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: start;
+  }
+  .view-more-linkop {
+    display: flex;
+    align-items: center;
+    justify-content: end;
+    gap: 5px;
+    width: 50%;
+  }
+  .view-more-linkop:hover {
+    color: var(--theme);
   }
   .collections-wrapper {
     width: calc(75% - 1rem);

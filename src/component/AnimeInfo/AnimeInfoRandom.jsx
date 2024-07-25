@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import LoadingSpinner from "@/component/loadingSpinner";
 import "./AnimeInfo.css";
 import Link from "next/link";
@@ -13,21 +13,109 @@ import {
 } from "react-icons/fa";
 import Share from "../Share/Share";
 import useAnime from "@/hooks/useAnime";
-import Image from "next/image";
 import { AiFillAudio } from "react-icons/ai";
 import { useRouter } from "next/navigation";
+
 export default function Details(props) {
   let [counter, setCounter] = useState(0);
   const Router = useRouter();
+  const [data, setData] = useState([]);
+  const [click, setClick] = useState("");
+  const [isOpen, setIsOpen] = useState(false);
+  const dropdownRef = useRef(null);
 
-  // Function is called everytime increment button is clicked
-  const handleClick1 = () => {
-    // Counter state is incremented
-    setCounter(counter + 1);
+  const toggleDropdown = () => {
+    setIsOpen(!isOpen);
   };
+
+  const handleOptionClick = (option) => {
+    console.log(`Selected option: ${option}`);
+    setIsOpen(false); // Close the dropdown after selection
+
+    // Create a new object with the selected data and timestamp
+    const newObj = {
+      id: props.uiui.anime.info.id,
+      poster: props.uiui.anime.info.poster,
+      duration: props.uiui.anime.info.stats.duration,
+      rating: props.uiui.anime.info.stats.rating,
+      episodes: {
+        sub: props.uiui.anime.info.stats.episodes.sub,
+        dub: props.uiui.anime.info.stats.episodes.dub,
+      },
+      name: props.uiui.anime.info.name,
+      timestamp: new Date().toISOString(), // Add current time in ISO format
+    };
+
+    // Define option keys
+    const options = [
+      "Watching",
+      "On-Hold",
+      "Plan to Watch",
+      "Dropped",
+      "Completed",
+    ];
+
+    // Remove the entry from all options' local storage if it exists
+    options.forEach((opt) => {
+      const key = `animeData_${opt}`;
+      let data = JSON.parse(localStorage.getItem(key)) || [];
+      data = data.filter((item) => item.id !== newObj.id);
+      localStorage.setItem(key, JSON.stringify(data));
+    });
+
+    // Create dynamic key for the current option
+    const currentKey = `animeData_${option}`;
+
+    // Retrieve existing data from local storage for the current option
+    let currentData = JSON.parse(localStorage.getItem(currentKey)) || [];
+
+    // Check if the id already exists in the current option's data
+    const index = currentData.findIndex((item) => item.id === newObj.id);
+
+    if (index !== -1) {
+      // Update existing entry if it exists
+      currentData[index] = newObj;
+    } else {
+      // Add new entry if it does not already exist
+      currentData.push(newObj);
+    }
+
+    // Store the updated current data back to local storage
+    localStorage.setItem(currentKey, JSON.stringify(currentData));
+  };
+
+  const handleClickOutside = (event) => {
+    if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+      setIsOpen(false);
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
+  const { getRandomAnime } = useAnime();
+  const fetchLub = async () => {
+    const dat = await getRandomAnime();
+    console.log("Animex", dat);
+    setData(dat);
+  };
+
+  useEffect(() => {
+    fetchLub();
+  }, []);
+
+  const handleClick1 = () => {
+    setClick("yokaso");
+    setCounter(counter + 1);
+    window.location.href = `/random?rand=0`;
+  };
+
   let y = [];
   let x = counter;
-
   let j = y.concat(x);
   console.log("YY", j);
 
@@ -35,6 +123,7 @@ export default function Details(props) {
   if (props.uiui) {
     props.lata(props?.uiui?.recommendedAnimes);
   }
+
   const [descIsCollapsed, setDescIsCollapsed] = useState(true);
   const genre = gnt?.moreInfo?.genres?.map((genre) => {
     return (
@@ -57,13 +146,12 @@ export default function Details(props) {
   });
 
   const studios = gnt?.moreInfo?.studios;
-
   const synonyms = gnt?.info.name;
+
   const details = () => {
     if (props.rand) {
       window.location.href = `/${gnt.info.id}`;
     } else {
-      Router.push("/working");
     }
   };
 
@@ -73,6 +161,7 @@ export default function Details(props) {
       ? `/watch/${localStorage.getItem(`Rewo-${gnt.info.id}`)}`
       : `/watchi/${gnt.info.id}`;
   };
+
   return gnt?.info?.poster ? (
     <div className="details-container">
       <div className="details-header">
@@ -83,19 +172,6 @@ export default function Details(props) {
             alt="pop"
             isAnimated={false}
           />
-          <Link
-            href={{
-              pathname: `/random?rand=${
-                counter < 18 ? counter : (counter = 0)
-              }`,
-            }}
-            as={`/random?rand=${counter < 18 ? counter : (counter = 0)}`}
-            className="btn-tertiary"
-          >
-            <h1 onClick={handleClick1} className="GomenGomen">
-              Randomize
-            </h1>
-          </Link>
           <div className="anime-details d-flex">
             <img
               className="anime-details-poster"
@@ -118,7 +194,6 @@ export default function Details(props) {
 
               <div className="flex gap-1 items-center">
                 <div className="flex gap-1">
-                  {" "}
                   <div className="rat">{gnt.info.stats.rating}</div>
                   <div className="qual">{gnt.info.stats.quality}</div>
                   <div className="subE">
@@ -127,7 +202,6 @@ export default function Details(props) {
                   </div>
                   {gnt.info.stats.episodes.dub ? (
                     <div className="dubE">
-                      {" "}
                       <AiFillAudio size={14} />{" "}
                       {gnt.info.stats.episodes.dub || "Unknown"}
                     </div>
@@ -152,13 +226,36 @@ export default function Details(props) {
                 >
                   <FaPlayCircle size={12} /> Watch Now
                 </Link>
-                <button
-                  className="btn-secondary  hero-button"
-                  onClick={() => details()}
-                >
-                  {props.rand ? "Details" : "Add to List"}
-                  <FaPlus size={12} />
-                </button>
+                <div className="dropdown-container" ref={dropdownRef}>
+                  <button
+                    className="btn-secondary hero-button"
+                    onClick={() => {
+                      details();
+                      toggleDropdown();
+                    }}
+                  >
+                    {props.rand ? "Details" : "Add to List"}
+                    <FaPlus size={12} />
+                  </button>
+                  {isOpen && (
+                    <ul className="dropdown-menu">
+                      {[
+                        "Watching",
+                        "On-Hold",
+                        "Plan to Watch",
+                        "Dropped",
+                        "Completed",
+                      ].map((option) => (
+                        <li
+                          key={option}
+                          onClick={() => handleOptionClick(option)}
+                        >
+                          {option}
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </div>
               </div>
               <p>
                 {descIsCollapsed
@@ -176,7 +273,11 @@ export default function Details(props) {
                 you can even watch {gnt.info.name} DUB in HD quality. You can
                 also find {gnt.moreInfo.studios} anime on AniMoon website.
               </p>
-              <Share style={{ padding: 0, margin: 0 }} ShareUrl={props.ShareUrl} arise={props.arise}/>
+              <Share
+                style={{ padding: 0, margin: 0 }}
+                ShareUrl={props.ShareUrl}
+                arise={props.arise}
+              />
             </div>
           </div>
         </div>
@@ -217,18 +318,14 @@ export default function Details(props) {
               {genre}
             </p>
           </div>
-          <div className="details-header-studio">
-            <p>
-              <b>Producers: </b>
-              {producers}
-            </p>
-            <p>
-              <b>Studios: </b>
-              <Link href={`/producer?name=${gnt.moreInfo.studios}`}>
-                {studios}
-              </Link>
-            </p>
-          </div>
+          <p>
+            <b>Producers:</b>
+            {producers}
+          </p>
+          <p>
+            <b>Studios:</b>
+            {studios}
+          </p>
         </div>
       </div>
     </div>

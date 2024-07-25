@@ -1,15 +1,18 @@
 "use client";
 import Artplayer, { html } from "artplayer";
 import artplayerPluginHlsQuality from "artplayer-plugin-hls-quality";
+import artplayerPluginChapter from "artplayer-plugin-chapter";
 import Hls from "hls.js";
 import React, { useRef, useEffect, useState } from "react";
 import "@/component/artplayer.css";
+import useAnime from "@/hooks/useAnime";
 
 function ArtPlayer(props, { ...rest }) {
   const artRef = useRef(null);
   function getInstance() {
     (art) => console.info(art);
   }
+  const { getAnimeInfo } = useAnime();
   const [epSource, setEpSource] = useState(null);
   const [kpSource, setKpSource] = useState(null);
   const [dpSource, setDpSource] = useState(null);
@@ -19,43 +22,47 @@ function ArtPlayer(props, { ...rest }) {
   const [ingo, setIngo] = useState("");
 
   useEffect(() => {
-    props.dataj &&
-    props.dataj.results &&
-    props.dataj.results.streamingInfo.map((i) => {
-      if (i?.value?.decryptionResult?.server === "HD-1") {
-        if (i?.value?.decryptionResult?.type === props.sub) {
+    if (props.dataj && props.dataj.results) {
+      props.dataj.results.streamingInfo.forEach((i) => {
+        if (
+          i?.value?.decryptionResult?.server === "HD-1" &&
+          i?.value?.decryptionResult?.type === props.sub
+        ) {
           setIngo("yes");
           setNewUrl(i.value.decryptionResult.link);
         }
-      }
-    });
+      });
+    }
     setDpSource(props.dataj);
-    props.data.sources &&
-      props.data.sources.map((source) => {
+
+    if (props.data.sources) {
+      props.data.sources.forEach((source) => {
         setUrt(source.url);
       });
+    }
     setKpSource(props.data);
     setEpSource(props.datag);
-    props.datag &&
-      props.datag.sources &&
-      props.datag.sources.map((source) => {
+
+    if (props.datag && props.datag.sources) {
+      props.datag.sources.forEach((source) => {
         if (source.quality === "1080p") {
           setUri(source.url);
         }
       });
+    }
   }, [props.data, props.datag, props.dataj]);
 
-
-  console.log('1',newUrl);
+  console.log("1", props.Kaid);
   let EngFile = "";
-  kpSource &&
-    kpSource.tracks &&
-    kpSource.tracks.map((i) => {
-      if ((i.kind === "captions") & i.default) {
+  if (kpSource && kpSource.tracks) {
+    kpSource.tracks.forEach((i) => {
+      if (i.kind === "captions" && i.default) {
         EngFile = i.file;
       }
-    }),
-    console.log(uri);
+    });
+  }
+  console.log(uri);
+
   function playM3u8(video, url, art) {
     if (Hls.isSupported()) {
       if (art.hls) art.hls.destroy();
@@ -70,28 +77,117 @@ function ArtPlayer(props, { ...rest }) {
       art.notice.show = "Unsupported playback format: m3u8";
     }
   }
+
+  let FinalUrl = uri;
+  if (!FinalUrl) {
+    setTimeout(() => {
+      FinalUrl = newUrl;
+    }, 5000);
+  }
+  if (props.gogoServe === "Anify") {
+    FinalUrl = newUrl;
+  }
+
+  function setPlat() {
+    localStorage.setItem(`newW-${props.epId}`, FinalUrl);
+  }
+  if (!localStorage.getItem(`newFa-${props.epId}`)) {
+    setTimeout(setPlat, 10000);
+  }
+  localStorage.setItem(`subEp-${props.anId}`, props.subEp);
+  localStorage.setItem(`dubEp-${props.anId}`, props.dubEp);
+  localStorage.setItem(`epNumo-${props.anId}`, props.epNum);
+  localStorage.setItem(`subLang-${props.anId}`, props.sub);
+  localStorage.setItem(`subEp-${props.epId}`, props.sub);
+  localStorage.setItem(`imgUra-${props.anId}`, props.imgUra);
+  localStorage.setItem(`ratUra-${props.anId}`, props.ratUra);
+  localStorage.setItem(`dura-${props.anId}`, props.durEp);
+  localStorage.setItem(`nameUra-${props.anId}`, props.nameUra);
+  localStorage.setItem(`subLang`, props.sub);
+
+  console.log("1000$", FinalUrl);
+  const dltt = localStorage.getItem("artplayer_settings");
+  const obj = {};
+  obj.anId = props.anId;
+  obj.epId = props.epId;
+  obj.epNum = props.epNum;
+  obj.sub = props.sub;
+  obj.duration = dltt
+    ? JSON.parse(dltt).times[localStorage.getItem(`newW-${props.epId}`)]
+      ? JSON.parse(dltt).times[localStorage.getItem(`newW-${props.epId}`)]
+      : ""
+    : "";
+
+  const m3u8 = localStorage.getItem("recent-episodes")
+    ? localStorage.getItem("recent-episodes").split(",")
+    : [];
+  if (m3u8) {
+    m3u8.forEach((mm) => {
+      console.log(
+        "raam raam",
+        localStorage.getItem(`newW-${mm}`)
+          ? localStorage.getItem(`newW-${mm}`)
+          : ""
+      );
+    });
+  }
+
+  if (dltt) {
+    if (JSON.parse(dltt).times[uri ? uri : newUrl]) {
+      if (localStorage.getItem("recent-episodes")) {
+        let vals = localStorage.getItem("recent-episodes").split(",");
+        if (!vals.includes(props.epId)) {
+          vals.push(props.epId);
+          localStorage.setItem("recent-episodes", vals.join(","));
+        }
+      } else {
+        localStorage.setItem("recent-episodes", props.epId);
+      }
+    }
+  }
+
+  if (localStorage.getItem("Recent-animes")) {
+    let vals = localStorage.getItem("Recent-animes").split(",");
+    if (vals.includes(props.anId)) {
+      vals = vals.filter((val) => val !== props.anId);
+    }
+    vals.unshift(props.anId);
+    localStorage.setItem("Recent-animes", vals.join(","));
+  } else {
+    localStorage.setItem("Recent-animes", props.anId);
+  }
+
+  if (dltt) {
+    if (JSON.parse(dltt).times[!ingo ? uri : newUrl]) {
+      if (localStorage.getItem(props.anId.toString())) {
+        console.log(localStorage.getItem(props.anId.toString()));
+        let vals = localStorage.getItem(props.anId.toString()).split(",");
+        localStorage.setItem(`Rewatch-${props.anId.toString()}`, props.epId);
+        if (!vals.includes(props.epId.toString())) {
+          vals.push(props.epId.toString());
+          localStorage.setItem(props.anId.toString(), vals.join(","));
+        }
+      } else {
+        localStorage.setItem(props.anId.toString(), props.epId.toString());
+      }
+    }
+  }
+
   useEffect(() => {
     const art = new Artplayer({
       title: "hahahaha",
       container: ".artplayer-app",
-      url: uri,
+      url: FinalUrl,
       type: "m3u8",
       plugins: [
         artplayerPluginHlsQuality({
-          // Show quality in control
           control: false,
-
-          // Show quality in setting
           setting: uri ? false : true,
-
-          // Get the resolution text from level
           getResolution: (level) => level.height + "P",
-
-          // I18n
           title: "Quality",
           auto: "Auto",
-          default: "1080",
         }),
+
       ],
       customType: {
         m3u8: playM3u8,
@@ -154,25 +250,43 @@ function ArtPlayer(props, { ...rest }) {
             {
               default: true,
               html: "English",
-              url: uri ? "" : EngFile ? EngFile : "",
+              url: EngFile,
+              switch: true,
+              onSwitch: function (item) {
+                art.subtitle.switch(item.url, {
+                  name: "English",
+                  type: "vtt",
+                  encoding: "utf-8",
+                });
+                return item.switch;
+              },
             },
           ],
           onSelect: function (item) {
-            art.subtitle.switch(item.url, {
-              name: item.html,
-            });
+            console.log("Subtitle: ", item.html);
+            return item.html;
+          },
+        },
+        {
+          html: "More",
+          width: 250,
+          selector: [
+            {
+              default: true,
+              html: "720P",
+              url: uri,
+            },
+            {
+              html: "1080P",
+              url: uri,
+            },
+          ],
+          onSelect: function (item) {
+            art.switchQuality(item.url);
             return item.html;
           },
         },
       ],
-      subtitle: {
-        url: uri ? "" : EngFile ? EngFile : "",
-        style: {
-          color: "#fff",
-          fontSize: "20px",
-        },
-        encoding: "utf-8",
-      },
       highlight: [
         {
           time: parseInt(props.data?.intro?.start),
@@ -194,62 +308,43 @@ function ArtPlayer(props, { ...rest }) {
       icons: {
         loading: '<img src="https://artplayer.org/assets/img/ploading.gif">',
         state:
-          '<img width="150" heigth="150" src="https://artplayer.org/assets/img/state.svg">',
+          '<img width="150" height="150" src="https://artplayer.org/assets/img/state.svg">',
         indicator:
-          '<img width="16" heigth="16" src="https://artplayer.org/assets/img/indicator.svg">',
+          '<img width="16" height="16" src="https://artplayer.org/assets/img/indicator.svg">',
       },
     });
 
     if (getInstance && typeof getInstance === "function") {
       getInstance(art);
     }
-    if (!localStorage.getItem(`new-${props.epId}`)) {
-      localStorage.setItem(`new-${props.epId}`,art.url)
-    }
+
     const dltr = localStorage.getItem("artplayer_settings");
     if (dltr) {
-      let currentT = JSON.parse(dltr).times[localStorage.getItem(`new-${props.epId}`)]
-        ? JSON.parse(dltr).times[localStorage.getItem(`new-${props.epId}`)]
+      let currentT = JSON.parse(dltr).times[
+        localStorage.getItem(`newW-${props.epId}`)
+      ]
+        ? JSON.parse(dltr).times[localStorage.getItem(`newW-${props.epId}`)]
         : 0;
       art.on("ready", () => {
         art.currentTime = currentT;
-
+        localStorage.setItem(`duran-${props.anId}`, art.duration);
         if (props.onn1 === "On") {
           art.play();
         } else {
           art.pause();
         }
       });
-      if (!uri) {
-        if (!art.url) {
-          props.dataj.results.streamingInfo.map((i) => {
-            if (i?.value?.decryptionResult?.server === "HD-1") {
-              if (i?.value?.decryptionResult?.type === props.sub) {
-                art.switchUrl(i.value.decryptionResult.link);
-                setIngo("yes");
-                setNewUrl(i.value.decryptionResult.link);
-              }
-            }
-          });
-          console.log("art.switch yehhh!!");
-        }
-      }
-
-      if (props.gogoServe === "Anify") {
-        art.switchUrl(newUrl);
-        setIngo("yes");
-      }
       art.on("video:timeupdate", () => {
         if (props.onn3 === "On") {
           if (
-            (art.currentTime > props.data?.intro?.start) &
-            (art.currentTime < props.data?.intro?.end)
+            art.currentTime > props.data?.intro?.start &&
+            art.currentTime < props.data?.intro?.end
           ) {
             art.seek = props.data?.intro?.end;
           }
           if (
-            (art.currentTime > props.data?.outro?.start) &
-            (art.currentTime < props.data?.outro?.end)
+            art.currentTime > props.data?.outro?.start &&
+            art.currentTime < props.data?.outro?.end
           ) {
             art.seek = props.data?.outro?.end;
           }
@@ -269,69 +364,14 @@ function ArtPlayer(props, { ...rest }) {
         }
       });
     }
-    // important /[^a-zA-Z0-9\-_\s]/g,""
-    var str = "123^&*^&*^-_ asdasdsad";
-    var clean = str.replace(/[^a-zA-Z0-9\-]/g, "");
-    console.log(str);
-    console.log(clean);
-    const dltt = localStorage.getItem("artplayer_settings");
-    if (dltt) {
-      if (JSON.parse(dltt).times[uri ? uri : newUrl]) {
-        if (localStorage.getItem("recent-episodes")) {
-          // split the existing values into an array
-          let vals = localStorage.getItem("recent-episodes").split(",");
-
-          // if the value has not already been added
-          if (!vals.includes(props.epId)) {
-            // add the value to the array
-            vals.push(props.epId);
-
-            // sort the array
-
-            // join the values into a delimeted string and store it
-            localStorage.setItem("recent-episodes", vals.join(","));
-          }
-        } else {
-          // the key doesn't exist yet, add it and the new value
-          localStorage.setItem("recent-episodes", props.epId);
-        }
-      }
-    }
-
-    if (dltt) {
-      if (JSON.parse(dltt).times[!ingo ? uri : newUrl]) {
-        if (localStorage.getItem(props.anId.toString())) {
-          console.log(localStorage.getItem(props.anId.toString()));
-          // split the existing values into an array
-          let vals = localStorage.getItem(props.anId.toString()).split(",");
-
-          localStorage.setItem(`Rewatch-${props.anId.toString()}`, props.epId);
-
-          // if the value has not already been added
-          if (!vals.includes(props.epId.toString())) {
-            // add the value to the array
-            vals.push(props.epId).toString();
-
-            // sort the array
-
-            // join the values into a delimeted string and store it
-            localStorage.setItem(props.anId.toString(), vals.join(","));
-          }
-        } else {
-          // the key doesn't exist yet, add it and the new value
-          localStorage.setItem(props.anId.toString(), props.epId.toString());
-        }
-      }
-    }
 
     return () => {
       if (art && art.destroy) {
         art.destroy(false);
       }
     };
-  }, [uri, newUrl, props.sub, props.gogoServe]);
+  }, [uri, newUrl, props.sub, props.gogoServe, props.Kaid]);
 
-  //className=" artplayer-app md:h-[800px] h-[250px] w-full"
   return (
     <>
       <div

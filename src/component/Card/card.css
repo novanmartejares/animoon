@@ -11,6 +11,53 @@
     text-decoration: none;
     min-width: 100%;
   }
+  .card-statK {
+    display: flex;
+    flex-direction: column;
+  }
+  .timoInfo {
+    display: flex;
+  }
+  .epnt {
+    display: flex;
+    width: 50%;
+    align-items: start;
+    font-size: 13px;
+    font-weight: 500;
+    color: #b9b6b2;
+  }
+  .durnt {
+    display: flex;
+    width: 50%;
+    align-items: end;
+    gap: 2px;
+  }
+  .durntS {
+    color: var(--theme);
+    font-size: 13px;
+    font-weight: 600;
+  }
+  .durntM {
+    color: #b9b6b2;
+    font-size: 13px;
+    font-weight: 600;
+  }
+  .durntL {
+    color: #b9b6b2;
+    font-size: 13px;
+    font-weight: 600;
+  }
+  .scaling {
+    height: 3px;
+    width: 100%;
+    background: #696967;
+    margin-top: 10px;
+  }
+  .inlino {
+    background: var(--theme);
+    height: 3px;
+    width: 0;
+  }
   .dot {
     display: block;
     font-size: 8px;
@@ -190,5 +237,10 @@
     }
     .anime-card-img-wrapper img {
       height: 230px;
+    }
+  }
+  @media screen and (max-width: 400px) {
+    .durnt {
+      margin-right: 15px;
     }
   }

@@ -26,9 +26,37 @@ export default function Card(props) {
         ? `/watch/${localStorage.getItem(`Rewo-${anime.id}`)}`
         : `/watchi/${anime.id}`;
     } else {
-      window.location.href = `/${anime.id}`
+      window.location.href = `/${anime.id}`;
     }
   };
+  let totalSecondstimo = anime.Secds;
+
+  // Calculate the minutes
+  let minutestimo = Math.floor(totalSecondstimo / 60) || 0;
+
+  // Calculate the remaining seconds
+  let secondstimo = totalSecondstimo % 60 || 0;
+
+  let totalSeconds = anime.duration;
+
+  // Calculate the minutes
+  let minutes = Math.floor(totalSeconds / 60);
+
+  // Calculate the remaining seconds
+  let seconds = totalSeconds % 60;
+
+  function calculatePercentage(part, whole) {
+    if (whole === 0) {
+      return 0; // Avoid division by zero
+    }
+    return (part / whole) * 100;
+  }
+
+  // Example usage:
+  let part = totalSecondstimo;
+  let whole = totalSeconds;
+  let percentage = calculatePercentage(part, whole);
+  console.log(`The percentage is ${percentage}%`);
 
   return (
     <motion.div
@@ -61,7 +89,15 @@ export default function Card(props) {
               <FaPlayCircle color="white" size={70} />{" "}
             </div>
           )}
-          {anime.rating ? (
+          {props.keepIt || props.itsMe ? (
+            anime.rating.includes("R") ? (
+              <span className="rating">
+                {anime.rating.includes("R") ? "18+" : ""}
+              </span>
+            ) : (
+              ""
+            )
+          ) : anime.rating ? (
             <span className="rating">{anime.rating || ""}</span>
           ) : (
             ""
@@ -69,16 +105,16 @@ export default function Card(props) {
           <div className="tick-item">
             <span
               className={`episode-count ${
-                anime.episodes.dub ? "borO" : "borR"
+                anime?.episodes?.dub > 0 ? "borO" : "borR"
               }`}
             >
               <FaClosedCaptioning size={14} />
-              {anime.episodes.sub || "?"}
+              {anime?.episodes?.sub || "?"}
             </span>{" "}
-            {anime.episodes.dub ? (
+            {anime?.episodes?.dub > 0 ? (
               <span className="episode-count-dub d-flex a-center j-center">
                 <AiFillAudio size={14} />
-                {anime.episodes.dub || "?"}
+                {anime?.episodes?.dub || "?"}
               </span>
             ) : (
               ""
@@ -89,21 +125,53 @@ export default function Card(props) {
         </div>
         <div className="card-details">
           <span className="card-title">
-            {anime.name?.length > 18
-              ? anime.name?.slice(0, 18) + "..."
+            {anime.name?.length > 15
+              ? anime.name?.slice(0, 15) + "..."
               : anime.name}
           </span>
-          <div className="card-statistics">
-            <span>
-              {anime.duration === "Unknown"
-                ? `?`
-                : anime.duration.length > 7
-                ? anime.duration.slice(0, 7)
-                : anime.duration || "23m"}
-            </span>
-            <div className="dot"></div>
-            <span>{anime.type || "TV"}</span>
-          </div>
+          {props.keepIt ? (
+            <div className="card-statK">
+              <div className="timoInfo">
+                <div className="epnt">EP {anime.epNo}</div>
+                <div className="durnt">
+                  <div className="durntS">
+                    {(minutestimo < 10
+                      ? "0" + minutestimo.toString()
+                      : minutestimo.toString()) +
+                      ":" +
+                      (secondstimo.toFixed(0) < 10
+                        ? "0" + secondstimo.toFixed(0).toString()
+                        : secondstimo.toFixed(0).toString())}
+                  </div>
+                  <div className="durntM">/</div>
+                  <div className="durntL">
+                    {(minutes < 10
+                      ? "0" + minutes.toString()
+                      : minutes.toString()) +
+                      ":" +
+                      (seconds.toFixed(0) < 10
+                        ? "0" + seconds.toFixed(0).toString()
+                        : seconds.toFixed(0).toString())}
+                  </div>
+                </div>
+              </div>
+              <div className="scaling">
+                <div className={`inlino`} style={{ width: percentage }}></div>
+              </div>
+            </div>
+          ) : (
+            <div className="card-statistics">
+              <span>
+                {anime.duration === "Unknown"
+                  ? `?`
+                  : anime.duration.length > 7
+                  ? anime.duration.slice(0, 7)
+                  : anime.duration || "23m"}
+              </span>
+              <div className="dot"></div>
+              <span>{anime.type || "TV"}</span>
+            </div>
+          )}
         </div>
       </Link>
       {screenWidth > 1150 && isHovered && anime && (

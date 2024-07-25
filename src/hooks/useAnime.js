@@ -316,10 +316,19 @@ export default function useAnime() {
       return json;
     }
   }
-  async function getRandomAnime(hours, minute, hour, min) {
+  async function getRandomAnime() {
     const data = await fetch(
-      "https://aniwatch-api-8fti.onrender.com/anime/random?page=1",
-      { cache: "force-cache" }
+      location.origin + "/api/anime/random",
+      { cache: 'no-store' }
+    );
+    let json = await data.json();
+    console.log(json);
+    return json;
+  }
+  async function getUsers() {
+    const data = await fetch(
+      location.origin + "/api/anime/users",
+      { cache: 'no-store' }
     );
     let json = await data.json();
     console.log(json);
@@ -399,5 +408,6 @@ export default function useAnime() {
     getZoroStream,
     getZoroBroStream,
     getSuggestSearch,
+    getUsers,
   };
 }

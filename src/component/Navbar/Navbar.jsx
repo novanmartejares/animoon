@@ -10,7 +10,6 @@ import logo from "../../../public/logo.png";
 import Image from "next/image";
 import LazyImage from "@/utils/LazyImage";
 import useAnime from "@/hooks/useAnime";
-import loading from "../../../public/share.gif";
 import LoadingSpinner from "../loadingSpinner";
 
 export default function NavBar(props) {
@@ -25,8 +24,9 @@ export default function NavBar(props) {
   }
   const hihi = searchForm?.name;
   const [data, setData] = useState([]);
+  const [user, setUser] = useState([]);
 
-  const { getSuggestSearch } = useAnime();
+  const { getSuggestSearch, getUsers } = useAnime();
   let kat = null;
   const fetchLub = async () => {
     let dat = [];
@@ -37,19 +37,31 @@ export default function NavBar(props) {
     console.log(dat);
     setData(dat);
   };
+  console.log('1',props.imageUrl)
 
+  const fetchUub = async () => {
+    let dat = await getUsers();
+    kat = dat;
+    setUser(dat);
+  };
+  useEffect(() => {
+    fetchUub();
+  },[]);
   useEffect(() => {
     fetchLub();
   }, [searchForm?.name]);
 
   const diljit = (id) => {
-    setSearchForm({ name: "" })
-    window.location.href = `/${id}`
-  }
+    setSearchForm({ name: "" });
+    window.location.href = `/${id}`;
+  };
   const viron = () => {
-    setSearchForm({ name: "" })
-    window.location.href = `/search?name=${searchForm?.name}`
-  }
+    setSearchForm({ name: "" });
+    window.location.href = `/search?name=${searchForm?.name}`;
+  };
+  const lognn = () => {
+    window.location.href = `/sign-in`;
+  };
 
   const handleKeyPress = (e) => {
     if (e.key === "Enter") {
@@ -169,14 +181,17 @@ export default function NavBar(props) {
 
             {/* <FaFilter className="filter-icon search-icons" size={20} color="grey" /> */}
           </div>
-          {searchForm.name !== '' ? (
+          {searchForm.name !== "" ? (
             data && data.suggestions ? (
               <div className="raam-one flex flex-col gap-2">
                 {data &&
                   data.suggestions &&
                   data.suggestions.map((i) => (
                     <>
-                      <div className="flex gap-2 innerP" onClick={()=> diljit(i.id)}>
+                      <div
+                        className="flex gap-2 innerP"
+                        onClick={() => diljit(i.id)}
+                      >
                         <div>
                           <img width={50} src={i.poster} alt="" />
                         </div>
@@ -202,7 +217,9 @@ export default function NavBar(props) {
                       </div>
                     </>
                   ))}
-                  <div className={`vire`} onClick={viron}>View All Results <FaAngleRight /></div>
+                <div className={`vire`} onClick={viron}>
+                  View All Results <FaAngleRight />
+                </div>
               </div>
             ) : (
               <div className="koadna">
@@ -215,13 +232,29 @@ export default function NavBar(props) {
         </div>
         <SocialLinks />
         <Actions isInSidebar={false} />
-        <div className="user-profile-nots a-center j-center d-flex trans-c-03">
-          {screenWidth < 1300 && (
-            <FaSearch
-              onClick={() => {
-                setFloatSearchIsVisible((prev) => !prev);
-              }}
-            />
+        <div className="righty">
+          <div className="user-profile-nots a-center j-center d-flex trans-c-03">
+            {screenWidth < 1300 && (
+              <FaSearch
+                onClick={() => {
+                  setFloatSearchIsVisible((prev) => !prev);
+                }}
+              />
+            )}
+          </div>
+          {props.imageUrl ? (
+            <div>
+              <img
+                src={props.imageUrl}
+                className="profile-ico"
+                onClick={() => props.setProfiIsOpen(true)}
+                alt="user"
+              />
+            </div>
+          ) : (
+            <div className="Lognn" onClick={lognn}>
+              LogIn
+            </div>
           )}
         </div>
       </nav>
@@ -257,7 +290,10 @@ export default function NavBar(props) {
                   data.suggestions &&
                   data.suggestions.map((i) => (
                     <>
-                      <div className="flex gap-2 innerP" onClick={()=> diljit(i.id)}>
+                      <div
+                        className="flex gap-2 innerP"
+                        onClick={() => diljit(i.id)}
+                      >
                         <div>
                           <img width={50} src={i.poster} alt="" />
                         </div>
@@ -283,7 +319,9 @@ export default function NavBar(props) {
                       </div>
                     </>
                   ))}
-                  <div className="vire">View All Results <FaAngleRight /></div>
+                <div className="vire">
+                  View All Results <FaAngleRight />
+                </div>
               </div>
             ) : (
               <div className="loadna">

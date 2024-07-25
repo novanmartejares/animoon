@@ -43,6 +43,7 @@ export default function MainContainer(props) {
     fetchBub();
     fetchTub();
   }, []);
+  // categories -> "most-favorite", "most-popular", "subbed-anime", "dubbed-anime", "recently-updated", "recently-added", "top-upcoming", "top-airing", "movie", "special", "ova", "ona", "tv", "completed"
 
   return (
     <div className="main-container d-flex">
@@ -61,14 +62,17 @@ export default function MainContainer(props) {
             <AnimeCollection
               collectionName="Latest Episodes"
               data={movies?.animes?.slice(0, 12)}
+              filterName="recently-updated"
             />
             <AnimeCollection
               collectionName="New on Animoon"
               data={special?.animes?.slice(0, 12)}
+              filterName="recently-added"
             />
             <AnimeCollection
               collectionName="Top Upcoming"
               data={ova?.animes?.slice(0, 12)}
+              filterName="top-upcoming"
             />
           </div>
         </>

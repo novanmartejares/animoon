@@ -1,33 +1,48 @@
+"use client";
 import React, { useEffect, useState } from "react";
 import "./advertize.css";
 
 const Advertize = () => {
   const [time, setTime] = useState(new Date());
-  useEffect(() => {
-    setInterval(() => setTime(new Date()), 1000);
-    if (
-      ((parseInt(localStorage.getItem("openT")) + 5 > 60
-        ? parseInt(localStorage.getItem("openT")) - 60
-        : parseInt(localStorage.getItem("openT")) + 5) ===
-        time.getMinutes()) &
-      (time.getSeconds === 1)
-    ) {
-      setAdver("true");
-    }
-    if (localStorage.getItem("openD")) {
-      if (parseInt(localStorage.getItem("openD")) !== time.getDate()) {
-        setAdver("true");
-      }
-    }
-    if (localStorage.getItem("openH")) {
-      if (parseInt(localStorage.getItem("openH")) !== time.getHours()) {
-        setAdver("true");
-      }
-    }
-  }, [time.getMinutes(), time.getDate(), time.getHours()]);
   const [adver, setAdver] = useState(
     localStorage.getItem("truth") ? localStorage.getItem("truth") : "true"
   );
+
+  useEffect(() => {
+    const interval = setInterval(() => setTime(new Date()), 1000);
+
+    const openT = parseInt(localStorage.getItem("openT")) || 0;
+    const openD = parseInt(localStorage.getItem("openD")) || 0;
+    const openH = parseInt(localStorage.getItem("openH")) || 0;
+
+    const currentMinutes = time.getMinutes();
+    const currentDate = time.getDate();
+    const currentHours = time.getHours();
+
+    const targetMinutes = (openT + 5) % 60;
+
+    const isSameDate = openD === currentDate;
+    const isSameHour = openH === currentHours;
+    const isMinutesConditionMet =
+      openT > 55
+        ? !isSameHour
+        : currentMinutes > targetMinutes;
+
+    console.log(
+      `Current Minutes: ${currentMinutes}, Target Minutes: ${targetMinutes}`
+    );
+    console.log(`Open Date: ${openD}, Current Date: ${currentDate}`);
+    console.log(`Open Hour: ${openH}, Current Hour: ${currentHours}`);
+    console.log(`Minutes Condition Met: ${isMinutesConditionMet}`);
+
+    if (isSameDate && isSameHour && !isMinutesConditionMet) {
+      setAdver("false");
+    } else {
+      setAdver("true");
+    }
+
+    return () => clearInterval(interval);
+  }, [time]);
 
   function Newtab() {
     localStorage.setItem("openT", time.getMinutes().toString());
@@ -43,7 +58,10 @@ const Advertize = () => {
     <div
       className="Advertize"
       style={{ zIndex: adver === "true" ? 100 : -1 }}
-      onClick={() => setAdver("false") & Newtab()}
+      onClick={() => {
+        setAdver("false");
+        Newtab();
+      }}
     ></div>
   );
 };

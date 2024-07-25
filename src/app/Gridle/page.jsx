@@ -36,6 +36,7 @@ export default function GenreSidebar(props) {
             <AnimeCollection
               collectionName={props.fiki || props.name + ' Anime'}
               data={props.data.animes}
+              isInGrid={'true'}
             />
           )}
         </div>

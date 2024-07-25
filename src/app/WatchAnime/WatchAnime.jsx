@@ -473,17 +473,31 @@ export default function WatchAnime(props) {
                         {epNumb === epiod ? (
                           <ArtPlayer
                             data={data}
-                            datag={gogoServe === "GogoCdn" ? datag : fatag}
+                            datag={
+                              gogoServe === "GogoCdn"
+                                ? datag
+                                : sub === "dub"
+                                ? props.Dubrl
+                                : props.Subrl
+                            }
                             gogoServe={gogoServe}
                             isGogo={props.isGogo}
                             epId={props.epId}
                             anId={props.anId}
+                            epNum={epiod}
                             selectedServer={selectedServer}
+                            Kaid={sub === "dub" ? props.Dubrl : props.Subrl}
                             onn1={onn1}
                             onn2={onn2}
                             onn3={onn3}
                             getData={getData}
+                            durEp={props.datao.anime.moreInfo.duration}
+                            subEp={props.datao.anime.info.stats.episodes.sub}
+                            dubEp={props.datao.anime.info.stats.episodes.dub}
+                            ratUra={props.datao.anime.info.stats.rating}
                             dataj={props.dataj}
+                            imgUra={props.datao.anime.info.poster}
+                            nameUra={props?.datao?.anime?.info?.name}
                             sub={sub}
                           />
                         ) : (

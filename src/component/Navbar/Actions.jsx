@@ -4,7 +4,9 @@ import { FaRandom, FaComments, FaBroadcastTower } from "react-icons/fa";
 import Link from "next/link";
 import useAnime from "@/hooks/useAnime";
 export default function Actions({ isInSidebar }) {
-
+  const handleClick1 = () => {
+    window.location.href = `/random?rand=0`;
+  };
   return (
     <div
       className="nav-actions f-poppins text-light trans-c-03 grid items-center"
@@ -29,7 +31,7 @@ export default function Actions({ isInSidebar }) {
         </Link>
       </span>
       <span>
-        <Link href={`/random?rand=0`}>
+        <Link href={`/random?rand=0`} onClick={handleClick1}>
           <FaRandom size={20} />
           <p>Random</p>
         </Link>
