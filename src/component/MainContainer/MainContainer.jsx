@@ -43,6 +43,7 @@ export default function MainContainer(props) {
     fetchBub();
     fetchTub();
   }, []);
+
   // categories -> "most-favorite", "most-popular", "subbed-anime", "dubbed-anime", "recently-updated", "recently-added", "top-upcoming", "top-airing", "movie", "special", "ova", "ona", "tv", "completed"
 
   return (
