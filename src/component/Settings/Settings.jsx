@@ -96,6 +96,8 @@ const Settings = () => {
     }));
   };
 
+  
+
   return (
     <div>
       <div className="settFa">
