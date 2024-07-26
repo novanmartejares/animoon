@@ -8,12 +8,12 @@ const DynamicCate = dynamic(() => import("@/app/Gridle/page"), {
 
 export async function generateMetadata({ searchParams }) {
   return {
-    title: `Watch ${searchParams.name} Anime English Sub/Dub online free on Animoon.me`,
-    description: `Animoom is the best site to watch
+    title: `Watch ${searchParams.name} Anime English Sub/Dub online free on Kaidox.xyz ( kaido.to | kaidoanime.netlify.app | kaido )`,
+    description: `KaidoX ( Kaido ) is the best site to watch
                       ${searchParams.name} Anime SUB online, or you can even
                       watch ${searchParams.name} Anime DUB in HD quality. You
                       can also watch under rated anime
-                      on Animoon website.`,
+                      on KaidoX ( Kaido ) website.`,
   };
 }
 
@@ -34,7 +34,7 @@ export default async function Producer({ searchParams }) {
   );
   const datal = await respl.json();
 
-  const ShareUrl = `https://animoon.me/producer?name=${fiki}`;
+  const ShareUrl = `https://kaidox.xyz/producer?name=${fiki}`;
 
   const arise = `${fiki} Anime`;
 

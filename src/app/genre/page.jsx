@@ -8,12 +8,12 @@ export async function generateMetadata({ searchParams }) {
   const idd = searchParams.name;
 
   return {
-    title: `Watch ${idd} Anime English Sub/Dub online free on Animoon.me`,
-    description: `Animoom is the best site to watch
+    title: `Watch ${idd} Anime English Sub/Dub online free on Kaidox.xyz ( kaido.to | kaidoanime.netlify.app | kaido )`,
+    description: `KaidoX ( Kaido ) is the best site to watch
                         ${idd} Anime SUB online, or you can even
                         watch ${idd} Anime DUB in HD quality. You
                         can also watch under rated anime
-                        on Animoon website.`,
+                        on KaidoX ( Kaido ) website.`,
   };
 }
 
@@ -33,7 +33,7 @@ export default async function page({ searchParams }) {
     "https://aniwatch-api-8fti.onrender.com/anime/home"
   );
   const datal = await respl.json();
-  const ShareUrl = `https://animoon.me/genre?id=${cate}&name=${cate}`;
+  const ShareUrl = `https://kaidox.xyz/genre?id=${cate}&name=${cate}`;
 
   const arise = `${cate} Anime`;
 

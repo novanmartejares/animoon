@@ -7,6 +7,20 @@ const DynamicTopTen = dynamic(
   }
 );
 
+export async function generateMetadata({ params }) {
+  const idd = params.id;
+
+  return {
+    title: `Watch ${idd} English Sub/Dub online free on Kaidox.xyz ( kaido.to | kaidoanime.netlify.app | kaido )`,
+    description: `KaidoX ( Kaido ) is the best site to watch
+                      ${idd} SUB online, or you can even
+                      watch ${idd} DUB in HD quality. You
+                      can also watch under rated anime
+                      on KaidoX ( Kaido ) website.`,
+  };
+}
+
+
 export default async function page({ params }) {
   const idd = params.id;
 
@@ -55,7 +69,7 @@ export default async function page({ params }) {
   const respp = await fetch("https://aniwatch-api-8fti.onrender.com/anime/home");
   const data = await respp.json();
 
-  const ShareUrl = `https://animoon.me/details/${idd}`
+  const ShareUrl = `https://kaidox.xyz/details/${idd}`
 
   const arise = 'this Anime'
 

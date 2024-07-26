@@ -28,8 +28,8 @@ export default function Footer() {
   }
   const links = getAlphabets();
   const startS = () => {
-    window.location.href = '/'
-  }
+    window.location.href = "/";
+  };
 
   return (
     <div className="footer-container d-flex-fd-column j-center">
@@ -61,10 +61,10 @@ export default function Footer() {
       <div className="alphabet-list d-flex">{links}</div>
       <div className="copyright-text">
         <p>
-          Animoon does not store any files on our server; we only link to the
+          KaidoX does not store any files on our server; we only link to the
           media which is hosted on 3rd party services.
         </p>
-        <p>&copy; Animoon All rights reserved.</p>
+        <p>&copy; KaidoX All rights reserved.</p>
       </div>
     </div>
   );
