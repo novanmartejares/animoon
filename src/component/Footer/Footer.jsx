@@ -72,10 +72,10 @@ export default function Footer() {
       </div>
       <div className="copyright-text">
         <p>
-          KaidoX does not store any files on our server; we only link to the
+          Animoon does not store any files on our server; we only link to the
           media which is hosted on 3rd party services.
         </p>
-        <p>&copy; KaidoX All rights reserved.</p>
+        <p>&copy; Animoon All rights reserved.</p>
       </div>
     </div>
   );

@@ -9,12 +9,12 @@ const inter = Inter({ subsets: ["latin"] });
 import { dark } from '@clerk/themes';
 
 export const metadata = {
-  title: "KaidoX ( Kaido ) - Watch free Anime Online English Sub/Dub",
-  description: `KaidoX ( Kaido ) is the best site to watch
+  title: "Animoon - Watch free Anime Online English Sub/Dub",
+  description: `Animoon is the best site to watch
                       Anime SUB online, or you can even
                       watch Anime DUB in HD quality. You
                       can also find UnderRated anime
-                      on KaidoX ( Kaido ) website.`,
+                      on Animoon website.`,
 };
 
 export default async function RootLayout({ children }) {
