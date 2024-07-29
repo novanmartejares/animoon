@@ -130,33 +130,35 @@ export default function Card(props) {
               : anime.name}
           </span>
           {props.keepIt ? (
-            <div className="card-statK">
-              <div className="timoInfo">
-                <div className="epnt">EP {anime.epNo}</div>
-                <div className="durnt">
-                  <div className="durntS">
-                    {(minutestimo < 10
-                      ? "0" + minutestimo.toString()
-                      : minutestimo.toString()) +
-                      ":" +
-                      (secondstimo.toFixed(0) < 10
-                        ? "0" + secondstimo.toFixed(0).toString()
-                        : secondstimo.toFixed(0).toString())}
-                  </div>
-                  <div className="durntM">/</div>
-                  <div className="durntL">
-                    {(minutes < 10
-                      ? "0" + minutes.toString()
-                      : minutes.toString()) +
-                      ":" +
-                      (seconds.toFixed(0) < 10
-                        ? "0" + seconds.toFixed(0).toString()
-                        : seconds.toFixed(0).toString())}
+            <div>
+              <div className="card-statK">
+                <div className="timoInfo">
+                  <div className="epnt"><div>EP</div><div>{anime.epNo}</div></div>
+                  <div className="durnt">
+                    <div className="durntS">
+                      {(minutestimo < 10
+                        ? "0" + minutestimo.toString()
+                        : minutestimo.toString()) +
+                        ":" +
+                        (secondstimo.toFixed(0) < 10
+                          ? "0" + secondstimo.toFixed(0).toString()
+                          : secondstimo.toFixed(0).toString())}
+                    </div>
+                    <div className="durntM">/</div>
+                    <div className="durntL">
+                      {(minutes < 10
+                        ? "0" + minutes.toString()
+                        : minutes.toString()) +
+                        ":" +
+                        (seconds.toFixed(0) < 10
+                          ? "0" + seconds.toFixed(0).toString()
+                          : seconds.toFixed(0).toString())}
+                    </div>
                   </div>
                 </div>
-              </div>
-              <div className="scaling">
-                <div className={`inlino`} style={{ width: percentage }}></div>
+                <div className="scaling">
+                  <div className={`inlino`} style={{ width: percentage }}></div>
+                </div>
               </div>
             </div>
           ) : (

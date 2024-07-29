@@ -35,7 +35,9 @@ export default function AnimeCollection(props) {
         )}
       </div>
 
-      <div className="card-wrapper d-flex a-center j-center">{cards}</div>
+      <div className="card-wrapper d-flex a-center j-center">
+        {cards}
+      </div>
     </div>
   );
 }

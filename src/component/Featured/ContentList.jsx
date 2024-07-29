@@ -31,7 +31,7 @@ export default function ContentList(props) {
               className="trans-03"
               onClick={() => window.scrollTo({ top: 0 }) & startU()}
             >
-              {el.name || el.title}
+              { el.name.length > 50 ? el.name.slice(0,50) + '...' : el.name || '' }
             </Link>
           </span>
           <div className="episode-info d-flex f-ubuntu">

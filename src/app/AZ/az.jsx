@@ -1,4 +1,4 @@
-'use client'
+"use client";
 import React from "react";
 
 import AnimeCollection from "@/component/MainContainer/AnimeCollectionJikan";
@@ -7,11 +7,12 @@ import TopTenAnime from "@/component/TopTen/TopTenAnime";
 import LoadingSpinner from "@/component/loadingSpinner";
 import Error from "@/component/AnimeNotFound/Error";
 import { motion } from "framer-motion";
-export default function SearchResults(props) {
+import "./az.css";
 
+export default function SearchResults(props) {
   return (
     <motion.div
-      className=" main-container d-flex  "
+      className="contA"
       style={
         window.innerWidth < 1081 ? { flexDirection: "column-reverse" } : {}
       }
@@ -19,20 +20,21 @@ export default function SearchResults(props) {
       animate={{ x: [window.innerWidth / 2, 0], opacity: 1 }}
       transition={{ duration: 0.5, ease: "easeOut" }}
     >
-      <div className="sidebar-wrapper d-flex-fd-column">
-        <Genre data={props.data}/>
-        <TopTenAnime data={props.data}/>
-      </div>
-      <div className="collections-wrapper">
+      <div className="collections-W">
         {!props.el ? (
           <LoadingSpinner />
-        ) : props.el.data?.length < 1 ? (
+        ) : props.el?.length < 1 ? (
           <Error />
         ) : (
-          <AnimeCollection collectionName="Search Results" data={props.el.data} />
+          <AnimeCollection
+            collectionName="Sort By Letters"
+            data={props.el}
+            sort={props.sort}
+            page={props.page}
+            para={props.para}
+          />
         )}
       </div>
     </motion.div>
   );
 }
-

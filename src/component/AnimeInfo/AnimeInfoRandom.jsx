@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef, useCallback } from "react";
 import LoadingSpinner from "@/component/loadingSpinner";
 import "./AnimeInfo.css";
 import Link from "next/link";
@@ -29,6 +29,9 @@ export default function Details(props) {
   };
 
   const handleOptionClick = (option) => {
+    if (!props.firstName) {
+      window.location.href = '/user/watch-list'
+    } 
     console.log(`Selected option: ${option}`);
     setIsOpen(false); // Close the dropdown after selection
 
@@ -98,14 +101,18 @@ export default function Details(props) {
   }, []);
 
   const { getRandomAnime } = useAnime();
-  const fetchLub = async () => {
-    const dat = await getRandomAnime();
-    console.log("Animex", dat);
-    setData(dat);
-  };
+  const hasFetched = useRef(false);
+
 
   useEffect(() => {
-    fetchLub();
+    const fetchLub = async () => {
+      if (!hasFetched.current) {
+      const dat = await getRandomAnime();
+      console.log("Animex", dat);
+      hasFetched.current = true;
+      setData(dat);}
+    };
+    fetchLub()
   }, []);
 
   const handleClick1 = () => {
@@ -269,9 +276,9 @@ export default function Details(props) {
                 </span>
               </p>
               <p>
-                AniMoon is the best site to watch {gnt.info.name} SUB online, or
+                KaidoX is the best site to watch {gnt.info.name} SUB online, or
                 you can even watch {gnt.info.name} DUB in HD quality. You can
-                also find {gnt.moreInfo.studios} anime on AniMoon website.
+                also find {gnt.moreInfo.studios} anime on KaidoX website.
               </p>
               <Share
                 style={{ padding: 0, margin: 0 }}

@@ -17,20 +17,47 @@ export async function generateMetadata({ params }) {
   };
 }
 
-export default async function page({ params }) {
-  const data = await fetch(
-    `https://api.jikan.moe/v4/anime?letter=${params.id}`,
-    {
-      cache: "force-cache",
-    }
-  );
-  let json = await data.json();
+export default async function page({ params, searchParams }) {
+  let json = "";
+  try {
+    const data = await fetch(
+      `https://vimal-two.vercel.app/api/az-list/${searchParams.sort}?page=${
+        searchParams.page ? searchParams.page : "1"
+      }`,
+      {
+        cache: "no-store",
+      }
+    );
+    json = await data.json();
+  } catch (error) {
+    error;
+  }
+  let kson = "";
+  try {
+    const datai = await fetch(
+      `https://vimal-two.vercel.app/api/az-list?page=${
+        searchParams.page ? searchParams.page : "1"
+      }`,
+      {
+        cache: "no-store",
+      }
+    );
+    kson = await datai.json();
+  } catch (error) {
+    error;
+  }
 
   const resp = await fetch("https://aniwatch-api-8fti.onrender.com/anime/home");
   const datal = await resp.json();
   return (
     <div>
-      <DynamicAZ el={json} data={datal} />
+      <DynamicAZ
+        el={searchParams.sort ? json : kson}
+        data={datal}
+        sort={searchParams.sort}
+        page={searchParams.page}
+        para={params.id}
+      />
     </div>
   );
 }

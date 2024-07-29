@@ -38,10 +38,11 @@ body {
   --height-medium: 500px;
   --height-large: 610px;
   --light: #ffffff;
-  --theme: #ff8598;
+  --theme: rgb(83, 255, 134);
   --random-colors: #ff5733, #33ff57, #5733ff, #ff33a8, #33a8ff, #a833ff, #ff33ff,
     #33ffc2, #a8ff33, #ffc233;
 }
+
 .d-flex {
   display: flex;
 }

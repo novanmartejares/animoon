@@ -28,6 +28,7 @@ export default function RecommendedTopTen(props) {
           rand={props.rand}
           ShareUrl={props.ShareUrl}
           arise={props.arise}
+          firstName={props.firstName}
         />
       )}
 

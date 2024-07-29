@@ -15,7 +15,7 @@ export default function Footer() {
     const links = alphabets.map((el) => {
       return (
         <Link
-          href={`/a-z/${el}`}
+          href={`/a-z/alpha?sort=${el}`}
           key={el}
           className="alphabet-tile"
           onClick={() => window.scrollTo({ top: 0 })}
@@ -58,7 +58,18 @@ export default function Footer() {
         <h2 className="main-element">A-Z List</h2>
         <span>Searching anime order by alphabet name A to Z.</span>
       </div>
-      <div className="alphabet-list d-flex">{links}</div>
+      <div className="alphabet-list d-flex">
+        <Link href={"/a-z/all"}>
+          <div className="alphabet-tile">All</div>
+        </Link>
+        <Link href={"/a-z/other?sort=other"}>
+          <div className="alphabet-tile">#</div>
+        </Link>
+        <Link href={"/a-z/0-9?sort=0-9"}>
+          <div className="alphabet-tile">0-9</div>
+        </Link>
+        {links}
+      </div>
       <div className="copyright-text">
         <p>
           KaidoX does not store any files on our server; we only link to the

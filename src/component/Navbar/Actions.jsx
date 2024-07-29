@@ -22,26 +22,20 @@ export default function Actions({ isInSidebar }) {
       }
     >
       <span>
-        <Link
-          href="/working"
-          className="anchor"
-        >
+        <Link href="/working" className="anchor">
           <FaBroadcastTower size={20} />
           <p>Watch2gether</p>
         </Link>
       </span>
       <span>
-        <Link href={`/random?rand=0`} onClick={handleClick1}>
+        <div onClick={handleClick1}>
           <FaRandom size={20} />
           <p>Random</p>
-        </Link>
+        </div>
       </span>
       {!isInSidebar && (
         <span>
-          <Link
-            href="/working"
-            className="anchor"
-          >
+          <Link href="/working" className="anchor">
             <FaComments size={20} />
             <p>Community</p>
           </Link>

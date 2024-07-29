@@ -5,7 +5,7 @@ import Link from "next/link";
 import MouseOverCard from "./MouseOverCard";
 import { FaClosedCaptioning, FaPlayCircle } from "react-icons/fa";
 import { easeOut, motion, useInView } from "framer-motion";
-import LazyImage from "../../utils/LazyImage";
+import LazyImage from "@/utils/LazyImage";
 import { AiFillAudio } from "react-icons/ai";
 export default function Card(props) {
   const cardRef = useRef(null);
@@ -20,6 +20,16 @@ export default function Card(props) {
     const listener = window.addEventListener("resize", setWidth);
     return () => window.removeEventListener(listener, setWidth);
   });
+  const startN = () => {
+    if (props.collectionName !== "Top Upcoming") {
+      window.location.href = localStorage.getItem(`Rewo-${anime.data_id}`)
+        ? `/watch/${localStorage.getItem(`Rewo-${anime.data_id}`)}`
+        : `/watchi/${anime.data_id}`;
+    } else {
+      window.location.href = `/${anime.data_id}`;
+    }
+  };
+
 
   return (
     <motion.div
@@ -32,10 +42,16 @@ export default function Card(props) {
       className="anime-card-wrapper"
     >
       <Link
-        href={`/details/${anime.title.replace(/[^a-zA-Z0-9\-\s]/g,'')}`}
-        key={anime.mal_id}
+        href={`${
+          props.collectionName !== "Top Upcoming"
+            ? localStorage.getItem(`Rewo-${anime.data_id}`)
+              ? `/watch/${localStorage.getItem(`Rewo-${anime.data_id}`)}`
+              : `/watchi/${anime.data_id}`
+            : `/${anime.data_id}`
+        }`}
+        key={anime.data_id}
         className="anime-card d-flex"
-        onClick={() => window.scrollTo({ top: 0 })}
+        onClick={() => window.scrollTo({ top: 0 }) & startN()}
       >
         <div className={`anime-card-img-wrapper  `}>
           {screenWidth > 1150 && (
@@ -46,51 +62,95 @@ export default function Card(props) {
               <FaPlayCircle color="white" size={70} />{" "}
             </div>
           )}
-          {anime.rating.includes('R') ? (
-            <span className="rating">{anime.rating.includes('R') ? '18+' : ""}</span>
+          {props.keepIt || props.itsMe ? (
+            anime.rating.includes("R") ? (
+              <span className="rating">
+                {anime.rating.includes("R") ? "18+" : ""}
+              </span>
+            ) : (
+              ""
+            )
+          ) : anime.tvInfo.rating ? (
+            <span className="rating">{anime.tvInfo.rating || ""}</span>
           ) : (
             ""
           )}
           <div className="tick-item">
             <span
               className={`episode-count ${
-                "borR"
+                anime?.tvInfo?.dub > 0 ? "borO" : "borR"
               }`}
             >
               <FaClosedCaptioning size={14} />
-              {anime.episodes || "?"}
+              {anime?.tvInfo?.sub || "?"}
             </span>{" "}
+            {anime?.tvInfo?.dub > 0 ? (
+              <span className="episode-count-dub d-flex a-center j-center">
+                <AiFillAudio size={14} />
+                {anime?.tvInfo?.dub || "?"}
+              </span>
+            ) : (
+              ""
+            )}
           </div>
 
-          <LazyImage
-            src={anime.images.webp.large_image_url}
-            alt="anime-card"
-            isAnimated={false}
-          />
+          <LazyImage src={anime.poster} alt="anime-card" isAnimated={false} />
         </div>
         <div className="card-details">
           <span className="card-title">
-            {anime.title_english?.length > 18
-              ? anime.title_english?.slice(0, 18) + "..."
-              : anime.title_english || anime.title.length > 18
-              ? anime.title?.slice(0, 18)
+            {anime.title?.length > 15
+              ? anime.title?.slice(0, 15) + "..."
               : anime.title}
           </span>
-          <div className="card-statistics">
-            <span>
-              {anime.duration === "Unknown"
-                ? `?`
-                : anime.duration.length > 7
-                ? anime.duration.slice(0, 7)
-                : anime.duration || "23m"}
-            </span>
-            <div className="dot">&#x2022;</div>
-            <span>{anime.type || "TV"}</span>
-          </div>
+          {props.keepIt ? (
+            <div>
+              <div className="card-statK">
+                <div className="timoInfo">
+                  <div className="epnt"><div>EP</div><div>{anime.epNo}</div></div>
+                  <div className="durnt">
+                    <div className="durntS">
+                      {(minutestimo < 10
+                        ? "0" + minutestimo.toString()
+                        : minutestimo.toString()) +
+                        ":" +
+                        (secondstimo.toFixed(0) < 10
+                          ? "0" + secondstimo.toFixed(0).toString()
+                          : secondstimo.toFixed(0).toString())}
+                    </div>
+                    <div className="durntM">/</div>
+                    <div className="durntL">
+                      {(minutes < 10
+                        ? "0" + minutes.toString()
+                        : minutes.toString()) +
+                        ":" +
+                        (seconds.toFixed(0) < 10
+                          ? "0" + seconds.toFixed(0).toString()
+                          : seconds.toFixed(0).toString())}
+                    </div>
+                  </div>
+                </div>
+                <div className="scaling">
+                  <div className={`inlino`} style={{ width: percentage }}></div>
+                </div>
+              </div>
+            </div>
+          ) : (
+            <div className="card-statistics">
+              <span>
+                {anime.tvInfo.duration === "Unknown"
+                  ? `?`
+                  : anime.tvInfo.duration.length > 7
+                  ? anime.tvInfo.duration.slice(0, 7)
+                  : anime.tvInfo.duration || "23m"}
+              </span>
+              <div className="dot"></div>
+              <span>{anime.tvInfo.showtype || "TV"}</span>
+            </div>
+          )}
         </div>
       </Link>
       {screenWidth > 1150 && isHovered && anime && (
-        <MouseOverCard id={anime.mal_id} />
+        <MouseOverCard id={anime.data_id} />
       )}
     </motion.div>
   );
