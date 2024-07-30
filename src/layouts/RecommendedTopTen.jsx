@@ -61,7 +61,7 @@ export default function RecommendedTopTen(props) {
             <AnimeCollection
               collectionName="Recommended for you"
               data={props.doIt ? props.datap?.recommendedAnimes : dlta}
-              isInGrid={props.doIt ? "" : "true"}
+              isInGrid={"true"}
             />
           )}
         </div>

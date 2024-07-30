@@ -25,7 +25,7 @@ export default async function page({ searchParams }) {
     .toLocaleLowerCase()
     .replace(/[^a-zA-Z0-9\-]/g, "");
   const resp = await fetch(
-    `https://aniwatch-api-8fti.onrender.com/anime/genre/${date}?page=1`
+    `https://aniwatch-api-8fti.onrender.com/anime/genre/${date}?page=${searchParams.page ? searchParams.page : '1'}`
   );
   const data = await resp.json();
 
@@ -42,8 +42,10 @@ export default async function page({ searchParams }) {
       <DynamicCate
         data={data}
         name={cate}
+        cate={cate}
         datal={datal}
         ShareUrl={ShareUrl}
+        page={searchParams.page}
         arise={arise}
       />
     </div>

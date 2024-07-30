@@ -172,12 +172,43 @@ function ArtPlayer(props, { ...rest }) {
       }
     }
   }
+  const quality = (epSource && epSource.sources)
+  ? (() => {
+      // Map the sources to the format required by Artplayer
+      const sources = epSource.sources.map(source => ({
+        default: false,
+        html: source.quality,
+        url: source.url,
+      }));
+
+      // Helper function to set default quality
+      const setDefaultQuality = (quality) => {
+        const qualitySource = sources.find(source => source.html === quality);
+        if (qualitySource) {
+          qualitySource.default = true;
+          return true;
+        }
+        return false;
+      };
+
+      // Set the default quality in the order of preference
+      if (!setDefaultQuality("1080p")) {
+        if (!setDefaultQuality("720p")) {
+          if (!setDefaultQuality("480p")) {
+            setDefaultQuality("360p");
+          }
+        }
+      }
+
+      return sources;
+    })()
+  : [];
 
   useEffect(() => {
     const art = new Artplayer({
       title: "hahahaha",
       container: ".artplayer-app",
-      url: FinalUrl,
+      url: quality.find(q => q.default)?.url || FinalUrl,
       type: "m3u8",
       plugins: [
         artplayerPluginHlsQuality({
@@ -223,11 +254,7 @@ function ArtPlayer(props, { ...rest }) {
       },
       quality:
         epSource && epSource.sources
-          ? epSource.sources.map((source) => ({
-              default: source.quality === "1080p",
-              html: source.quality,
-              url: source.url,
-            }))
+          ? quality
           : [],
 
       settings: [

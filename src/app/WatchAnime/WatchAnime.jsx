@@ -80,10 +80,13 @@ export default function WatchAnime(props) {
   const handleOn1 = () => {
     if (onn1 === "Off") {
       localStorage.setItem("Onn1", "On");
+      localStorage.setItem("autoPlay","true")
       setOnn1("On");
+      
     }
     if (onn1 === "On") {
       localStorage.setItem("Onn1", "Off");
+      localStorage.setItem("autoPlay","false")
       setOnn1("Off");
     }
   };
@@ -91,10 +94,12 @@ export default function WatchAnime(props) {
   const handleOn2 = () => {
     if (onn2 === "Off") {
       localStorage.setItem("Onn2", "On");
+      localStorage.setItem("autoNext","true")
       setOnn2("On");
     }
     if (onn2 === "On") {
       localStorage.setItem("Onn2", "Off");
+      localStorage.setItem("autoNext","false")
       setOnn2("Off");
     }
   };
@@ -113,10 +118,12 @@ export default function WatchAnime(props) {
   const handleOn3 = () => {
     if (onn3 === "Off") {
       localStorage.setItem("Onn3", "On");
+      localStorage.setItem("autoSkipIntro","true")
       setOnn3("On");
     }
     if (onn3 === "On") {
       localStorage.setItem("Onn3", "Off");
+      localStorage.setItem("autoSkipIntro","false")
       setOnn3("Off");
     }
   };
@@ -938,6 +945,7 @@ export default function WatchAnime(props) {
             doIt={"doit"}
             datap={props.datao}
             data={props.datapp}
+            isInGrid={'true'}
           />
         </motion.div>
       ) : (

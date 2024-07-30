@@ -35,7 +35,11 @@ export default function GenreSidebar(props) {
           ) : (
             <AnimeCollection
               collectionName={props.fiki || props.name + ' Anime'}
+              filterName={props.cate}
+              fiki={props.fiki}
+              page={props.page}
               data={props.data.animes}
+              totalPages={props.data.totalPages}
               isInGrid={'true'}
             />
           )}

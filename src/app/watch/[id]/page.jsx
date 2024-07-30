@@ -1,5 +1,8 @@
+import dynamic from "next/dynamic";
 import React from "react";
-import WatchAnime from "../../WatchAnime/WatchAnime";
+const DynamicWatchAnime = dynamic(() => import('../../WatchAnime/WatchAnime'), {
+  ssr: true,
+});
 
 export async function generateMetadata({ params }) {
   const respo = await fetch(
@@ -198,7 +201,7 @@ export default async function page({ params, searchParams }) {
 
   return (
     <div>
-      <WatchAnime
+      <DynamicWatchAnime
         data={data}
         datal={datal}
         datai={datai}

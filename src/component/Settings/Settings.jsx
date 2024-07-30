@@ -117,7 +117,7 @@ const Settings = () => {
                 <input
                   type="checkbox"
                   checked={autoNext}
-                  onChange={() => setAutoNext(!autoNext)}
+                  onChange={() => setAutoNext(!autoNext) & localStorage.setItem("Onn2","Off")}
                 />
                 <span className="slider round"></span>
               </label>
@@ -130,7 +130,7 @@ const Settings = () => {
                 <input
                   type="checkbox"
                   checked={autoPlay}
-                  onChange={() => setAutoPlay(!autoPlay)}
+                  onChange={() => setAutoPlay(!autoPlay) & localStorage.setItem("Onn1","Off")}
                 />
                 <span className="slider round"></span>
               </label>
@@ -143,7 +143,7 @@ const Settings = () => {
                 <input
                   type="checkbox"
                   checked={autoSkipIntro}
-                  onChange={() => setAutoSkipIntro(!autoSkipIntro)}
+                  onChange={() => setAutoSkipIntro(!autoSkipIntro) & localStorage.setItem("Onn3","Off")}
                 />
                 <span className="slider round"></span>
               </label>

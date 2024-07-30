@@ -21,7 +21,7 @@ export default async function page({ searchParams }) {
   const cate = searchParams.name.toString();
   const fiki = searchParams.heading.toString();
   const resp = await fetch(
-    `https://aniwatch-api-8fti.onrender.com/anime/${cate}?page=1`
+    `https://aniwatch-api-8fti.onrender.com/anime/${cate}?page=${searchParams.page ? searchParams.page : '1'}`
   );
   const data = await resp.json();
   const respl = await fetch(
@@ -37,8 +37,10 @@ export default async function page({ searchParams }) {
       <DynamicCate
         data={data}
         fiki={fiki}
+        cate={cate}
         datal={datal}
         ShareUrl={ShareUrl}
+        page={searchParams.page}
         arise={arise}
       />
     </div>
