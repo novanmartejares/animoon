@@ -1,26 +1,14 @@
 "use client";
-import React, { useEffect, useState, useRef, useCallback } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import LoadingSpinner from "@/component/loadingSpinner";
 import "./AnimeInfo.css";
 import Link from "next/link";
-import {
-  FaClosedCaptioning,
-  FaEye,
-  FaHeart,
-  FaMedal,
-  FaPlayCircle,
-  FaPlus,
-} from "react-icons/fa";
+import { FaClosedCaptioning, FaPlayCircle, FaPlus } from "react-icons/fa";
 import Share from "../Share/Share";
 import useAnime from "@/hooks/useAnime";
 import { AiFillAudio } from "react-icons/ai";
-import { useRouter } from "next/navigation";
 
 export default function Details(props) {
-  let [counter, setCounter] = useState(0);
-  const Router = useRouter();
-  const [data, setData] = useState([]);
-  const [click, setClick] = useState("");
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef(null);
 
@@ -115,17 +103,6 @@ export default function Details(props) {
     fetchLub();
   }, []);
 
-  const handleClick1 = () => {
-    setClick("yokaso");
-    setCounter(counter + 1);
-    window.location.href = `/random?rand=0`;
-  };
-
-  let y = [];
-  let x = counter;
-  let j = y.concat(x);
-  console.log("YY", j);
-
   const gnt = props.uiui?.anime;
   if (props.uiui) {
     props.lata(props?.uiui?.recommendedAnimes);
@@ -154,20 +131,6 @@ export default function Details(props) {
 
   const studios = gnt?.moreInfo?.studios;
   const synonyms = gnt?.info.name;
-
-  const details = () => {
-    if (props.rand) {
-      window.location.href = `/${gnt.info.id}`;
-    } else {
-    }
-  };
-
-  const vv = counter < 19 ? counter : (counter = 0);
-  const startN = () => {
-    window.location.href = localStorage.getItem(`Rewo-${gnt.info.id}`)
-      ? `/watch/${localStorage.getItem(`Rewo-${gnt.info.id}`)}`
-      : `/watchi/${gnt.info.id}`;
-  };
 
   return gnt?.info?.poster ? (
     <div className="details-container">
@@ -237,7 +200,6 @@ export default function Details(props) {
                   <button
                     className="btn-secondary hero-button"
                     onClick={() => {
-                      details();
                       toggleDropdown();
                     }}
                   >

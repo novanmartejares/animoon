@@ -1,8 +1,5 @@
 import React from "react";
-import dynamic from "next/dynamic";
-const DynamicCate = dynamic(() => import("@/app/Gridle/page"), {
-  ssr: false,
-});
+import GenreSidebar from "@/app/Gridle/page";
 
 // https://just-cub-0.clerk.accounts.dev/v1/client/handshake?redirect_url=https%3A%2F%2Fanimoon.me%2Fuser%2Fprofile&__clerk_db_jwt=eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJkZXYiOiJkdmJfMmpqb1VqWVhtNjFLSVJzVTh1VGVrcHcyMWRRIn0.kxMOQMIykXfTs-n7Fj5E-UfRvzAUynyIt-jKXQP1mxBcppIOOhEkHk28oWXzdRbek71R6P684n5uYtfCbXMDPg4h-OGKIvYJpvMIODkoYXwCSCYVFSMysUU-omskF60LWsYSbhLQq1Ppzv-7dhTbQMwRhMtSM8c87douEYOh5dWh-unZqIAvV1Err5M1KHaSp3QiL0Qw5MMtSYIeQxvhftoH2NaT8X3Fl6IuUMxiGqIKT8y8nuM1rhbowfi6NG2QYiYu85kz9j9Ni-GBS2LKYbFCzLBUF2ok4ifqj8lEjCeDUNiGZ16j9aIjVJ2Cvq5gLfkB0yyLBKrwr7OR4BvdSg
 
@@ -40,7 +37,7 @@ export default async function Producer({ searchParams }) {
 
   return (
     <div>
-      <DynamicCate
+      <GenreSidebar
         data={data}
         name={fiki}
         dev={hiki}

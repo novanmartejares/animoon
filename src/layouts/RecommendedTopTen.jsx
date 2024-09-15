@@ -4,8 +4,8 @@ import TopTenAnime from "@/component/TopTen/TopTenAnime";
 import AnimeCollection from "../component/MainContainer/AnimeCollection";
 import Genre from "@/component/Genre/Genre";
 import Details from "@/component/AnimeInfo/AnimeInfoRandom";
-import LoadingSpinner from "@/component/loadingSpinner";
-import { easeOut, motion } from "framer-motion";
+import './recom.css'
+
 export default function RecommendedTopTen(props) {
   const [dlta, setDlta] = useState([]);
   const getData = (data) => {
@@ -32,40 +32,23 @@ export default function RecommendedTopTen(props) {
         />
       )}
 
-      <motion.div
-        className=" main-container d-flex"
-        initial={{ opacity: 0 }}
-        animate={{ x: [window.innerWidth, 0], opacity: 1 }}
-        transition={{ duration: 0.7, ease: easeOut }}
-        style={
-          window.innerWidth < 1081 ? { flexDirection: "column-reverse" } : {}
-        }
+      <div
+        className=" main-container jik d-flex"
       >
         <div className="sidebar-wrapper d-flex-fd-column">
-          <Genre data={props.data} />
-          <TopTenAnime data={props.data} />
+          <Genre data={props.data.genres} />
+          <TopTenAnime data={props.data.top10Animes} />
         </div>
         <div
-          className=" collections-wrapper d-flex  "
-          style={
-            window.innerWidth < 1081 ? { flexDirection: "column-reverse" } : {}
-          }
+          className=" collections-wrapper jik d-flex  "
         >
-          {(
-            props.doIt
-              ? !props?.datap?.recommendedAnimes
-              : !(dlta && dlta.length > 0)
-          ) ? (
-            <LoadingSpinner />
-          ) : (
-            <AnimeCollection
-              collectionName="Recommended for you"
-              data={props.doIt ? props.datap?.recommendedAnimes : dlta}
-              isInGrid={"true"}
-            />
-          )}
+          <AnimeCollection
+            collectionName="Recommended for you"
+            data={props.doIt ? props.datap?.recommendedAnimes : dlta}
+            isInGrid={"true"}
+          />
         </div>
-      </motion.div>
+      </div>
     </>
   );
 }

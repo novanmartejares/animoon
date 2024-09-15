@@ -13,6 +13,13 @@
     width: 100%;
   }
 }
+
+@media screen and (max-width: 1081px) {
+  .contA {
+    flex-direction: column-reverse;
+  }
+}
+
 @media screen and (max-width: 576px) {
   .contA {
     margin-top: 50px;

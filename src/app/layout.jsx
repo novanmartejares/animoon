@@ -1,12 +1,10 @@
 import { Inter } from "next/font/google";
 import "./globals.css";
-import dynamic from "next/dynamic";
 import { ClerkProvider } from "@clerk/nextjs";
-import Script from "next/script";
 import { Analytics } from "@vercel/analytics/react";
-const DynamicNavic = dynamic(() => import("@/app/Navic/page"), {});
 const inter = Inter({ subsets: ["latin"] });
-import { dark } from '@clerk/themes';
+import { dark } from "@clerk/themes";
+import Navic from "@/app/Navic/page";
 
 export const metadata = {
   title: "Animoon - Watch free Anime Online English Sub/Dub",
@@ -20,12 +18,15 @@ export const metadata = {
 export default async function RootLayout({ children }) {
   return (
     <ClerkProvider
-    appearance={{
-      baseTheme: dark
-    }}>
+      appearance={{
+        baseTheme: dark,
+      }}
+    >
       <html lang="en">
         <body className={inter.className}>
-          <DynamicNavic>{children}</DynamicNavic>
+          <Navic>
+            {children}
+          </Navic>
           <Analytics />
         </body>
       </html>

@@ -25,8 +25,7 @@ export default function MouseOverCard(props) {
       <Link
         className="genre-button"
         key={idx}
-        onClick={() => window.scrollTo({ top: 0 })}
-        href={`/grid/genre?id=${genre}&name=${genre}`}
+        href={`/`}
       >
         {genre}
       </Link>

@@ -1,23 +1,30 @@
 .artplayer-app {
-    width: 100%;
-    height: 570px;
+  width: 100%;
+  height: 570px;
+}
+
+.subtitle-text {
+  color: #fff;
+  font-size: 20px;
+  -webkit-text-stroke: 1px #000; /* Adds a text border */
+  font-weight: 600;
 }
 
 @media screen and (max-width: 870px) {
-    .artplayer-app {
-        height: 520px;
-        width: auto;
-    }
+  .artplayer-app {
+    height: 520px;
+    width: auto;
+  }
 }
 @media screen and (max-width: 711px) {
-    .artplayer-app {
-        height: 400px;
-        width: auto;
-    }
+  .artplayer-app {
+    height: 400px;
+    width: auto;
+  }
 }
 @media screen and (max-width: 580px) {
-    .artplayer-app {
-        height: 250px;
-        width: auto;
-    }
+  .artplayer-app {
+    height: 250px;
+    width: auto;
+  }
 }

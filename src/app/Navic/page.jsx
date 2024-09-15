@@ -1,18 +1,16 @@
 import { currentUser } from "@clerk/nextjs/server";
-import dynamic from "next/dynamic";
 import React from "react";
-const DynamicNav = dynamic(() => import("@/app/Nav/Nav"), {
-  ssr: false,
-});
+import Nav from "@/app/Nav/Nav";
 
-export default async function page({ children }) {
+
+export default async function Navic({ children }) {
   const user = await currentUser();
   const firstName = user?.firstName;
   const imageUrl = user?.imageUrl;
   const emailAdd = user?.emailAddresses[0].emailAddress;
   return (
     <div>
-      <DynamicNav
+      <Nav
         children={children}
         firstName={firstName}
         imageUrl={imageUrl}

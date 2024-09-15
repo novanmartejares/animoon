@@ -1,42 +1,54 @@
 "use client";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./card.css";
 import Link from "next/link";
 import MouseOverCard from "./MouseOverCard";
 import { FaClosedCaptioning, FaPlayCircle } from "react-icons/fa";
-import { easeOut, motion, useInView } from "framer-motion";
-import LazyImage from "@/utils/LazyImage";
 import { AiFillAudio } from "react-icons/ai";
+
 export default function Card(props) {
-  const cardRef = useRef(null);
-  const isInView = useInView(cardRef);
   const anime = props.data;
   const [isHovered, setIsHovered] = useState(false);
-  const [screenWidth, setScreenWidth] = useState(window.innerWidth);
-  useEffect(() => {
-    const setWidth = () => {
-      setScreenWidth(window.innerWidth);
-    };
-    const listener = window.addEventListener("resize", setWidth);
-    return () => window.removeEventListener(listener, setWidth);
-  });
-  const startN = () => {
-    if (props.collectionName !== "Top Upcoming") {
-      window.location.href = localStorage.getItem(`Rewo-${anime.data_id}`)
-        ? `/watch/${localStorage.getItem(`Rewo-${anime.data_id}`)}`
-        : `/watchi/${anime.data_id}`;
+  const [screenWidth, setScreenWidth] = useState(null);
+
+  const localStorageWrapper = () => {
+    if (typeof window !== "undefined" && window.localStorage) {
+      return {
+        getItem: (key) => localStorage.getItem(key),
+        setItem: (key, value) => localStorage.setItem(key, value),
+        removeItem: (key) => localStorage.removeItem(key),
+        clear: () => localStorage.clear(),
+      };
     } else {
-      window.location.href = `/${anime.data_id}`;
+      // Handle the case when localStorage is not available
+      return {
+        getItem: () => null,
+        setItem: () => {},
+        removeItem: () => {},
+        clear: () => {},
+      };
     }
   };
 
+  // Usage
+  const ls = localStorageWrapper();
+
+  useEffect(() => {
+    // Check if the window object is available before setting the screen width
+    if (typeof window !== "undefined") {
+      setScreenWidth(window.innerWidth);
+
+      const setWidth = () => {
+        setScreenWidth(window.innerWidth);
+      };
+
+      window.addEventListener("resize", setWidth);
+      return () => window.removeEventListener("resize", setWidth);
+    }
+  }, []);
 
   return (
-    <motion.div
-      ref={cardRef}
-      initial={{ opacity: 0 }}
-      animate={isInView && { opacity: 1 }}
-      transition={{ duration: 0.5, delay: props.delay, ease: easeOut }}
+    <div
       onMouseOver={() => setIsHovered(true)}
       onMouseOut={() => setIsHovered(false)}
       className="anime-card-wrapper"
@@ -44,22 +56,21 @@ export default function Card(props) {
       <Link
         href={`${
           props.collectionName !== "Top Upcoming"
-            ? localStorage.getItem(`Rewo-${anime.data_id}`)
-              ? `/watch/${localStorage.getItem(`Rewo-${anime.data_id}`)}`
+            ? ls.getItem(`Rewo-${anime.data_id}`)
+              ? `/watch/${ls.getItem(`Rewo-${anime.data_id}`)}`
               : `/watchi/${anime.data_id}`
             : `/${anime.data_id}`
         }`}
         key={anime.data_id}
         className="anime-card d-flex"
-        onClick={() => window.scrollTo({ top: 0 }) & startN()}
       >
-        <div className={`anime-card-img-wrapper  `}>
-          {screenWidth > 1150 && (
+        <div className={`anime-card-img-wrapper`}>
+          {screenWidth && screenWidth > 1150 && (
             <div
               style={isHovered ? { opacity: 1 } : { opacity: 0 }}
               className="img-blur d-flex a-center j-center trans-03"
             >
-              <FaPlayCircle color="white" size={70} />{" "}
+              <FaPlayCircle color="white" size={70} />
             </div>
           )}
           {props.keepIt || props.itsMe ? (
@@ -94,7 +105,7 @@ export default function Card(props) {
             )}
           </div>
 
-          <LazyImage src={anime.poster} alt="anime-card" isAnimated={false} />
+          <img src={anime.poster} alt="anime-card" />
         </div>
         <div className="card-details">
           <span className="card-title">
@@ -106,7 +117,10 @@ export default function Card(props) {
             <div>
               <div className="card-statK">
                 <div className="timoInfo">
-                  <div className="epnt"><div>EP</div><div>{anime.epNo}</div></div>
+                  <div className="epnt">
+                    <div>EP</div>
+                    <div>{anime.epNo}</div>
+                  </div>
                   <div className="durnt">
                     <div className="durntS">
                       {(minutestimo < 10
@@ -149,9 +163,9 @@ export default function Card(props) {
           )}
         </div>
       </Link>
-      {screenWidth > 1150 && isHovered && anime && (
+      {screenWidth && screenWidth > 1150 && isHovered && anime && (
         <MouseOverCard id={anime.data_id} />
       )}
-    </motion.div>
+    </div>
   );
 }

@@ -1,112 +1,57 @@
 import React from "react";
-import dynamic from "next/dynamic";
-const DynamicHome = dynamic(() => import("@/app/home/home"), {
-  ssr: false,
-});
+import Share from "@/component/Share/Share";
+import Hero from "@/component/Hero/hero";
+import Trending from "@/component/Trending/Trending";
+import Featured from "@/component/Featured/Featured";
+import MainContainer from "@/component/MainContainer/MainContainer";
+import { redis } from "@/lib/rediscache";
 
-export default async function page() {
-  let data = [];
-  try {
-    const resp = await fetch(
-      "https://aniwatch-api-8fti.onrender.com/anime/home",
-      { next: { revalidate: 3600 } }
-    );
-    data = await resp.json();
-  } catch (error) {
-    data = [];
+export default async function Page() {
+  const ShareUrl = "https://animoon.me/";
+
+  // Function to fetch data from the API and cache it in Redis
+  async function fetchDataWithCache(key, url) {
+    let cachedData;
+
+    // Check if the data is already cached in Redis
+    if (redis) {
+      cachedData = await redis.get(key);
+    }
+
+    // If cached data is found, return it
+    if (cachedData) {
+      return JSON.parse(cachedData);
+    }
+
+    // If not cached, fetch the data from the API
+    const response = await fetch(url, { cache: "no-store" });
+    const data = await response.json();
+
+    // Cache the fetched data in Redis with an expiration time of 1 hour
+    if (redis && data && Object.keys(data).length > 0) {
+      await redis.set(key, JSON.stringify(data), "EX", 3600);
+    }
+
+    return data;
   }
 
-  // categories -> "most-favorite", "most-popular", "subbed-anime", "dubbed-anime", "recently-updated", "recently-added", "top-upcoming", "top-airing", "movie", "special", "ova", "ona", "tv", "completed"
-  let dataAiring = [];
-  try {
-    const resp = await fetch(
-      "https://aniwatch-api-8fti.onrender.com/anime/top-airing?page=1",
-      { next: { revalidate: 3600 } }
-    );
-    dataAiring = await resp.json();
-  } catch (error) {
-    dataAiring = [];
-  }
+  // Fetch and cache data from the API routes
+  const data = await fetchDataWithCache(
+    "anime-home",
+    "https://aniwatch-api-8fti.onrender.com/anime/home"
+  );
+  const dataNew = await fetchDataWithCache(
+    "anime-recently-added",
+    "https://aniwatch-api-8fti.onrender.com/anime/recently-added?page=1"
+  );
 
-  let dataFavourite = [];
-  try {
-    const resp = await fetch(
-      "https://aniwatch-api-8fti.onrender.com/anime/most-favorite?page=1",
-      { next: { revalidate: 3600 } }
-    );
-    dataFavourite = await resp.json();
-  } catch (error) {
-    dataFavourite = [];
-  }
-
-  let dataPopular = [];
-  try {
-    const resp = await fetch(
-      "https://aniwatch-api-8fti.onrender.com/anime/most-popular?page=1",
-      { next: { revalidate: 3600 } }
-    );
-    dataPopular = await resp.json();
-  } catch (error) {
-    dataPopular = [];
-  }
-
-  let dataComp = [];
-  try {
-    const resp = await fetch(
-      "https://aniwatch-api-8fti.onrender.com/anime/completed?page=1",
-      { next: { revalidate: 3600 } }
-    );
-    dataComp = await resp.json();
-  } catch (error) {
-    dataComp = [];
-  }
-
-  let dataLatest = [];
-  try {
-    const resp = await fetch(
-      "https://aniwatch-api-8fti.onrender.com/anime/recently-updated?page=1",
-      { next: { revalidate: 3600 } }
-    );
-    dataLatest = await resp.json();
-  } catch (error) {
-    dataLatest = [];
-  }
-
-  let dataNew = [];
-  try {
-    const resp = await fetch(
-      "https://aniwatch-api-8fti.onrender.com/anime/recently-added?page=1",
-      { next: { revalidate: 3600 } }
-    );
-    dataNew = await resp.json();
-  } catch (error) {
-    dataNew = [];
-  }
-
-  let dataUpcoming = [];
-  try {
-    const resp = await fetch(
-      "https://aniwatch-api-8fti.onrender.com/anime/top-upcoming?page=1",
-      { next: { revalidate: 3600 } }
-    );
-    dataUpcoming = await resp.json();
-  } catch (error) {
-    dataUpcoming = [];
-  }
-  const ShareUrl = `https://animoon.me/`
   return (
     <div>
-      <DynamicHome
-        data={data}
-        dataAiring={dataAiring}
-        dataFavourite={dataFavourite}
-        dataPopular={dataPopular}
-        dataComp={dataComp}
-        dataLatest={dataLatest}
-        dataNew={dataNew}
-        ShareUrl={ShareUrl}
-        dataUpcoming={dataUpcoming}
-      />
+      <Hero data={data.spotlightAnimes} />
+      <Trending data={data.trendingAnimes} />
+      <Share ShareUrl={ShareUrl} />
+      <Featured data={data} />
+      <MainContainer data={data} dataNew={dataNew} />
     </div>
   );
 }

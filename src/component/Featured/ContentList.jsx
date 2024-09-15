@@ -1,25 +1,15 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import "./content-list.css";
-import { FaChevronRight, FaClosedCaptioning, FaStar } from "react-icons/fa";
+import { FaChevronRight, FaClosedCaptioning } from "react-icons/fa";
 import Link from "next/link";
-import { useInView } from "framer-motion";
-import LazyImage from "../../utils/LazyImage";
 import { AiFillAudio } from "react-icons/ai";
-import MouseOverCard from "../Card/MouseOverCard";
 export default function ContentList(props) {
-  const ref = React.useRef(null);
-  const isInView = useInView(ref, { once: true });
-  const startO = () => {
-    window.location.href = `/grid?name=${props.filterName}&heading=${props.heading}`
-  }
+
   const list = props?.data?.map((el, idx) => {
-    const startU = () => {
-      window.location.href = `/${el.id}`
-    }
     return (
       <li key={el.id} className="d-flex a-center">
-        <LazyImage
-          src={el.poster || el.images.webp.image_url}
+        <img
+          src={el.poster}
           alt="poster"
           isAnimated={false}
         />
@@ -29,7 +19,6 @@ export default function ContentList(props) {
             <Link
               href={`/${el.id}`}
               className="trans-03"
-              onClick={() => window.scrollTo({ top: 0 }) & startU()}
             >
               { el.name.length > 50 ? el.name.slice(0,50) + '...' : el.name || '' }
             </Link>
@@ -55,13 +44,12 @@ export default function ContentList(props) {
     );
   });
   return (
-    <div ref={ref} className="category-container d-flex-fd-column">
+    <div className="category-container d-flex-fd-column">
       <h4>{props.heading}</h4>
       <ul>{list}</ul>
       <Link
         href={`/grid?name=${props.filterName}&heading=${props.heading}`}
         className="view-more-link"
-        onClick={() => window.scrollTo({ top: 0 }) & startO()}
       >
         View More
         <FaChevronRight size={14} />

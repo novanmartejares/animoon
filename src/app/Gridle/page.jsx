@@ -1,9 +1,8 @@
-"use client";
 import React from "react";
 import Genre from "@/component/Genre/Genre";
 import TopTenAnime from "@/component/TopTen/TopTenAnime";
 import Share from "@/component/Share/Share";
-import LoadingSpinner from "@/component/loadingSpinner";
+import './gridle.css'
 import AnimeCollection from "@/component/MainContainer/AnimeCollection";
 export default function GenreSidebar(props) {
   return (
@@ -21,28 +20,21 @@ export default function GenreSidebar(props) {
       />
       <div
         className=" main-container d-flex  "
-        style={
-          window.innerWidth < 1081 ? { flexDirection: "column-reverse" } : {}
-        }
       >
         <div className="sidebar-wrapper d-flex-fd-column">
-          <Genre data={props.datal}/>
-          <TopTenAnime data={props.datal}/>
+          <Genre data={props.datal.genres} />
+          <TopTenAnime data={props.datal.top10Animes} />
         </div>
         <div className="collections-wrapper">
-          {!props.data ? (
-            <LoadingSpinner />
-          ) : (
-            <AnimeCollection
-              collectionName={props.fiki || props.name + ' Anime'}
-              filterName={props.cate}
-              fiki={props.fiki}
-              page={props.page}
-              data={props.data.animes}
-              totalPages={props.data.totalPages}
-              isInGrid={'true'}
-            />
-          )}
+          <AnimeCollection
+            collectionName={props.fiki || props.name + " Anime"}
+            filterName={props.cate}
+            fiki={props.fiki}
+            page={props.page}
+            data={props.data.animes}
+            totalPages={props.data.totalPages}
+            isInGrid={"true"}
+          />
         </div>
       </div>
     </>

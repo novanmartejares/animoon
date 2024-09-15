@@ -1,13 +1,10 @@
 "use client";
-import React, { useState, useEffect, Suspense } from "react";
+import React, { useState, useEffect } from "react";
 import NavBar from "@/component/Navbar/Navbar";
 import NavSidebar from "@/component/NavigationSidebar/NavSidebar";
 import Advertize from "@/component/Advertize/Advertize";
 import Footer from "@/component/Footer/Footer";
-import { easeOut, motion } from "framer-motion";
-import LoadingSpinner from "@/component/loadingSpinner";
 import Profilo from "@/component/Profilo/Profilo";
-import jwtDecode from "jwt-decode"; // Make sure to install jwt-decode
 
 export default function Nav({ children, imageUrl, firstName, emailAdd }) {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -15,46 +12,10 @@ export default function Nav({ children, imageUrl, firstName, emailAdd }) {
   const [profiIsOpen, setProfiIsOpen] = useState(false);
 
   // Function to check token expiration
-  const isTokenExpired = (token) => {
-    if (!token) return true;
-    const decodedToken = jwtDecode(token);
-    const currentTime = Date.now() / 1000;
-    return decodedToken.exp < currentTime;
-  };
 
   // Function to refresh token
-  const refreshToken = async () => {
-    try {
-      // Call your refresh token API endpoint
-      const response = await fetch("/api/refresh-token", {
-        method: "POST",
-        credentials: "include",
-      });
-      const data = await response.json();
-      if (data.token) {
-        localStorage.setItem("token", data.token); // Store the new token
-      }
-    } catch (error) {
-      console.error("Failed to refresh token", error);
-    }
-  };
 
   // Periodically check token validity
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (isTokenExpired(token)) {
-      refreshToken();
-    }
-
-    const interval = setInterval(() => {
-      const token = localStorage.getItem("token");
-      if (isTokenExpired(token)) {
-        refreshToken();
-      }
-    }, 5 * 60 * 1000); // Check every 5 minutes
-
-    return () => clearInterval(interval);
-  }, []);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -73,11 +34,7 @@ export default function Nav({ children, imageUrl, firstName, emailAdd }) {
   }, [isScrolled]);
 
   return (
-    <motion.div
-      className="app-container f-poppins"
-      animate={{ y: [-window.innerHeight / 4, 10, 0] }}
-      transition={{ duration: 0.3, ease: easeOut }}
-    >
+    <div className="app-container f-poppins">
       <NavBar
         isScrolled={isScrolled}
         sidebarIsOpen={sidebarIsOpen}
@@ -97,8 +54,8 @@ export default function Nav({ children, imageUrl, firstName, emailAdd }) {
         setSidebarIsOpen={setSidebarIsOpen}
       />
       <Advertize />
-      <Suspense fallback={<LoadingSpinner />}>{children}</Suspense>
+      {children}
       <Footer />
-    </motion.div>
+    </div>
   );
 }

@@ -14,12 +14,7 @@ export default function Footer() {
     }
     const links = alphabets.map((el) => {
       return (
-        <Link
-          href={`/a-z/alpha?sort=${el}`}
-          key={el}
-          className="alphabet-tile"
-          onClick={() => window.scrollTo({ top: 0 })}
-        >
+        <Link href={`/a-z/alpha?sort=${el}`} key={el} className="alphabet-tile">
           {el}
         </Link>
       );
@@ -27,18 +22,11 @@ export default function Footer() {
     return [...links];
   }
   const links = getAlphabets();
-  const startS = () => {
-    window.location.href = "/";
-  };
 
   return (
     <div className="footer-container d-flex-fd-column j-center">
       <div className="logo-social-links d-flex">
-        <Link
-          className="main-element"
-          href="/"
-          onClick={() => window.scrollTo({ top: 0 }) & startS()}
-        >
+        <Link className="main-element" href="/">
           <Image
             src={logo}
             className="logo"
@@ -46,10 +34,6 @@ export default function Footer() {
             width={0}
             height={0}
             sizes="3%"
-            style={{
-              width: "auto",
-              height: window.innerWidth < 700 ? "30px" : "40px",
-            }}
           />
         </Link>
         <SocialLinks />

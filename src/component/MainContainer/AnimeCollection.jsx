@@ -15,51 +15,11 @@ export default function AnimeCollection(props) {
       <Card
         key={data.id}
         data={data}
-        delay={idx * 0.05}
         collectionName={props.collectionName}
       />
     );
   });
-  const startS = () => {
-    window.location.href = props.fiki
-      ? `/grid?name=${props.filterName}&heading=${props.collectionName}&page=${props.totalPages}`
-      : `/genre?id=${props.filterName}&name=${props.filterName}&page=${props.totalPages}`;
-  };
-  const startM = () => {
-    window.location.href = props.fiki
-      ? `/grid?name=${props.filterName}&heading=${props.collectionName}&page=${
-          props.page ? parseInt(props.page) + 1 : 2
-        }`
-      : `/genre?id=${props.filterName}&name=${props.filterName}&page=${
-          props.page ? parseInt(props.page) + 1 : 2
-        }`;
-  };
-  const sukuna = () => {
-    window.location.href = props.fiki
-      ? `/grid?name=${props.filterName}&heading=${props.collectionName}&page=${
-          parseInt(props.page) - 1
-        }`
-      : `/genre?id=${props.filterName}&name=${props.filterName}&page=${
-          parseInt(props.page) - 1
-        }`;
-  };
-  const satoru = () => {
-    window.location.href = props.fiki
-      ? `/grid?name=${props.filterName}&heading=${props.collectionName}`
-      : `/genre?id=${props.filterName}&name=${props.filterName}`;
-  };
-  const startO = () => {
-    window.location.href = `/grid?name=${props.filterName}&heading=${props.collectionName}`;
-  };
-  const startDi = (ii) => {
-    window.location.href = props.fiki
-      ? ii === 1
-        ? `/grid?name=${props.filterName}&heading=${props.collectionName}`
-        : `/grid?name=${props.filterName}&heading=${props.collectionName}&page=${ii}`
-      : ii === 1
-      ? `/genre?id=${props.filterName}&name=${props.filterName}`
-      : `/genre?id=${props.filterName}&name=${props.filterName}&page=${ii}`;
-  };
+
   let useArr = [];
   if (props.page) {
     if (parseInt(props.page) >= 3) {
@@ -106,7 +66,6 @@ export default function AnimeCollection(props) {
           <Link
             href={`/grid?name=${props.filterName}&heading=${props.collectionName}`}
             className="view-more-linkop"
-            onClick={() => window.scrollTo({ top: 0 }) & startO()}
           >
             View More
             <FaChevronRight size={14} />
@@ -118,14 +77,14 @@ export default function AnimeCollection(props) {
       {props.totalPages > 1 ? (
         <div className="paginA">
           {props.page ? (
-            <div className="pagin-tile" onClick={() => satoru()}>
+            <div className="pagin-tile" >
               <FaAngleDoubleLeft />
             </div>
           ) : (
             ""
           )}
           {props.page ? (
-            <div className="pagin-tile" onClick={() => sukuna()}>
+            <div className="pagin-tile">
               <FaAngleLeft />
             </div>
           ) : (
@@ -142,20 +101,20 @@ export default function AnimeCollection(props) {
                   ? "pagin-colo"
                   : ""
               }`}
-              onClick={() => startDi(ii)}
+              
             >
               {ii}
             </div>
           ))}
           {parseInt(props.page) !== props.totalPages ? (
-            <div className="pagin-tile" onClick={() => startM()}>
+            <div className="pagin-tile">
               <FaAngleRight />
             </div>
           ) : (
             ""
           )}
           {parseInt(props.page) !== props.totalPages ? (
-            <div className="pagin-tile" onClick={() => startS()}>
+            <div className="pagin-tile">
               <FaAngleDoubleRight />
             </div>
           ) : (

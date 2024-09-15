@@ -1,11 +1,5 @@
-import dynamic from "next/dynamic";
+import SearchResults from "@/app/SearchResults/SearchResults";
 import React from "react";
-const DynamicSearch = dynamic(
-  () => import("@/app/SearchResults/SearchResults"),
-  {
-    ssr: false,
-  }
-);
 
 export async function generateMetadata({ params }) {
   const idd = "Anime";
@@ -34,7 +28,7 @@ export default async function page({ searchParams }) {
   const datal = await respl.json();
   return (
     <div>
-      <DynamicSearch data={data} datal={datal} />
+      <SearchResults data={data} datal={datal} />
     </div>
   );
 }

@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Navigation } from "swiper/modules";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import { Swiper, SwiperSlide } from "swiper/react";
@@ -7,91 +7,51 @@ import "swiper/css";
 import "swiper/css/navigation";
 import "./Trending.css";
 import Link from "next/link";
-import { easeOut, motion, useInView } from "framer-motion";
-import LazyImage from "../../utils/LazyImage";
-import useAnime from "@/hooks/useAnime";
+
 export default function Trending(props) {
-  const [data, setData] = useState(props.data.trendingAnimes);
-  let hour = props.hour;
-  let min = props.min;
-  let hours = props.hours;
-  let minute = props.minute;
-  const { getHome } = useAnime();
-  const fetchLub = async () => {
-    const dat = await getHome(hour, min, hours, minute);
-    console.log(dat);
-    if (dat.length > 0) {
-      setData(dat.trendingAnimes);
-    }
-  };
+  const [localStorageData, setLocalStorageData] = useState({});
+
   useEffect(() => {
-    fetchLub();
-  }, []);
-  const ref = useRef(null);
-  const isInView = useInView(ref);
-  const animeCard = data?.map((el, idx) => {
-    const item = el.id;
-    const title = el.name || item.titles.en_jp;
-    const startN = () => {
-      window.location.href = localStorage.getItem(`Rewo-${el.id}`)
-        ? `/watch/${localStorage.getItem(`Rewo-${el.id}`)}`
-        : `/watchi/${el.id}`;
-    };
+    // Retrieve all relevant localStorage data
+    const storageData = {};
+    props.data?.forEach((el) => {
+      storageData[el.id] = localStorage.getItem(`Rewo-${el.id}`);
+    });
+    setLocalStorageData(storageData);
+  }, [props.data]);
+
+  const animeCard = props.data?.map((el) => {
+    const title = el.name;
 
     return (
       <SwiperSlide key={el.id} className="trending-slide">
-        <div
-          initial={{ opacity: 0 }}
-          animate={isInView ? { x: [100, 10, 0], opacity: 1 } : undefined}
-          transition={{
-            duration: 0.2,
-            delay: idx * 0.1 + 1.2,
-            ease: easeOut,
-          }}
-        >
-          <motion.div
-            className="trending-item-sidebar"
-            initial={{ opacity: 0 }}
-            animate={isInView && { x: [100, 10, 0], opacity: 1 }}
-            transition={{
-              duration: 0.2,
-              delay: idx * 0.12 + 1.2,
-              ease: easeOut,
-            }}
-          >
+        <div>
+          <div className="trending-item-sidebar">
             <p className="f-poppins">
               {title.length > 15 ? title.slice(0, 15) + "..." : title}
             </p>
             <span>{el.rank > 9 ? el.rank : "0" + el.rank}</span>
-          </motion.div>
+          </div>
           <Link
-            onClick={() => window.scrollTo({ top: 0 }) & startN()}
             href={`${
-              localStorage.getItem(`Rewo-${el.id}`)
-                ? `/watch/${localStorage.getItem(`Rewo-${el.id}`)}`
+              localStorageData[el.id]
+                ? `/watch/${localStorageData[el.id]}`
                 : `/watchi/${el.id}`
             }`}
           >
-            <LazyImage
-              initial={{ opacity: 0 }}
-              animate={isInView && { x: [100, 10, 0], opacity: 1 }}
-              transition={{
-                duration: 0.2,
-                delay: idx * 0.15,
-                ease: easeOut,
-              }}
+            <img
               src={el.poster}
               className="trending-slide-img"
-              alt={title}
-              isAnimated={true}
+              alt={el.title}
             />
           </Link>
         </div>
       </SwiperSlide>
     );
   });
+
   return (
-    <div className="trending-section-wrapper" ref={ref}>
+    <div className="trending-section-wrapper">
       <h1 className="section-header">Trending</h1>
       <Swiper
         className="swiper"
@@ -136,7 +96,7 @@ export default function Trending(props) {
           <div className="btn-nextTwo swiper-controls d-flex a-center j-center">
             <FaChevronRight size={20} />
           </div>
-          <div className="btn-prevTwo swiper-controls  d-flex a-center j-center">
+          <div className="btn-prevTwo swiper-controls d-flex a-center j-center">
             <FaChevronLeft size={20} />
           </div>
         </div>

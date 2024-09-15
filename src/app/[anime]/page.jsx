@@ -1,9 +1,6 @@
 import React from "react";
-import dynamic from "next/dynamic";
 import { currentUser } from "@clerk/nextjs/server";
-const DynamicTopTen = dynamic(() => import("../../layouts/RecommendedTopTen"), {
-  ssr: true,
-});
+import RecommendedTopTen from "../../layouts/RecommendedTopTen";
 
 export async function generateMetadata({ params }) {
   const respo = await fetch(
@@ -22,14 +19,10 @@ export async function generateMetadata({ params }) {
 }
 
 export default async function page({ params }) {
-
   const idd = params.anime;
 
   const user = await currentUser();
   const firstName = user?.firstName;
-  const imageUrl = user?.imageUrl;
-  const emailAdd = user?.emailAddresses[0].emailAddress;
-  const joined = user?.createdAt;
 
   const respo = await fetch(
     `https://aniwatch-api-8fti.onrender.com/anime/info?id=${idd}`,
@@ -47,7 +40,7 @@ export default async function page({ params }) {
 
   return (
     <div>
-      <DynamicTopTen
+      <RecommendedTopTen
         uiui={datp}
         data={data}
         ShareUrl={ShareUrl}

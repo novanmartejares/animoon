@@ -7,7 +7,6 @@ import {
   FaAngleDoubleRight,
   FaAngleLeft,
   FaAngleRight,
-  FaChevronRight,
 } from "react-icons/fa";
 export default function AnimeCollection(props) {
   function getAlphabets() {
@@ -25,7 +24,6 @@ export default function AnimeCollection(props) {
           className={`alphabet-jile ${
             props.sort === el ? "alpha-selected" : ""
           }`}
-          onClick={() => window.scrollTo({ top: 0 })}
         >
           {el}
         </Link>
@@ -33,52 +31,19 @@ export default function AnimeCollection(props) {
     });
     return [...links];
   }
-  const Kingh = () => {
-    window.location.href = "/";
-  };
+
   const links = getAlphabets();
-  const startS = () => {
-    window.location.href = props.sort
-      ? `/a-z/${props.para}?sort=${props.sort}&page=${props.data.results.totalPages}`
-      : `/a-z/${props.para}?page=${props.data.results.totalPages}`;
-  };
-  const startM = () => {
-    window.location.href = props.sort
-      ? `/a-z/${props.para}?sort=${props.sort}&page=${
-          props.page ? parseInt(props.page) + 1 : 2
-        }`
-      : `/a-z/${props.para}?page=${props.page ? parseInt(props.page) + 1 : 2}`;
-  };
-  const sukuna = () => {
-    window.location.href = props.sort
-      ? `/a-z/${props.para}?sort=${props.sort}&page=${parseInt(props.page) - 1}`
-      : `/a-z/${props.para}?page=${parseInt(props.page) - 1}`;
-  };
-  const satoru = () => {
-    window.location.href = props.sort
-      ? `/a-z/${props.para}?sort=${props.sort}`
-      : `/a-z/${props.para}`;
-  };
+
   const cards = props?.data.results.data?.map((data, idx) => {
     return (
       <Card
         key={data.data_id}
         data={data}
-        delay={idx * 0.05}
         collectionName={props.collectionName}
       />
     );
   });
-  const startO = (ii) => {
-    if (props.sort) {
-      window.location.href =
-        ii === 1
-          ? `/a-z/${props.para}?sort=${props.sort}`
-          : `/a-z/${props.para}?sort=${props.sort}&page=${ii}`;
-    } else {
-      window.location.href = ii === 1 ? "/a-z/all" : `/a-z/all?page=${ii}`;
-    }
-  };
+
   let useArr = [];
   if (props.page) {
     if (parseInt(props.page) >= 3) {
@@ -118,7 +83,7 @@ export default function AnimeCollection(props) {
   return (
     <div className="anime-collection-wrapper">
       <div className="backI">
-        <Link href={"/"} onClick={() => Kingh()} className="homiK">
+        <Link href={"/"} className="homiK">
           Home
         </Link>
         <div className="colY">&#x2022;</div>
@@ -160,21 +125,46 @@ export default function AnimeCollection(props) {
       {props.data.results.totalPages > 1 ? (
         <div className="paginA">
           {props.page ? (
-            <div className="pagin-tile" onClick={() => satoru()}>
+            <Link
+              href={
+                props.sort
+                  ? `/a-z/${props.para}?sort=${props.sort}`
+                  : `/a-z/${props.para}`
+              }
+              className="pagin-tile"
+            >
               <FaAngleDoubleLeft />
-            </div>
+            </Link>
           ) : (
             ""
           )}
           {props.page ? (
-            <div className="pagin-tile" onClick={() => sukuna()}>
+            <Link
+              href={
+                props.sort
+                  ? `/a-z/${props.para}?sort=${props.sort}&page=${
+                      parseInt(props.page) - 1
+                    }`
+                  : `/a-z/${props.para}?page=${parseInt(props.page) - 1}`
+              }
+              className="pagin-tile"
+            >
               <FaAngleLeft />
-            </div>
+            </Link>
           ) : (
             ""
           )}
           {useArr.map((ii) => (
-            <div
+            <Link
+              href={
+                props.sort
+                  ? ii === 1
+                    ? `/a-z/${props.para}?sort=${props.sort}`
+                    : `/a-z/${props.para}?sort=${props.sort}&page=${ii}`
+                  : ii === 1
+                  ? "/a-z/all"
+                  : `/a-z/all?page=${ii}`
+              }
               className={`pagin-tile ${
                 props.page
                   ? ii === parseInt(props.page)
@@ -184,22 +174,39 @@ export default function AnimeCollection(props) {
                   ? "pagin-colo"
                   : ""
               }`}
-              onClick={() => startO(ii)}
             >
               {ii}
-            </div>
+            </Link>
           ))}
           {parseInt(props.page) !== props.data.results.totalPages ? (
-            <div className="pagin-tile" onClick={() => startM()}>
+            <Link
+              href={
+                props.sort
+                  ? `/a-z/${props.para}?sort=${props.sort}&page=${
+                      props.page ? parseInt(props.page) + 1 : 2
+                    }`
+                  : `/a-z/${props.para}?page=${
+                      props.page ? parseInt(props.page) + 1 : 2
+                    }`
+              }
+              className="pagin-tile"
+            >
               <FaAngleRight />
-            </div>
+            </Link>
           ) : (
             ""
           )}
           {parseInt(props.page) !== props.data.results.totalPages ? (
-            <div className="pagin-tile" onClick={() => startS()}>
+            <Link
+              href={
+                props.sort
+                  ? `/a-z/${props.para}?sort=${props.sort}&page=${props.data.results.totalPages}`
+                  : `/a-z/${props.para}?page=${props.data.results.totalPages}`
+              }
+              className="pagin-tile"
+            >
               <FaAngleDoubleRight />
-            </div>
+            </Link>
           ) : (
             ""
           )}

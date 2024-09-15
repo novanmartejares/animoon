@@ -1,12 +1,17 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { FaRandom, FaComments, FaBroadcastTower } from "react-icons/fa";
 import Link from "next/link";
-import useAnime from "@/hooks/useAnime";
+import { useRouter } from "next/navigation"; // Import useRouter
+
 export default function Actions({ isInSidebar }) {
-  const handleClick1 = () => {
-    window.location.href = `/random?rand=0`;
+  const router = useRouter(); // Initialize the router
+
+  const handleRandomClick = () => {
+    const randomId = Math.floor(Math.random() * 10000); // Generate random number
+    router.push(`/random?rand=${randomId}`); // Push the route manually
   };
+
   return (
     <div
       className="nav-actions f-poppins text-light trans-c-03 grid items-center"
@@ -27,12 +32,11 @@ export default function Actions({ isInSidebar }) {
           <p>Watch2gether</p>
         </Link>
       </span>
-      <span>
-        <div onClick={handleClick1}>
-          <FaRandom size={20} />
-          <p>Random</p>
-        </div>
+      <span onClick={handleRandomClick} style={{ cursor: "pointer" }}>
+        <FaRandom size={20} />
+        <p>Random</p>
       </span>
+
       {!isInSidebar && (
         <span>
           <Link href="/working" className="anchor">

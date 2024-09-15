@@ -1,8 +1,5 @@
-import dynamic from "next/dynamic";
+import GenreSidebar from "@/app/Gridle/page";
 import React from "react";
-const DynamicCate = dynamic(() => import("@/app/Gridle/page"), {
-  ssr: false,
-});
 
 export async function generateMetadata({ searchParams }) {
   const idd = searchParams.heading;
@@ -34,7 +31,7 @@ export default async function page({ searchParams }) {
 
   return (
     <div>
-      <DynamicCate
+      <GenreSidebar
         data={data}
         fiki={fiki}
         cate={cate}

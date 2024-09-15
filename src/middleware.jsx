@@ -44,7 +44,7 @@ export async function middleware(request) {
         )}`
       );
       const data = await resp.json();
-  
+
       return NextResponse.redirect(
         new URL(`/watch/${data.episodes[0].episodeId}`, request.url)
       );
@@ -55,11 +55,12 @@ export async function middleware(request) {
     // If all IDs are used or not fetched yet, fetch new ones
     if (currentIndex >= randomIds.length) {
       const resp = await fetch(
-        `https://aniwatch-api-8fti.onrender.com/anime/random?page=1`
+        `https://aniwatch-api-8fti.onrender.com/anime/random?page=1`,
+        { cache: "no-store" }
       );
       const data = await resp.json();
-      console.log(data)
-      randomIds = data.animes.map(anime => anime.id); // Store new IDs
+      console.log(data);
+      randomIds = data.animes.map((anime) => anime.id); // Store new IDs
       currentIndex = 0; // Reset index
     }
 

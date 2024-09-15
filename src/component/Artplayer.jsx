@@ -5,63 +5,22 @@ import artplayerPluginChapter from "artplayer-plugin-chapter";
 import Hls from "hls.js";
 import React, { useRef, useEffect, useState } from "react";
 import "@/component/artplayer.css";
-import useAnime from "@/hooks/useAnime";
 
 function ArtPlayer(props, { ...rest }) {
   const artRef = useRef(null);
   function getInstance() {
     (art) => console.info(art);
   }
-  const { getAnimeInfo } = useAnime();
   const [epSource, setEpSource] = useState(null);
   const [kpSource, setKpSource] = useState(null);
-  const [dpSource, setDpSource] = useState(null);
   const [uri, setUri] = useState("");
-  const [urt, setUrt] = useState("");
   const [newUrl, setNewUrl] = useState("");
   const [ingo, setIngo] = useState("");
 
-  useEffect(() => {
-    if (props.dataj && props.dataj.results) {
-      props.dataj.results.streamingInfo.forEach((i) => {
-        if (
-          i?.value?.decryptionResult?.server === "HD-1" &&
-          i?.value?.decryptionResult?.type === props.sub
-        ) {
-          setIngo("yes");
-          setNewUrl(i.value.decryptionResult.link);
-        }
-      });
-    }
-    setDpSource(props.dataj);
-
-    if (props.data.sources) {
-      props.data.sources.forEach((source) => {
-        setUrt(source.url);
-      });
-    }
-    setKpSource(props.data);
-    setEpSource(props.datag);
-
-    if (props.datag && props.datag.sources) {
-      props.datag.sources.forEach((source) => {
-        if (source.quality === "1080p") {
-          setUri(source.url);
-        }
-      });
-    }
-  }, [props.data, props.datag, props.dataj]);
-
-  console.log("1", props.Kaid);
-  let EngFile = "";
-  if (kpSource && kpSource.tracks) {
-    kpSource.tracks.forEach((i) => {
-      if (i.kind === "captions" && i.default) {
-        EngFile = i.file;
-      }
-    });
-  }
-  console.log(uri);
+  const filteredCaptions = props.subtitles?.filter(
+    (sub) => sub.kind === "captions"
+  );
+  // Create the subtitle selector based on available subtitles
 
   function playM3u8(video, url, art) {
     if (Hls.isSupported()) {
@@ -77,148 +36,121 @@ function ArtPlayer(props, { ...rest }) {
       art.notice.show = "Unsupported playback format: m3u8";
     }
   }
+  const localStorageWrapper = () => {
+    if (typeof window !== "undefined" && window.localStorage) {
+      return {
+        getItem: (key) => localStorage.getItem(key),
+        setItem: (key, value) => localStorage.setItem(key, value),
+        removeItem: (key) => localStorage.removeItem(key),
+        clear: () => localStorage.clear(),
+      };
+    } else {
+      // Handle the case when localStorage is not available
+      return {
+        getItem: () => null,
+        setItem: () => {},
+        removeItem: () => {},
+        clear: () => {},
+      };
+    }
+  };
 
-  let FinalUrl = uri;
-  if (!FinalUrl) {
-    setTimeout(() => {
-      FinalUrl = newUrl;
-    }, 5000);
-  }
-  if (props.gogoServe === "Anify") {
-    FinalUrl = newUrl;
-  }
+  // Usage
+  const ls = localStorageWrapper();
+  let FinalUrl;
+  FinalUrl = props.bhaiLink;
+  console.log(FinalUrl);
 
   function setPlat() {
-    localStorage.setItem(`newW-${props.epId}`, FinalUrl);
+    ls.setItem(`newW-${props.epId}`, props.bhaiLink);
   }
-  if (!localStorage.getItem(`newFa-${props.epId}`)) {
+  if (!ls.getItem(`newFa-${props.epId}`)) {
     setTimeout(setPlat, 10000);
   }
-  localStorage.setItem(`subEp-${props.anId}`, props.subEp);
-  localStorage.setItem(`dubEp-${props.anId}`, props.dubEp);
-  localStorage.setItem(`epNumo-${props.anId}`, props.epNum);
-  localStorage.setItem(`subLang-${props.anId}`, props.sub);
-  localStorage.setItem(`subEp-${props.epId}`, props.sub);
-  localStorage.setItem(`imgUra-${props.anId}`, props.imgUra);
-  localStorage.setItem(`ratUra-${props.anId}`, props.ratUra);
-  localStorage.setItem(`dura-${props.anId}`, props.durEp);
-  localStorage.setItem(`nameUra-${props.anId}`, props.nameUra);
-  localStorage.setItem(`subLang`, props.sub);
+  ls.setItem(`subEp-${props.anId}`, props.subEp);
+  ls.setItem(`dubEp-${props.anId}`, props.dubEp);
+  ls.setItem(`epNumo-${props.anId}`, props.epNum);
+  ls.setItem(`subLang-${props.anId}`, props.sub);
+  ls.setItem(`subEp-${props.epId}`, props.sub);
+  ls.setItem(`imgUra-${props.anId}`, props.imgUra);
+  ls.setItem(`ratUra-${props.anId}`, props.ratUra);
+  ls.setItem(`dura-${props.anId}`, props.durEp);
+  ls.setItem(`nameUra-${props.anId}`, props.nameUra);
+  ls.setItem(`subLang`, props.sub);
 
-  console.log("1000$", FinalUrl);
-  const dltt = localStorage.getItem("artplayer_settings");
+  console.log("1000$", props.bhaiLink);
+
+  const dltt = ls.getItem("artplayer_settings");
   const obj = {};
   obj.anId = props.anId;
   obj.epId = props.epId;
   obj.epNum = props.epNum;
   obj.sub = props.sub;
   obj.duration = dltt
-    ? JSON.parse(dltt).times[localStorage.getItem(`newW-${props.epId}`)]
-      ? JSON.parse(dltt).times[localStorage.getItem(`newW-${props.epId}`)]
+    ? JSON.parse(dltt).times[ls.getItem(`newW-${props.epId}`)]
+      ? JSON.parse(dltt).times[ls.getItem(`newW-${props.epId}`)]
       : ""
     : "";
 
-  const m3u8 = localStorage.getItem("recent-episodes")
-    ? localStorage.getItem("recent-episodes").split(",")
+  const m3u8 = ls.getItem("recent-episodes")
+    ? ls.getItem("recent-episodes").split(",")
     : [];
-  if (m3u8) {
-    m3u8.forEach((mm) => {
-      console.log(
-        "raam raam",
-        localStorage.getItem(`newW-${mm}`)
-          ? localStorage.getItem(`newW-${mm}`)
-          : ""
-      );
-    });
-  }
 
   if (dltt) {
-    if (JSON.parse(dltt).times[uri ? uri : newUrl]) {
-      if (localStorage.getItem("recent-episodes")) {
-        let vals = localStorage.getItem("recent-episodes").split(",");
+    if (JSON.parse(dltt).times[props.bhaiLink]) {
+      if (ls.getItem("recent-episodes")) {
+        let vals = ls.getItem("recent-episodes").split(",");
         if (!vals.includes(props.epId)) {
           vals.push(props.epId);
-          localStorage.setItem("recent-episodes", vals.join(","));
+          ls.setItem("recent-episodes", vals.join(","));
         }
       } else {
-        localStorage.setItem("recent-episodes", props.epId);
+        ls.setItem("recent-episodes", props.epId);
       }
     }
   }
 
-  if (localStorage.getItem("Recent-animes")) {
-    let vals = localStorage.getItem("Recent-animes").split(",");
+  if (ls.getItem("Recent-animes")) {
+    let vals = ls.getItem("Recent-animes").split(",");
     if (vals.includes(props.anId)) {
       vals = vals.filter((val) => val !== props.anId);
     }
     vals.unshift(props.anId);
-    localStorage.setItem("Recent-animes", vals.join(","));
+    ls.setItem("Recent-animes", vals.join(","));
   } else {
-    localStorage.setItem("Recent-animes", props.anId);
+    ls.setItem("Recent-animes", props.anId);
   }
 
   if (dltt) {
-    if (JSON.parse(dltt).times[!ingo ? uri : newUrl]) {
-      if (localStorage.getItem(props.anId.toString())) {
-        console.log(localStorage.getItem(props.anId.toString()));
-        let vals = localStorage.getItem(props.anId.toString()).split(",");
-        localStorage.setItem(`Rewatch-${props.anId.toString()}`, props.epId);
+    if (JSON.parse(dltt).times[props.bhaiLink]) {
+      if (ls.getItem(props.anId.toString())) {
+        console.log(ls.getItem(props.anId.toString()));
+        let vals = ls.getItem(props.anId.toString()).split(",");
+        ls.setItem(`Rewatch-${props.anId.toString()}`, props.epId);
         if (!vals.includes(props.epId.toString())) {
           vals.push(props.epId.toString());
-          localStorage.setItem(props.anId.toString(), vals.join(","));
+          ls.setItem(props.anId.toString(), vals.join(","));
         }
       } else {
-        localStorage.setItem(props.anId.toString(), props.epId.toString());
+        ls.setItem(props.anId.toString(), props.epId.toString());
       }
     }
   }
-  const quality = (epSource && epSource.sources)
-  ? (() => {
-      // Map the sources to the format required by Artplayer
-      const sources = epSource.sources.map(source => ({
-        default: false,
-        html: source.quality,
-        url: source.url,
-      }));
-
-      // Helper function to set default quality
-      const setDefaultQuality = (quality) => {
-        const qualitySource = sources.find(source => source.html === quality);
-        if (qualitySource) {
-          qualitySource.default = true;
-          return true;
-        }
-        return false;
-      };
-
-      // Set the default quality in the order of preference
-      if (!setDefaultQuality("1080p")) {
-        if (!setDefaultQuality("720p")) {
-          if (!setDefaultQuality("480p")) {
-            setDefaultQuality("360p");
-          }
-        }
-      }
-
-      return sources;
-    })()
-  : [];
 
   useEffect(() => {
     const art = new Artplayer({
       title: "hahahaha",
       container: ".artplayer-app",
-      url: quality.find(q => q.default)?.url || FinalUrl,
+      url: props.bhaiLink ? props.bhaiLink : '',
       type: "m3u8",
       plugins: [
         artplayerPluginHlsQuality({
           control: false,
-          setting: uri ? false : true,
+          setting: true,
           getResolution: (level) => level.height + "P",
           title: "Quality",
           auto: "Auto",
         }),
-
       ],
       customType: {
         m3u8: playM3u8,
@@ -252,17 +184,16 @@ function ArtPlayer(props, { ...rest }) {
       moreVideoAttr: {
         crossOrigin: "anonymous",
       },
-      quality:
-        epSource && epSource.sources
-          ? quality
-          : [],
-
+      subtitle: {
+        url: filteredCaptions && filteredCaptions.length > 0 ? filteredCaptions?.find((sub) => sub.default)?.file : '', // Set the default subtitle
+        className: "subtitle-text", // Use the CSS class
+      },
       settings: [
         {
           width: 200,
-          html: "Subtitle",
-          tooltip: "English",
-          icon: '<img width="22" heigth="22" src="https://artplayer.org/assets/img/subtitle.svg">',
+          html: "Subtitles",
+          tooltip: "Select Subtitle",
+          icon: '<img width="22" height="22" src="https://artplayer.org/assets/img/subtitle.svg">',
           selector: [
             {
               html: "Display",
@@ -274,43 +205,51 @@ function ArtPlayer(props, { ...rest }) {
                 return !item.switch;
               },
             },
-            {
-              default: true,
-              html: "English",
-              url: EngFile,
-              switch: true,
-              onSwitch: function (item) {
-                art.subtitle.switch(item.url, {
-                  name: "English",
-                  type: "vtt",
-                  encoding: "utf-8",
-                });
-                return item.switch;
-              },
-            },
+            // Conditionally include subtitles if filteredCaptions exists and has elements
+            ...(filteredCaptions && filteredCaptions.length > 0
+              ? filteredCaptions.map((sub) => ({
+                  default: sub.default || false,
+                  html: sub.label,
+                  url: sub.file,
+                  tooltip: "Off",
+                  switch: false,
+                  onSwitch: function (item) {
+                    // Reset all subtitles to "Off" and switch to false
+          
+                    // Set values for the specific index
+                    item.tooltip = item.tooltip === "Off" ? "On" : "Off";
+                    item.switch = !item.switch;
+          
+                    // Switch the selected subtitle
+                    art.subtitle.switch(item.url, {
+                      name: item.html,
+                      type: "vtt",
+                      encoding: "utf-8",
+                    });
+          
+                    return item.switch;
+                  },
+                }))
+              : [])
           ],
+          
           onSelect: function (item) {
-            console.log("Subtitle: ", item.html);
-            return item.html;
-          },
-        },
-        {
-          html: "More",
-          width: 250,
-          selector: [
-            {
-              default: true,
-              html: "720P",
-              url: uri,
-            },
-            {
-              html: "1080P",
-              url: uri,
-            },
-          ],
-          onSelect: function (item) {
-            art.switchQuality(item.url);
-            return item.html;
+            console.log("Selected Subtitle: ", item.html);
+
+            // First, reset all other subtitles' tooltips and switches
+            filteredCaptions?.forEach((sub) => {
+              sub.tooltip = "Off";
+              sub.switch = false;
+            });
+
+            // Set the selected subtitle's tooltip and switch to true
+            item.tooltip = "On";
+            item.switch = true;
+
+            return {
+              html: item.html,
+              switch: item.switch,
+            };
           },
         },
       ],
@@ -341,20 +280,27 @@ function ArtPlayer(props, { ...rest }) {
       },
     });
 
+    if (filteredCaptions?.find((sub) => sub.default)) {
+      const defaultSubtitle = filteredCaptions.find((sub) => sub.default);
+      art.subtitle.switch(defaultSubtitle.file, {
+        name: defaultSubtitle.label,
+        type: "vtt",
+        encoding: "utf-8",
+      });
+    }
+
     if (getInstance && typeof getInstance === "function") {
       getInstance(art);
     }
 
-    const dltr = localStorage.getItem("artplayer_settings");
+    const dltr = ls.getItem("artplayer_settings");
     if (dltr) {
-      let currentT = JSON.parse(dltr).times[
-        localStorage.getItem(`newW-${props.epId}`)
-      ]
-        ? JSON.parse(dltr).times[localStorage.getItem(`newW-${props.epId}`)]
+      let currentT = JSON.parse(dltr).times[ls.getItem(`newW-${props.epId}`)]
+        ? JSON.parse(dltr).times[ls.getItem(`newW-${props.epId}`)]
         : 0;
       art.on("ready", () => {
         art.currentTime = currentT;
-        localStorage.setItem(`duran-${props.anId}`, art.duration);
+        ls.setItem(`duran-${props.anId}`, art.duration);
         if (props.onn1 === "On") {
           art.play();
         } else {
@@ -390,6 +336,37 @@ function ArtPlayer(props, { ...rest }) {
           props.getData("YES");
         }
       });
+      let isPlaying = false;
+      let errorOccurred = false;
+      const timeoutDuration = 10000; // 10 seconds
+
+      // Set a timeout to check if the video starts playing and has a valid duration
+      const loadingTimeout = setTimeout(() => {
+        if (!isPlaying && (art.duration === 0 || isNaN(art.duration))) {
+          console.error(
+            "The video is stuck loading or failed to play the HLS URL, and the duration is not available."
+          );
+          props.err("yes happened");
+        }
+      }, timeoutDuration);
+
+      // Listen for the 'playing' event to detect if the video starts playing
+      art.on("playing", () => {
+        isPlaying = true;
+        clearTimeout(loadingTimeout); // Clear the timeout if the video starts playing
+      });
+
+      // Listen for the 'error' event in case of any playback errors
+      art.on("error", (event) => {
+        errorOccurred = true;
+        if (!isPlaying && (art.duration === 0 || isNaN(art.duration))) {
+          console.error(
+            "Failed to play the HLS URL and the duration is not available:",
+            event
+          );
+        }
+        clearTimeout(loadingTimeout); // Clear the timeout on error
+      });
     }
 
     return () => {
@@ -397,7 +374,7 @@ function ArtPlayer(props, { ...rest }) {
         art.destroy(false);
       }
     };
-  }, [uri, newUrl, props.sub, props.gogoServe, props.Kaid]);
+  }, [props.bhaiLink, props.sub, props.epId, props.trutie]);
 
   return (
     <>

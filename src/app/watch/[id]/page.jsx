@@ -1,10 +1,9 @@
-import dynamic from "next/dynamic";
 import React from "react";
-const DynamicWatchAnime = dynamic(() => import('../../WatchAnime/WatchAnime'), {
-  ssr: true,
-});
+import WatchAnime from "../../WatchAnime/WatchAnime";
+import { currentUser } from "@clerk/nextjs/server";
 
 export async function generateMetadata({ params }) {
+  
   const respo = await fetch(
     `https://aniwatch-api-8fti.onrender.com/anime/info?id=${params.id}`,
     { next: { revalidate: 60 } }
@@ -17,31 +16,30 @@ export async function generateMetadata({ params }) {
                       watch ${daty.anime.info.name} DUB in HD quality. You
                       can also watch under rated anime
                       on Animoon website.`,
-  }; 
+  };
 }
 
 export default async function page({ params, searchParams }) {
+
+  const user = await currentUser();
+  const firstName = user?.firstName;
+  const userName = user?.username;
+  const imageUrl = user?.imageUrl;
+  const emailAdd = user?.emailAddresses[0].emailAddress;
+
   const epis = searchParams.ep;
 
-  const time = new Date();
-
-  const hour = time.getDate();
-
-  const min = time.getMonth();
-
-  const sec = time.getFullYear();
-  let dataS = [];
+  let datao = [];
   try {
     const respS = await fetch(
-      `https://aniwatch-api-8fti.onrender.com/anime/schedule?date=${sec.toString()}-${
-        min < 10 ? 0 + min.toString() : min.toString()
-      }-${hour < 10 ? 0 + hour.toString() : hour.toString()}`,
-      { next: { revalidate: 3600 } }
+      `https://aniwatch-api-8fti.onrender.com/anime/info?id=${params.id}`,
+      { next: { revalidate: 18000 } }
     );
-    dataS = await respS.json();
+    datao = await respS.json();
   } catch (error) {
-    dataS = [];
+    datao = [];
   }
+
 
   let data = [];
   try {
@@ -56,112 +54,23 @@ export default async function page({ params, searchParams }) {
 
   const epId = epis ? params.id + "?ep=" + epis : data?.episodes[0]?.episodeId;
 
-  let datal = [];
-  try {
-    const respS = await fetch(
-      `https://aniwatch-api-8fti.onrender.com/anime/servers?episodeId=${epId}`,
-      { next: { revalidate: 18000 } }
-    );
-    datal = await respS.json();
-  } catch (error) {
-    datal = [];
-  }
-
-  const serverId =
-    datal?.sub.length > 0 ? datal?.sub[0]?.serverId : datal?.raw[0]?.serverId;
-
-  let datai = [];
-  try {
-    const respS = await fetch(
-      `https://aniwatch-api-8fti.onrender.com/anime/episode-srcs?id=${epId}&serverId=${serverId}&category=sub`,
-      { next: { revalidate: 18000 } }
-    );
-    datai = await respS.json();
-  } catch (error) {
-    datai = [];
-  }
-
-  let datao = [];
-  try {
-    const respS = await fetch(
-      `https://aniwatch-api-8fti.onrender.com/anime/info?id=${params.id}`,
-      { next: { revalidate: 18000 } }
-    );
-    datao = await respS.json();
-  } catch (error) {
-    datao = [];
-  }
-
-  let datau = [];
-  try {
-    const respS = await fetch(
-      `https://aniwatch-api-8fti.onrender.com/anime/search/suggest?q=${params.id}`,
-      { cache: "force-cache" }
-    );
-    datau = await respS.json();
-  } catch (error) {
-    datau = [];
+  let epiod = 0;
+  let i = 0;
+  for (i > 0; i < data.episodes.length; i++) {
+    if (data?.episodes[i].episodeId === epId) {
+      epiod = data.episodes[i].number;
+    }
   }
 
   let dataj = [];
   try {
     const respS = await fetch(
-      `https://vimal-two.vercel.app/api/stream?id=${epId}`,
-      { cache: "force-cache" }
+      `https://demonking-7hti.onrender.com/api/stream?id=${epId}`,
+      { cache: "no-store" }
     );
     dataj = await respS.json();
   } catch (error) {
     dataj = [];
-  }
-
-  let jname = "";
-  datau &&
-    datau.suggestions &&
-    datau?.suggestions?.map((i) => {
-      if (i.id === params.id) {
-        jname = i.jname;
-      }
-    });
-  let epiod = 0;
-  let i = 0;
-  for (i > 0; i < data.episodes.length; i++) {
-    if (data?.episodes[i].episodeId.includes(epis?.toString())) {
-      epiod = data.episodes[i].number;
-    }
-  }
-  let gogoEP = [];
-  try {
-    const gogoTP = await fetch(
-      `https://newgogo.vercel.app/${datao?.anime?.info?.name}?page=1`,
-      { next: { revalidate: 3600 } }
-    );
-    gogoEP = await gogoTP.json();
-  } catch (error) {
-    gogoEP = [];
-  }
-
-  const caseEP = gogoEP?.results?.length > 0 ? gogoEP.results[0]?.id : "";
-  let gogoId =
-    "/" +
-    (
-      jname.replace(":", "").toLocaleLowerCase().replaceAll(" ", "-") +
-      `-episode-${epiod}`
-    ).replace(/[^a-zA-Z0-9\-]/g, "");
-  let caseId = caseEP
-    ? "/" +
-      (
-        caseEP.replace(":", "").toLocaleLowerCase().replaceAll(" ", "-") +
-        `-episode-${epiod}`
-      ).replace(/[^a-zA-Z0-9\-]/g, "")
-    : gogoId;
-  let gogoST = [];
-  try {
-    let gogoSC = await fetch(`https://newgogo.vercel.app/watch/${caseId}`, {
-      cache: "force-cache",
-    });
-    gogoST = gogoSC.json();
-  } catch (error) {
-    gogoST = [];
   }
 
   let datapp = [];
@@ -177,48 +86,24 @@ export default async function page({ params, searchParams }) {
 
   const ShareUrl = `https://animoon.me/watch/${epId}`;
   const arise = "this Episode";
-  let Dubrl = "";
-  let Subrl = "";
-  dataj &&
-    dataj.results &&
-    dataj.results.streamingInfo.map((i) => {
-      if (i?.value?.decryptionResult?.server === "HD-1") {
-        if (i?.value?.decryptionResult?.type === "dub") {
-          Dubrl = i.value.decryptionResult.link;
-        }
-      }
-    });
-
-  dataj &&
-    dataj.results &&
-    dataj.results.streamingInfo.map((i) => {
-      if (i?.value?.decryptionResult?.server === "HD-1") {
-        if (i?.value?.decryptionResult?.type === "sub") {
-          Subrl = i.value.decryptionResult.link;
-        }
-      }
-    });
 
   return (
     <div>
-      <DynamicWatchAnime
+      <WatchAnime
         data={data}
-        datal={datal}
-        datai={datai}
         anId={params.id}
         datao={datao}
+        epiod={epiod}
         epId={epId}
         epis={epis}
-        jname={jname}
-        name={datao?.info?.name}
-        caseEP={caseEP}
         dataj={dataj}
-        gogoST={gogoST}
         datapp={datapp}
         ShareUrl={ShareUrl}
-        Subrl={Subrl}
-        Dubrl={Dubrl}
         arise={arise}
+        firstName={firstName}
+        userName={userName}
+        imageUrl={imageUrl}
+        emailAdd={emailAdd}
       />
     </div>
   );

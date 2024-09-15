@@ -1,8 +1,5 @@
-import dynamic from "next/dynamic";
+import SearchResults from "@/app/AZ/az";
 import React from "react";
-const DynamicAZ = dynamic(() => import("@/app/AZ/az"), {
-  ssr: false,
-});
 
 export async function generateMetadata({ params }) {
   const idd = "Anime";
@@ -21,7 +18,7 @@ export default async function page({ params, searchParams }) {
   let json = "";
   try {
     const data = await fetch(
-      `https://vimal-two.vercel.app/api/az-list/${searchParams.sort}?page=${
+      `https://demonking-7hti.onrender.com/api/az-list/${searchParams.sort}?page=${
         searchParams.page ? searchParams.page : "1"
       }`,
       {
@@ -35,7 +32,7 @@ export default async function page({ params, searchParams }) {
   let kson = "";
   try {
     const datai = await fetch(
-      `https://vimal-two.vercel.app/api/az-list?page=${
+      `https://demonking-7hti.onrender.com/api/az-list?page=${
         searchParams.page ? searchParams.page : "1"
       }`,
       {
@@ -51,7 +48,7 @@ export default async function page({ params, searchParams }) {
   const datal = await resp.json();
   return (
     <div>
-      <DynamicAZ
+      <SearchResults
         el={searchParams.sort ? json : kson}
         data={datal}
         sort={searchParams.sort}

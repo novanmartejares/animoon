@@ -4,9 +4,6 @@ import Link from "next/link";
 import "./nav-sidebar.css";
 import Actions from "../Navbar/Actions";
 export default function NavSidebar(props) {
-  function scrollToTop() {
-    window.scrollTo({ top: 0 });
-  }
   return (
     <div
       className="navigation-sidebar f-poppins"
@@ -40,7 +37,7 @@ export default function NavSidebar(props) {
         <div className="navigation-link-list">
           <ul>
             <li>
-              <Link onClick={() => scrollToTop()} href="/">
+              <Link href="/">
                 Home
               </Link>
             </li>
@@ -51,7 +48,6 @@ export default function NavSidebar(props) {
             </li>
             <li>
               <Link
-                onClick={() => scrollToTop()}
                 href="/grid?name=movie&heading=Movies"
               >
                 Movies
@@ -59,7 +55,6 @@ export default function NavSidebar(props) {
             </li>
             <li>
               <Link
-                onClick={() => scrollToTop()}
                 href="/grid?name=tv&heading=TV Series"
               >
                 TV Series
@@ -67,7 +62,6 @@ export default function NavSidebar(props) {
             </li>
             <li>
               <Link
-                onClick={() => scrollToTop()}
                 href="/grid?name=ova&heading=OVAs"
               >
                 OVAs
@@ -75,7 +69,6 @@ export default function NavSidebar(props) {
             </li>
             <li>
               <Link
-                onClick={() => scrollToTop()}
                 href="/grid?name=ona&heading=ONAs"
               >
                 ONAs
@@ -83,25 +76,21 @@ export default function NavSidebar(props) {
             </li>
             <li>
               <Link
-                onClick={() => scrollToTop()}
                 href="/grid?name=special&heading=Specials"
               >
                 Specials
               </Link>
               <Link
-                onClick={() => scrollToTop()}
                 href="/grid?name=completed&heading=Completed"
               >
                 Completed
               </Link>
               <Link
-                onClick={() => scrollToTop()}
                 href="/grid?name=dubbed-anime&heading=Dubbed Anime"
               >
                 Dubbed Anime
               </Link>
               <Link
-                onClick={() => scrollToTop()}
                 href="/grid?name=subbed-anime&heading=Subbed Anime"
               >
                 Subbed Anime
