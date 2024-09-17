@@ -11,6 +11,9 @@ import useAnime from "@/hooks/useAnime";
 import "./navbar.css";
 
 export default function NavBar(props) {
+  const handleNavigation = () => {
+    props.IsLoading(true);
+  };
   const [searchForm, setSearchForm] = useState({ name: "" });
   const [floatSearchIsVisible, setFloatSearchIsVisible] = useState(false);
 
@@ -69,7 +72,7 @@ export default function NavBar(props) {
             onClick={handleSidebarClick}
           />
           <div className="logo-wrapper a-center d-flex">
-            <Link href="/" passHref>
+            <Link href="/" passHref onClick={handleNavigation}>
               <div style={{ width: "auto", height: "40px" }}>
                 <Image
                   width={0}
@@ -119,7 +122,7 @@ export default function NavBar(props) {
           {searchForm.name !== "" && data.suggestions ? (
             <div className="raam-one flex flex-col gap-2">
               {data.suggestions.map((i) => (
-                <Link key={i.id} href={`/${i.id}`} passHref>
+                <Link key={i.id} href={`/${i.id}`} passHref onClick={handleNavigation}>
                   <div
                     onClick={() => setSearchForm({ name: "" })}
                     className="suggestion-item flex gap-2"
@@ -147,7 +150,7 @@ export default function NavBar(props) {
                   </div>
                 </Link>
               ))}
-              <Link href={`/search?name=${searchForm.name}`} passHref>
+              <Link href={`/search?name=${searchForm.name}`} passHref onClick={handleNavigation}>
                 <div
                   className="vire flex items-center gap-2"
                   onClick={() => setSearchForm({ name: "" })}
@@ -159,7 +162,7 @@ export default function NavBar(props) {
           ) : null}
         </div>
         <SocialLinks />
-        <Actions isInSidebar={false} />
+        <Actions isInSidebar={false} IsLoading={props.IsLoading}/>
         <div className="righty">
           <div className="user-profile-nots a-center j-center d-flex trans-c-03">
             <div className="floating">
@@ -176,7 +179,7 @@ export default function NavBar(props) {
               alt="user"
             />
           ) : (
-            <Link href="/sign-in" passHref>
+            <Link href="/sign-in" passHref onClick={handleNavigation}>
               <div className="Lognn">LogIn</div>
             </Link>
           )}
@@ -202,7 +205,7 @@ export default function NavBar(props) {
           {searchForm.name !== "" && data.suggestions ? (
             <div className="raam flex flex-col gap-2">
               {data.suggestions.map((i) => (
-                <Link key={i.id} href={`/${i.id}`} passHref>
+                <Link key={i.id} href={`/${i.id}`} passHref onClick={handleNavigation}>
                   <div
                     onClick={() => setSearchForm({ name: "" })}
                     className="suggestion-item flex gap-2"
@@ -219,7 +222,7 @@ export default function NavBar(props) {
                   </div>
                 </Link>
               ))}
-              <Link href={`/search?name=${searchForm.name}`} passHref>
+              <Link href={`/search?name=${searchForm.name}`} passHref onClick={handleNavigation}>
                 <div
                   className="vire flex items-center gap-2"
                   onClick={() => setSearchForm({ name: "" })}

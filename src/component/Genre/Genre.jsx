@@ -7,6 +7,9 @@ export default function Genre(props) {
   const [isCollapsed, setIsCollapsed] = useState(true);
 
   const list = isCollapsed ? props.data?.slice(0, 18) : props.data;
+  const handleNavigation = () => {
+    props.IsLoading(true);
+  };
 
   const genreList = list?.map((el, idx) => {
 
@@ -14,6 +17,7 @@ export default function Genre(props) {
       <Link
         key={idx}
         href={`/genre?id=${el}&name=${el}`}
+        onClick={handleNavigation}
       >
         <div>{el}</div>
       </Link>

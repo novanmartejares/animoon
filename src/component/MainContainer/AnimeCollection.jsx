@@ -10,13 +10,12 @@ import {
   FaChevronRight,
 } from "react-icons/fa";
 export default function AnimeCollection(props) {
+  const handleNavigation = () => {
+    props.IsLoading(true);
+  };
   const cards = props?.data?.map((data, idx) => {
     return (
-      <Card
-        key={data.id}
-        data={data}
-        collectionName={props.collectionName}
-      />
+      <Card key={data.id} data={data} collectionName={props.collectionName} IsLoading={props.IsLoading}/>
     );
   });
 
@@ -66,6 +65,7 @@ export default function AnimeCollection(props) {
           <Link
             href={`/grid?name=${props.filterName}&heading=${props.collectionName}`}
             className="view-more-linkop"
+            onClick={handleNavigation}
           >
             View More
             <FaChevronRight size={14} />
@@ -77,21 +77,50 @@ export default function AnimeCollection(props) {
       {props.totalPages > 1 ? (
         <div className="paginA">
           {props.page ? (
-            <div className="pagin-tile" >
+            <Link
+              href={
+                props.fiki
+                  ? `/grid?name=${props.filterName}&heading=${props.collectionName}`
+                  : `/genre?id=${props.filterName}&name=${props.filterName}`
+              }
+              className="pagin-tile"
+              onClick={handleNavigation}
+            >
               <FaAngleDoubleLeft />
-            </div>
+            </Link>
           ) : (
             ""
           )}
           {props.page ? (
-            <div className="pagin-tile">
+            <Link
+              href={
+                props.fiki
+                  ? `/grid?name=${props.filterName}&heading=${
+                      props.collectionName
+                    }&page=${parseInt(props.page) - 1}`
+                  : `/genre?id=${props.filterName}&name=${
+                      props.filterName
+                    }&page=${parseInt(props.page) - 1}`
+              }
+              className="pagin-tile"
+              onClick={handleNavigation}
+            >
               <FaAngleLeft />
-            </div>
+            </Link>
           ) : (
             ""
           )}
           {useArr.map((ii) => (
-            <div
+            <Link
+              href={
+                props.fiki
+                  ? ii === 1
+                    ? `/grid?name=${props.filterName}&heading=${props.collectionName}`
+                    : `/grid?name=${props.filterName}&heading=${props.collectionName}&page=${ii}`
+                  : ii === 1
+                  ? `/genre?id=${props.filterName}&name=${props.filterName}`
+                  : `/genre?id=${props.filterName}&name=${props.filterName}&page=${ii}`
+              }
               className={`pagin-tile ${
                 props.page
                   ? ii === parseInt(props.page)
@@ -101,22 +130,42 @@ export default function AnimeCollection(props) {
                   ? "pagin-colo"
                   : ""
               }`}
-              
+              onClick={handleNavigation}
             >
               {ii}
-            </div>
+            </Link>
           ))}
           {parseInt(props.page) !== props.totalPages ? (
-            <div className="pagin-tile">
+            <Link
+              href={
+                props.fiki
+                  ? `/grid?name=${props.filterName}&heading=${
+                      props.collectionName
+                    }&page=${props.page ? parseInt(props.page) + 1 : 2}`
+                  : `/genre?id=${props.filterName}&name=${
+                      props.filterName
+                    }&page=${props.page ? parseInt(props.page) + 1 : 2}`
+              }
+              className="pagin-tile"
+              onClick={handleNavigation}
+            >
               <FaAngleRight />
-            </div>
+            </Link>
           ) : (
             ""
           )}
           {parseInt(props.page) !== props.totalPages ? (
-            <div className="pagin-tile">
+            <Link
+              href={
+                props.fiki
+                  ? `/grid?name=${props.filterName}&heading=${props.collectionName}&page=${props.totalPages}`
+                  : `/genre?id=${props.filterName}&name=${props.filterName}&page=${props.totalPages}`
+              }
+              className="pagin-tile"
+              onClick={handleNavigation}
+            >
               <FaAngleDoubleRight />
-            </div>
+            </Link>
           ) : (
             ""
           )}

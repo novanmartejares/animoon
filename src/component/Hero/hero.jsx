@@ -18,7 +18,6 @@ import { AiFillAudio } from "react-icons/ai";
 import { Navigation, Pagination, Autoplay } from "swiper/modules";
 import Link from "next/link";
 
-// configure Swiper to use modules
 export default function Hero(props) {
   const [localStorageData, setLocalStorageData] = useState({});
 
@@ -30,6 +29,10 @@ export default function Hero(props) {
     });
     setLocalStorageData(storageData);
   }, [props.data]);
+
+  const handleNavigation = () => {
+    props.IsLoading(true);
+  };
 
   const heroSlide =
     props.data &&
@@ -67,8 +70,7 @@ export default function Hero(props) {
                     </span>
                     {el.episodes.dub ? (
                       <span className="episode-count-dub">
-                        <AiFillAudio size={14} />{" "}
-                        {el.episodes.dub || "Unknown"}
+                        <AiFillAudio size={14} /> {el.episodes.dub || "Unknown"}
                       </span>
                     ) : (
                       ""
@@ -81,20 +83,16 @@ export default function Hero(props) {
                 </p>
                 <div className="button-wrapper">
                   <Link
-                    href={
-                      storedId
-                        ? `/watch/${storedId}`
-                        : `/watchi/${el.id}`
-                    }
+                    href={storedId ? `/watch/${storedId}` : `/watchi/${el.id}`}
                     className="btn-primary hero-button"
-                    shallow
+                    onClick={handleNavigation} // Show loading indicator on click
                   >
                     <FaPlayCircle size={12} /> Watch Now
                   </Link>
                   <Link
                     href={`/${el.id}`}
                     className="btn-secondary hero-button"
-                    shallow
+                    onClick={handleNavigation} // Show loading indicator on click
                   >
                     Details <FaChevronRight size={12} />
                   </Link>
@@ -108,8 +106,8 @@ export default function Hero(props) {
     });
 
   return (
-    <div className="carousel slide" style={{ position: "relative" }}>
-      <>
+    <>
+      <div className="carousel slide" style={{ position: "relative" }}>
         <Swiper
           slidesPerView={1}
           pagination={{
@@ -141,7 +139,7 @@ export default function Hero(props) {
             <FaChevronLeft size={15} />
           </button>
         </div>
-      </>
-    </div>
+      </div>
+    </>
   );
 }

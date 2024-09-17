@@ -5,6 +5,7 @@ import Trending from "@/component/Trending/Trending";
 import Featured from "@/component/Featured/Featured";
 import MainContainer from "@/component/MainContainer/MainContainer";
 import { redis } from "@/lib/rediscache";
+import Home from "@/app/home/Home";
 
 export default async function Page() {
   const ShareUrl = "https://animoon.me/";
@@ -47,11 +48,7 @@ export default async function Page() {
 
   return (
     <div>
-      <Hero data={data.spotlightAnimes} />
-      <Trending data={data.trendingAnimes} />
-      <Share ShareUrl={ShareUrl} />
-      <Featured data={data} />
-      <MainContainer data={data} dataNew={dataNew} />
+      <Home data={data} ShareUrl={ShareUrl} dataNew={dataNew} />
     </div>
   );
 }

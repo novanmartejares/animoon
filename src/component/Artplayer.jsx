@@ -17,9 +17,9 @@ function ArtPlayer(props, { ...rest }) {
   const [newUrl, setNewUrl] = useState("");
   const [ingo, setIngo] = useState("");
 
-  const filteredCaptions = props.subtitles?.filter(
-    (sub) => sub.kind === "captions"
-  );
+  const filteredCaptions = props.subtitles
+    ? props.subtitles.filter((sub) => sub.kind === "captions")
+    : "";
   // Create the subtitle selector based on available subtitles
 
   function playM3u8(video, url, art) {
@@ -141,7 +141,7 @@ function ArtPlayer(props, { ...rest }) {
     const art = new Artplayer({
       title: "hahahaha",
       container: ".artplayer-app",
-      url: props.bhaiLink ? props.bhaiLink : '',
+      url: props.bhaiLink ? props.bhaiLink : "",
       type: "m3u8",
       plugins: [
         artplayerPluginHlsQuality({
@@ -185,7 +185,10 @@ function ArtPlayer(props, { ...rest }) {
         crossOrigin: "anonymous",
       },
       subtitle: {
-        url: filteredCaptions && filteredCaptions.length > 0 ? filteredCaptions?.find((sub) => sub.default)?.file : '', // Set the default subtitle
+        url:
+          filteredCaptions && filteredCaptions.length > 0
+            ? filteredCaptions?.find((sub) => sub.default)?.file
+            : "", // Set the default subtitle
         className: "subtitle-text", // Use the CSS class
       },
       settings: [
@@ -215,24 +218,24 @@ function ArtPlayer(props, { ...rest }) {
                   switch: false,
                   onSwitch: function (item) {
                     // Reset all subtitles to "Off" and switch to false
-          
+
                     // Set values for the specific index
                     item.tooltip = item.tooltip === "Off" ? "On" : "Off";
                     item.switch = !item.switch;
-          
+
                     // Switch the selected subtitle
                     art.subtitle.switch(item.url, {
                       name: item.html,
                       type: "vtt",
                       encoding: "utf-8",
                     });
-          
+
                     return item.switch;
                   },
                 }))
-              : [])
+              : []),
           ],
-          
+
           onSelect: function (item) {
             console.log("Selected Subtitle: ", item.html);
 
@@ -255,19 +258,19 @@ function ArtPlayer(props, { ...rest }) {
       ],
       highlight: [
         {
-          time: parseInt(props.data?.intro?.start),
+          time: parseInt(props.introd?.start),
           text: "Opening Start",
         },
         {
-          time: parseInt(props.data?.intro?.end),
+          time: parseInt(props.introd?.end),
           text: "Opening End",
         },
         {
-          time: parseInt(props.data?.outro?.start),
+          time: parseInt(props.outrod?.start),
           text: "Ending Start",
         },
         {
-          time: parseInt(props.data?.outro?.end),
+          time: parseInt(props.outrod?.end),
           text: "Ending End",
         },
       ],
@@ -279,14 +282,15 @@ function ArtPlayer(props, { ...rest }) {
           '<img width="16" height="16" src="https://artplayer.org/assets/img/indicator.svg">',
       },
     });
-
-    if (filteredCaptions?.find((sub) => sub.default)) {
-      const defaultSubtitle = filteredCaptions.find((sub) => sub.default);
-      art.subtitle.switch(defaultSubtitle.file, {
-        name: defaultSubtitle.label,
-        type: "vtt",
-        encoding: "utf-8",
-      });
+    if (filteredCaptions && filteredCaptions.lengt > 0) {
+      if (filteredCaptions?.find((sub) => sub.default)) {
+        const defaultSubtitle = filteredCaptions.find((sub) => sub.default);
+        art.subtitle.switch(defaultSubtitle.file, {
+          name: defaultSubtitle.label,
+          type: "vtt",
+          encoding: "utf-8",
+        });
+      }
     }
 
     if (getInstance && typeof getInstance === "function") {
@@ -310,16 +314,16 @@ function ArtPlayer(props, { ...rest }) {
       art.on("video:timeupdate", () => {
         if (props.onn3 === "On") {
           if (
-            art.currentTime > props.data?.intro?.start &&
-            art.currentTime < props.data?.intro?.end
+            art.currentTime > props.introd?.start &&
+            art.currentTime < props.introd?.end
           ) {
-            art.seek = props.data?.intro?.end;
+            art.seek = props.introd?.end;
           }
           if (
-            art.currentTime > props.data?.outro?.start &&
-            art.currentTime < props.data?.outro?.end
+            art.currentTime > props.outrod?.start &&
+            art.currentTime < props.outrod?.end
           ) {
-            art.seek = props.data?.outro?.end;
+            art.seek = props.outrod?.end;
           }
         }
       });

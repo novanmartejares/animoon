@@ -4,7 +4,8 @@ import TopTenAnime from "@/component/TopTen/TopTenAnime";
 import AnimeCollection from "../component/MainContainer/AnimeCollection";
 import Genre from "@/component/Genre/Genre";
 import Details from "@/component/AnimeInfo/AnimeInfoRandom";
-import './recom.css'
+import "./recom.css";
+import LoadingSpinner from "@/component/loadingSpinner";
 
 export default function RecommendedTopTen(props) {
   const [dlta, setDlta] = useState([]);
@@ -17,38 +18,58 @@ export default function RecommendedTopTen(props) {
     console.log("ANIME", dlta);
   }
 
+  const [isLoading, setIsLoading] = useState(false);
+  const IsLoading = (data) => {
+    if (data) {
+      setIsLoading(true);
+      setTimeout(() => {
+        setIsLoading(false);
+      }, [20000]);
+    }
+  };
+
   return (
     <>
-      {props.doIt ? (
-        ""
+      {isLoading ? (
+        <LoadingSpinner />
       ) : (
-        <Details
-          lata={getData}
-          uiui={props.uiui}
-          rand={props.rand}
-          ShareUrl={props.ShareUrl}
-          arise={props.arise}
-          firstName={props.firstName}
-        />
-      )}
+        <>
+          {props.doIt ? (
+            ""
+          ) : (
+            <Details
+              lata={getData}
+              uiui={props.uiui}
+              rand={props.rand}
+              ShareUrl={props.ShareUrl}
+              arise={props.arise}
+              firstName={props.firstName}
+              IsLoading={IsLoading}
+            />
+          )}
 
-      <div
-        className=" main-container jik d-flex"
-      >
-        <div className="sidebar-wrapper d-flex-fd-column">
-          <Genre data={props.data.genres} />
-          <TopTenAnime data={props.data.top10Animes} />
-        </div>
-        <div
-          className=" collections-wrapper jik d-flex  "
-        >
-          <AnimeCollection
-            collectionName="Recommended for you"
-            data={props.doIt ? props.datap?.recommendedAnimes : dlta}
-            isInGrid={"true"}
-          />
-        </div>
-      </div>
+          <div className=" main-container jik d-flex">
+            <div className="sidebar-wrapper d-flex-fd-column">
+              <Genre
+                data={props.data.genres}
+                IsLoading={props.IsLoading ? props.IsLoading : IsLoading}
+              />
+              <TopTenAnime
+                data={props.data.top10Animes}
+                IsLoading={props.IsLoading ? props.IsLoading : IsLoading}
+              />
+            </div>
+            <div className=" collections-wrapper jik d-flex  ">
+              <AnimeCollection
+                collectionName="Recommended for you"
+                data={props.doIt ? props.datap?.recommendedAnimes : dlta}
+                IsLoading={props.IsLoading ? props.IsLoading : IsLoading}
+                isInGrid={"true"}
+              />
+            </div>
+          </div>
+        </>
+      )}
     </>
   );
 }

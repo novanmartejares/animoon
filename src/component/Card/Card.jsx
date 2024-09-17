@@ -70,6 +70,10 @@ export default function Card(props) {
   
   let percentage = calculatePercentage(totalSecondstimo, totalSeconds);
 
+  const handleNavigation = () => {
+    props.IsLoading(true);
+  };
+
   return (
     <div
       onMouseOver={() => setIsHovered(true)}
@@ -84,6 +88,8 @@ export default function Card(props) {
               : `/watchi/${anime.id}`
             : `/${anime.id}`
         }`}
+        prefetch
+        onClick={handleNavigation}
         key={anime.id}
         className="anime-card d-flex"
       >

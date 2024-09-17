@@ -4,6 +4,9 @@ import { FaChevronRight, FaClosedCaptioning } from "react-icons/fa";
 import Link from "next/link";
 import { AiFillAudio } from "react-icons/ai";
 export default function ContentList(props) {
+  const handleNavigation = () => {
+    props.IsLoading(true);
+  };
 
   const list = props?.data?.map((el, idx) => {
     return (
@@ -49,7 +52,9 @@ export default function ContentList(props) {
       <ul>{list}</ul>
       <Link
         href={`/grid?name=${props.filterName}&heading=${props.heading}`}
+        prefetch
         className="view-more-link"
+        onClick={handleNavigation}
       >
         View More
         <FaChevronRight size={14} />

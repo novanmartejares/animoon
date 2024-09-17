@@ -16,6 +16,32 @@ export default function Details(props) {
     setIsOpen(!isOpen);
   };
 
+  const localStorageWrapper = () => {
+    if (typeof window !== "undefined" && window.localStorage) {
+      return {
+        getItem: (key) => localStorage.getItem(key),
+        setItem: (key, value) => localStorage.setItem(key, value),
+        removeItem: (key) => localStorage.removeItem(key),
+        clear: () => localStorage.clear(),
+      };
+    } else {
+      // Handle the case when localStorage is not available
+      return {
+        getItem: () => null,
+        setItem: () => {},
+        removeItem: () => {},
+        clear: () => {},
+      };
+    }
+  };
+
+  // Usage
+  const ls = localStorageWrapper();
+
+  const handleNavigation = () => {
+    props.IsLoading(true);
+  };
+
   const handleOptionClick = (option) => {
     if (!props.firstName) {
       window.location.href = "/user/watch-list";
@@ -88,20 +114,6 @@ export default function Details(props) {
     };
   }, []);
 
-  const { getRandomAnime } = useAnime();
-  const hasFetched = useRef(false);
-
-  useEffect(() => {
-    const fetchLub = async () => {
-      if (!hasFetched.current) {
-        const dat = await getRandomAnime();
-        console.log("Animex", dat);
-        hasFetched.current = true;
-        setData(dat);
-      }
-    };
-    fetchLub();
-  }, []);
 
   const gnt = props.uiui?.anime;
   if (props.uiui) {
@@ -115,6 +127,7 @@ export default function Details(props) {
         className="genre-button"
         key={genre}
         href={`/genre?id=${genre}&name=${genre}`}
+        onClick={handleNavigation}
       >
         {genre}
       </Link>
@@ -123,7 +136,11 @@ export default function Details(props) {
 
   const producers = gnt?.moreInfo?.producers?.map((producer) => {
     return (
-      <Link key={producer} href={`/producer?name=${producer}`}>
+      <Link
+        key={producer}
+        href={`/producer?name=${producer}`}
+        onClick={handleNavigation}
+      >
         {producer + ", "}
       </Link>
     );
@@ -132,7 +149,7 @@ export default function Details(props) {
   const studios = gnt?.moreInfo?.studios;
   const synonyms = gnt?.info.name;
 
-  return gnt?.info?.poster ? (
+  return (
     <div className="details-container">
       <div className="details-header">
         <div className="details-header-primary">
@@ -152,7 +169,7 @@ export default function Details(props) {
 
             <div className="anime-details-content d-flex-fd-column">
               <div className="flex gap-1 items-center specif">
-                <Link href={"/"}>
+                <Link href={"/"} onClick={handleNavigation}>
                   <div className="homo">Home</div>
                 </Link>
                 <div className="dotoi">&#x2022;</div>
@@ -187,12 +204,12 @@ export default function Details(props) {
               <div className="button-wrapper">
                 <Link
                   href={`${
-                    localStorage.getItem(`Rewo-${gnt.info.id}`)
-                      ? `/watch/${localStorage.getItem(`Rewo-${gnt.info.id}`)}`
+                    ls.getItem(`Rewo-${gnt.info.id}`)
+                      ? `/watch/${ls.getItem(`Rewo-${gnt.info.id}`)}`
                       : `/watchi/${gnt.info.id}`
                   }`}
                   className="btn-primary hero-button"
-                  onClick={() => startN()}
+                  onClick={handleNavigation}
                 >
                   <FaPlayCircle size={12} /> Watch Now
                 </Link>
@@ -298,7 +315,5 @@ export default function Details(props) {
         </div>
       </div>
     </div>
-  ) : (
-    <LoadingSpinner />
   );
 }

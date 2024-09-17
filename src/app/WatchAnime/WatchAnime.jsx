@@ -6,6 +6,7 @@ import RecommendedTopTen from "@/layouts/RecommendedTopTen";
 import Share from "@/component/Share/Share";
 import Link from "next/link";
 import { AiFillAudio } from "react-icons/ai";
+import loading from "../../../public/placeholder.gif";
 import {
   FaBackward,
   FaClosedCaptioning,
@@ -16,8 +17,22 @@ import Comments from "@/component/Comments/Comments";
 import { HiOutlineSignal } from "react-icons/hi2";
 import ArtPlayer from "@/component/Artplayer";
 import { useRouter } from "next/navigation";
+import LoadingSpinner from "@/component/loadingSpinner";
+import Image from "next/image";
 export default function WatchAnime(props) {
   const router = useRouter();
+  const [isLoading, setIsLoading] = useState(false);
+  const IsLoading = (data) => {
+    if (data) {
+      setIsLoading(true);
+      setTimeout(() => {
+        setIsLoading(false);
+      }, [20000]);
+    }
+  };
+  const handleNavigation = () => {
+    IsLoading(true);
+  };
   const localStorageWrapper = () => {
     if (typeof window !== "undefined" && window.localStorage) {
       return {
@@ -280,203 +295,354 @@ export default function WatchAnime(props) {
               info.value.decryptionResult.server === "Vidstreaming"
           )?.value.decryptionResult.source.sources[0].file
         );
+        setSubtitles(
+          props.dataj.results.streamingInfo.find(
+            (info) =>
+              (info.value.decryptionResult?.type === "sub" ||
+                info.value.decryptionResult?.type === "raw") &&
+              info.value.decryptionResult.server === "Vidstreaming"
+          )?.value.decryptionResult.source.tracks
+        );
+        setIntrod(
+          props.dataj.results.streamingInfo.find(
+            (info) =>
+              (info.value.decryptionResult?.type === "sub" ||
+                info.value.decryptionResult?.type === "raw") &&
+              info.value.decryptionResult.server === "Vidstreaming"
+          )?.value.decryptionResult.source.intro
+        );
+        setOutrod(
+          props.dataj.results.streamingInfo.find(
+            (info) =>
+              (info.value.decryptionResult?.type === "sub" ||
+                info.value.decryptionResult?.type === "raw") &&
+              info.value.decryptionResult.server === "Vidstreaming"
+          )?.value.decryptionResult.source.outro
+        );
       }
     }
   }, [trutie]);
 
   return (
     <>
-      <div>
-        <div style={{ marginTop: "65px" }} className="watch-container">
-          <div className="flex gap-1 items-center pecif">
-            <Link href={"/"}>
-              <div className="omo">Home</div>
-            </Link>
-            <div className="otoi">&#x2022;</div>
-            <div className="omo">{props.datao?.anime?.info.stats.type}</div>
-            <div className="oto">&#x2022;</div>
-            <div className="amo">Watching {props.datao?.anime?.info?.name}</div>
-          </div>
-          <div className="d-flex new-con">
-            <img
-              className="watch-container-background"
-              src={props.datao?.anime?.info?.poster}
-              alt="pop"
-            />
-            <div className="media-center d-flex">
-              <div
-                className={`${
-                  episodeList?.length <= 24
-                    ? "episode-container"
-                    : "episode-container-blocks"
-                }`}
-              >
-                <p>List of Episodes:</p>
+      {isLoading ? (
+        <LoadingSpinner />
+      ) : (
+        <div>
+          <div style={{ marginTop: "65px" }} className="watch-container">
+            <div className="flex gap-1 items-center pecif">
+              <Link href={"/"} onClick={handleNavigation}>
+                <div className="omo">Home</div>
+              </Link>
+              <div className="otoi">&#x2022;</div>
+              <div className="omo">{props.datao?.anime?.info.stats.type}</div>
+              <div className="oto">&#x2022;</div>
+              <div className="amo">
+                Watching {props.datao?.anime?.info?.name}
+              </div>
+            </div>
+            <div className="d-flex new-con">
+              <img
+                className="watch-container-background"
+                src={props.datao?.anime?.info?.poster}
+                alt="pop"
+              />
+              <div className="media-center d-flex">
                 <div
                   className={`${
                     episodeList?.length <= 24
-                      ? "episode-tiles-wrapper"
-                      : "episode-tiles-wrapper-blocks"
-                  } d-flex a-center`}
+                      ? "episode-container"
+                      : "episode-container-blocks"
+                  }`}
                 >
-                  {episodeButtons}
+                  <p>List of Episodes:</p>
+                  <div
+                    className={`${
+                      episodeList?.length <= 24
+                        ? "episode-tiles-wrapper"
+                        : "episode-tiles-wrapper-blocks"
+                    } d-flex a-center`}
+                  >
+                    {episodeButtons}
+                  </div>
                 </div>
-              </div>
-              <div className="video-player">
-                <div className="hls-container">
-                  {clickedId === props.epId && props.dataj ? (
-                    <ArtPlayer
-                      data={props.data}
-                      epId={props.epId}
-                      anId={props.anId}
-                      epNumb={epNumb}
-                      bhaiLink={bhaiLink}
-                      trutie={trutie}
-                      epNum={epiod}
-                      selectedServer={selectedServer}
-                      onn1={onn1}
-                      onn2={onn2}
-                      onn3={onn3}
-                      getData={getData}
-                      err={err}
-                      subtitles={subtitles}
-                      introd={introd}
-                      outrod={outrod}
-                      durEp={props.datao.anime.moreInfo.duration}
-                      subEp={props.datao.anime.info.stats.episodes.sub}
-                      dubEp={props.datao.anime.info.stats.episodes.dub}
-                      ratUra={props.datao.anime.info.stats.rating}
-                      imgUra={props.datao.anime.info.poster}
-                      nameUra={props?.datao?.anime?.info?.name}
-                      sub={sub}
-                    />
-                  ) : (
-                    ""
-                  )}
-                </div>
+                <div className="video-player">
+                  <div className="hls-container">
+                    {clickedId === props.epId && props.dataj ? (
+                      <ArtPlayer
+                        data={props.data}
+                        epId={props.epId}
+                        anId={props.anId}
+                        epNumb={epNumb}
+                        bhaiLink={bhaiLink}
+                        trutie={trutie}
+                        epNum={epiod}
+                        selectedServer={selectedServer}
+                        onn1={onn1}
+                        onn2={onn2}
+                        onn3={onn3}
+                        getData={getData}
+                        err={err}
+                        subtitles={subtitles}
+                        introd={introd}
+                        outrod={outrod}
+                        durEp={props.datao.anime.moreInfo.duration}
+                        subEp={props.datao.anime.info.stats.episodes.sub}
+                        dubEp={props.datao.anime.info.stats.episodes.dub}
+                        ratUra={props.datao.anime.info.stats.rating}
+                        imgUra={props.datao.anime.info.poster}
+                        nameUra={props?.datao?.anime?.info?.name}
+                        sub={sub}
+                        IsLoading={IsLoading}
+                      />
+                    ) : (
+                      <div
+                        className="d-flex a-center j-center"
+                        style={{ height: "100%" }}
+                      >
+                        <Image
+                          src={loading}
+                          style={{
+                            display: "block",
+                            height: 100,
+                            width: 100,
+                            margin: "auto",
+                          }}
+                        />
+                      </div>
+                    )}
+                  </div>
 
-                <div className="server-container d-flex-fd-column">
-                  <div className="server-tile-wrapper d-flex-fd-column">
-                    <div className="flex items-center allum">
-                      <div className="flex gap-x-3 flex-wrap">
-                        <div className="flex gap-2">
-                          <div className="autoo flex gap-1">
-                            <span>Auto</span>
-                            <span>Play</span>
+                  <div className="server-container d-flex-fd-column">
+                    <div className="server-tile-wrapper d-flex-fd-column">
+                      <div className="flex items-center allum">
+                        <div className="flex gap-x-3 flex-wrap">
+                          <div className="flex gap-2">
+                            <div className="autoo flex gap-1">
+                              <span>Auto</span>
+                              <span>Play</span>
+                            </div>
+                            <div
+                              onClick={handleOn1}
+                              className={`ress ${
+                                onn1 === "On" ? "ressOn" : "ressOff"
+                              }`}
+                            >
+                              {onn1}
+                            </div>
                           </div>
-                          <div
-                            onClick={handleOn1}
-                            className={`ress ${
-                              onn1 === "On" ? "ressOn" : "ressOff"
-                            }`}
-                          >
-                            {onn1}
+                          <div className="flex gap-2">
+                            <div className="autoo flex gap-1">
+                              <span>Auto</span>
+                              <span>Next</span>
+                            </div>
+                            <div
+                              onClick={handleOn2}
+                              className={`ress ${
+                                onn2 === "On" ? "ressOn" : "ressOff"
+                              }`}
+                            >
+                              {onn2}
+                            </div>
+                          </div>
+                          <div className="flex gap-2">
+                            <div className="autoo flex gap-1">
+                              <span>Auto</span>
+                              <span>Skip</span>
+                              <span>OP/ED</span>
+                            </div>
+                            <div
+                              onClick={handleOn3}
+                              className={`ress ${
+                                onn3 === "On" ? "ressOn" : "ressOff"
+                              }`}
+                            >
+                              {onn3}
+                            </div>
                           </div>
                         </div>
-                        <div className="flex gap-2">
-                          <div className="autoo flex gap-1">
-                            <span>Auto</span>
-                            <span>Next</span>
-                          </div>
-                          <div
-                            onClick={handleOn2}
-                            className={`ress ${
-                              onn2 === "On" ? "ressOn" : "ressOff"
+                        <div className="flex gap-3 items-center">
+                          <Link
+                            href={`/watch/${
+                              props.data.episodes[epiod - 2]?.episodeId
                             }`}
                           >
-                            {onn2}
-                          </div>
-                        </div>
-                        <div className="flex gap-2">
-                          <div className="autoo flex gap-1">
-                            <span>Auto</span>
-                            <span>Skip</span>
-                            <span>OP/ED</span>
-                          </div>
-                          <div
-                            onClick={handleOn3}
-                            className={`ress ${
-                              onn3 === "On" ? "ressOn" : "ressOff"
-                            }`}
+                            <div
+                              className="backw"
+                              onClick={() =>
+                                backward() &
+                                setClickedId(
+                                  props.data.episodes[epiod - 2]?.episodeId
+                                )
+                              }
+                            >
+                              <FaBackward />
+                            </div>
+                          </Link>
+                          <Link
+                            href={`/watch/${props.data.episodes[epiod]?.episodeId}`}
                           >
-                            {onn3}
+                            <div
+                              className="fordw"
+                              onClick={() =>
+                                forward() &
+                                setClickedId(
+                                  props.data.episodes[epiod]?.episodeId
+                                )
+                              }
+                            >
+                              <FaForward />
+                            </div>
+                          </Link>
+                          <div className="plusa">
+                            <FaPlus />
+                          </div>
+                          <div className="signo">
+                            <HiOutlineSignal />
                           </div>
                         </div>
                       </div>
-                      <div className="flex gap-3 items-center">
-                        <Link
-                          href={`/watch/${
-                            props.data.episodes[epiod - 2]?.episodeId
-                          }`}
-                        >
-                          <div
-                            className="backw"
-                            onClick={() =>
-                              backward() &
-                              setClickedId(
-                                props.data.episodes[epiod - 2]?.episodeId
-                              )
-                            }
-                          >
-                            <FaBackward />
+                      <div className="flex compIno">
+                        <div className="flex flex-col items-center epIno containIno flex-wrap">
+                          <div className="ino1">You are watching</div>
+                          <div className="ino2">{`${
+                            props.data?.episodes[epiod]?.isFiller === true
+                              ? "Filler"
+                              : ""
+                          } Episode ${epiod}`}</div>
+                          <div className="ino3">
+                            If current server doesn't work please try other
+                            servers beside.
                           </div>
-                        </Link>
-                        <Link
-                          href={`/watch/${props.data.episodes[epiod]?.episodeId}`}
-                        >
-                          <div
-                            className="fordw"
-                            onClick={() =>
-                              forward() &
-                              setClickedId(
-                                props.data.episodes[epiod]?.episodeId
-                              )
-                            }
-                          >
-                            <FaForward />
-                          </div>
-                        </Link>
-                        <div className="plusa">
-                          <FaPlus />
                         </div>
-                        <div className="signo">
-                          <HiOutlineSignal />
-                        </div>
-                      </div>
-                    </div>
-                    <div className="flex compIno">
-                      <div className="flex flex-col items-center epIno containIno flex-wrap">
-                        <div className="ino1">You are watching</div>
-                        <div className="ino2">{`${
-                          props.data?.episodes[epiod]?.isFiller === true
-                            ? "Filler"
-                            : ""
-                        } Episode ${epiod}`}</div>
-                        <div className="ino3">
-                          If current server doesn't work please try other
-                          servers beside.
-                        </div>
-                      </div>
-                      <div className=" flex flex-col serves">
-                        <>
-                          {props.dataj.results.streamingInfo.filter(
-                            (info) =>
-                              info.value.decryptionResult?.type !== "raw"
-                          ) ? (
-                            <>
-                              <div
-                                className={`serveSub ${
-                                  props.dataj.results.streamingInfo.filter(
-                                    (info) =>
-                                      info.value.decryptionResult?.type ===
-                                      "dub"
-                                  )
-                                    ? "borderDot"
-                                    : ""
-                                } flex gap-5 items-center`}
-                              >
+                        <div className=" flex flex-col serves">
+                          <>
+                            {props.dataj.results.streamingInfo.filter(
+                              (info) =>
+                                info.value.decryptionResult?.type !== "raw"
+                            ) ? (
+                              <>
+                                <div
+                                  className={`serveSub ${
+                                    props.dataj.results.streamingInfo.filter(
+                                      (info) =>
+                                        info.value.decryptionResult?.type ===
+                                        "dub"
+                                    )
+                                      ? "borderDot"
+                                      : ""
+                                  } flex gap-5 items-center`}
+                                >
+                                  <div className="subb flex gap-1 items-center">
+                                    <div>SUB</div>
+                                    <div>:</div>
+                                  </div>
+                                  <div className="flex flex-wrap gap-2">
+                                    {props.dataj.results?.streamingInfo
+                                      .filter(
+                                        (info) =>
+                                          info.value.decryptionResult?.type ===
+                                          "sub"
+                                      )
+                                      .map((no, idx) => (
+                                        <div
+                                          className={`subDub ${
+                                            subIsSelected
+                                              ? selectedServer === idx
+                                                ? "selected"
+                                                : ""
+                                              : ""
+                                          }`}
+                                          onClick={() =>
+                                            setSelectedServer(idx) &
+                                            setSubIsSelected(true) &
+                                            setServerName(
+                                              no.value.decryptionResult.server
+                                            ) &
+                                            setBhaiLink(
+                                              no.value.decryptionResult.source
+                                                .sources[0].file
+                                            ) &
+                                            setSubtitles(
+                                              no.value.decryptionResult.source
+                                                .tracks
+                                            ) &
+                                            setIntrod(
+                                              no.value.decryptionResult.source
+                                                .intro
+                                            ) &
+                                            setOutrod(
+                                              no.value.decryptionResult.source
+                                                .outro
+                                            )
+                                          }
+                                        >
+                                          {no.value.decryptionResult.server}
+                                        </div>
+                                      ))}
+                                  </div>
+                                </div>
+                                {props.dataj.results.streamingInfo.filter(
+                                  (info) =>
+                                    info.value.decryptionResult?.type === "dub"
+                                ) ? (
+                                  <div className="serveSub flex gap-5 items-center">
+                                    {" "}
+                                    <div className="subb flex gap-1 items-center">
+                                      <div>DUB</div>
+                                      <div>:</div>
+                                    </div>
+                                    <div className="flex flex-wrap gap-2">
+                                      {props.dataj.results?.streamingInfo
+                                        .filter(
+                                          (info) =>
+                                            info.value.decryptionResult
+                                              ?.type === "dub"
+                                        )
+                                        .map((no, idx) => (
+                                          <div
+                                            className={`subDub ${
+                                              !subIsSelected
+                                                ? selectedServer === idx
+                                                  ? "selected"
+                                                  : ""
+                                                : ""
+                                            }`}
+                                            onClick={() =>
+                                              setSelectedServer(idx) &
+                                              setSubIsSelected(false) &
+                                              setServerName(
+                                                no.value.decryptionResult.server
+                                              ) &
+                                              setBhaiLink(
+                                                no.value.decryptionResult.source
+                                                  .sources[0].file
+                                              ) &
+                                              setSubtitles("") &
+                                              setIntrod(
+                                                no.value.decryptionResult.source
+                                                  .intro
+                                              ) &
+                                              setOutrod(
+                                                no.value.decryptionResult.source
+                                                  .outro
+                                              )
+                                            }
+                                          >
+                                            {no.value.decryptionResult.server}
+                                          </div>
+                                        ))}
+                                    </div>
+                                  </div>
+                                ) : (
+                                  ""
+                                )}
+                              </>
+                            ) : (
+                              <div className="serveSub flex gap-5 items-center">
+                                {" "}
                                 <div className="subb flex gap-1 items-center">
-                                  <div>SUB</div>
+                                  <div>RAW</div>
                                   <div>:</div>
                                 </div>
                                 <div className="flex flex-wrap gap-2">
@@ -484,12 +650,12 @@ export default function WatchAnime(props) {
                                     .filter(
                                       (info) =>
                                         info.value.decryptionResult?.type ===
-                                        "sub"
+                                          "raw" || "sub"
                                     )
                                     .map((no, idx) => (
                                       <div
                                         className={`subDub ${
-                                          subIsSelected
+                                          !subIsSelected
                                             ? selectedServer === idx
                                               ? "selected"
                                               : ""
@@ -497,7 +663,7 @@ export default function WatchAnime(props) {
                                         }`}
                                         onClick={() =>
                                           setSelectedServer(idx) &
-                                          setSubIsSelected(true) &
+                                          setSubIsSelected(false) &
                                           setServerName(
                                             no.value.decryptionResult.server
                                           ) &
@@ -524,263 +690,164 @@ export default function WatchAnime(props) {
                                     ))}
                                 </div>
                               </div>
-                              {props.dataj.results.streamingInfo.filter(
-                                (info) =>
-                                  info.value.decryptionResult?.type === "dub"
-                              ) ? (
-                                <div className="serveSub flex gap-5 items-center">
-                                  {" "}
-                                  <div className="subb flex gap-1 items-center">
-                                    <div>DUB</div>
-                                    <div>:</div>
-                                  </div>
-                                  <div className="flex flex-wrap gap-2">
-                                    {props.dataj.results?.streamingInfo
-                                      .filter(
-                                        (info) =>
-                                          info.value.decryptionResult?.type ===
-                                          "dub"
-                                      )
-                                      .map((no, idx) => (
-                                        <div
-                                          className={`subDub ${
-                                            !subIsSelected
-                                              ? selectedServer === idx
-                                                ? "selected"
-                                                : ""
-                                              : ""
-                                          }`}
-                                          onClick={() =>
-                                            setSelectedServer(idx) &
-                                            setSubIsSelected(false) &
-                                            setServerName(
-                                              no.value.decryptionResult.server
-                                            ) &
-                                            setBhaiLink(
-                                              no.value.decryptionResult.source
-                                                .sources[0].file
-                                            ) &
-                                            setSubtitles("") &
-                                            setIntrod(
-                                              no.value.decryptionResult.source
-                                                .intro
-                                            ) &
-                                            setOutrod(
-                                              no.value.decryptionResult.source
-                                                .outro
-                                            )
-                                          }
-                                        >
-                                          {no.value.decryptionResult.server}
-                                        </div>
-                                      ))}
-                                  </div>
-                                </div>
-                              ) : (
-                                ""
-                              )}
-                            </>
-                          ) : (
-                            <div className="serveSub flex gap-5 items-center">
-                              {" "}
-                              <div className="subb flex gap-1 items-center">
-                                <div>RAW</div>
-                                <div>:</div>
-                              </div>
-                              <div className="flex flex-wrap gap-2">
-                                {props.dataj.results?.streamingInfo
-                                  .filter(
-                                    (info) =>
-                                      info.value.decryptionResult?.type ===
-                                        "raw" || "sub"
-                                  )
-                                  .map((no, idx) => (
-                                    <div
-                                      className={`subDub ${
-                                        !subIsSelected
-                                          ? selectedServer === idx
-                                            ? "selected"
-                                            : ""
-                                          : ""
-                                      }`}
-                                      onClick={() =>
-                                        setSelectedServer(idx) &
-                                        setSubIsSelected(false) &
-                                        setServerName(
-                                          no.value.decryptionResult.server
-                                        ) &
-                                        setBhaiLink(
-                                          no.value.decryptionResult.source
-                                            .sources[0].file
-                                        ) &
-                                        setSubtitles(
-                                          no.value.decryptionResult.source
-                                            .tracks
-                                        ) &
-                                        setIntrod(
-                                          no.value.decryptionResult.source.intro
-                                        ) &
-                                        setOutrod(
-                                          no.value.decryptionResult.source.outro
-                                        )
-                                      }
-                                    >
-                                      {no.value.decryptionResult.server}
-                                    </div>
-                                  ))}
-                              </div>
-                            </div>
-                          )}{" "}
-                        </>
-                      </div>
-                    </div>
-
-                    {props.datao.seasons.length > 0 ? (
-                      <>
-                        <div className="seasonal-advice">
-                          Watch more seasons of this anime:
+                            )}{" "}
+                          </>
                         </div>
-                        <div className="seasonal">
-                          {props?.datao?.seasons?.map((sea) => (
-                            <>
-                              <Link href={`/${sea.id}`}>
-                                <div
-                                  className={`season h-[70px] ${
-                                    sea.isCurrent === true ? "currento" : ""
-                                  }`}
+                      </div>
+
+                      {props.datao.seasons.length > 0 ? (
+                        <>
+                          <div className="seasonal-advice">
+                            Watch more seasons of this anime:
+                          </div>
+                          <div className="seasonal">
+                            {props?.datao?.seasons?.map((sea) => (
+                              <>
+                                <Link
+                                  href={`/${sea.id}`}
+                                  onClick={handleNavigation}
                                 >
-                                  <img
-                                    className="seasonal-background"
-                                    src={sea.poster}
-                                    alt="pop"
-                                  />
-                                  {sea.title.length < 15
-                                    ? sea.title
-                                    : sea.title.slice(0, 15) + "..."}
-                                </div>
-                              </Link>
-                            </>
-                          ))}
-                        </div>
-                      </>
-                    ) : (
-                      ""
-                    )}
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div className="current-anime-details ">
-              <img
-                className="details-container-background"
-                src={props.datao.anime.info.poster || "NA"}
-                alt="pop"
-              />
-              <div className="anime-details d-flex-fd-column">
-                <img
-                  className="anime-details-poster"
-                  src={props.datao.anime.info.poster || "NA"}
-                  alt="pop"
-                />
-
-                <div className="anime-details-content d-flex-fd-column">
-                  <h1
-                    style={{ textAlign: "center" }}
-                    className={
-                      props?.datao?.anime?.info?.name.length < 30
-                        ? `title-large`
-                        : `title-large-long`
-                    }
-                  >
-                    {props?.datao?.anime?.info?.name.length < 50
-                      ? props?.datao?.anime?.info?.name
-                      : props?.datao?.anime?.info?.name.slice(0, 50) + "..."}
-                  </h1>
-
-                  <div className="flex m-auto gap-2 items-center">
-                    <div className="flex gap-1">
-                      {" "}
-                      <div className="rat">
-                        {props.datao.anime.info.stats.rating}
-                      </div>
-                      <div className="qual">
-                        {props.datao.anime.info.stats.quality}
-                      </div>
-                      <div className="subE">
-                        <FaClosedCaptioning size={14} />{" "}
-                        {props.datao.anime.info.stats.episodes.sub || "Unknown"}
-                      </div>
-                      {props.datao.anime.info.stats.episodes.dub ? (
-                        <div className="dubE">
-                          {" "}
-                          <AiFillAudio size={14} />{" "}
-                          {props.datao.anime.info.stats.episodes.dub ||
-                            "Unknown"}
-                        </div>
+                                  <div
+                                    className={`season h-[70px] ${
+                                      sea.isCurrent === true ? "currento" : ""
+                                    }`}
+                                  >
+                                    <img
+                                      className="seasonal-background"
+                                      src={sea.poster}
+                                      alt="pop"
+                                    />
+                                    {sea.title.length < 15
+                                      ? sea.title
+                                      : sea.title.slice(0, 15) + "..."}
+                                  </div>
+                                </Link>
+                              </>
+                            ))}
+                          </div>
+                        </>
                       ) : (
                         ""
                       )}
                     </div>
-                    <div className="doto">&#x2022;</div>
-                    <div className="typo">
-                      {props.datao.anime.info.stats.type}
-                    </div>
-                    <div className="doto">&#x2022;</div>
-                    <div className="duran">
-                      {props.datao.anime.moreInfo.duration}
-                    </div>
                   </div>
+                </div>
+              </div>
+              <div className="current-anime-details ">
+                <img
+                  className="details-container-background"
+                  src={props.datao.anime.info.poster || "NA"}
+                  alt="pop"
+                />
+                <div className="anime-details d-flex-fd-column">
+                  <img
+                    className="anime-details-poster"
+                    src={props.datao.anime.info.poster || "NA"}
+                    alt="pop"
+                  />
 
-                  <p className="descp">
-                    {descIsCollapsed
-                      ? props.datao.anime.info.description?.slice(0, 150) +
-                        "..."
-                      : props.datao.anime.info.description}
-                    <span
-                      style={{ cursor: "pointer" }}
-                      onClick={() => setDescIsCollapsed((prev) => !prev)}
+                  <div className="anime-details-content d-flex-fd-column">
+                    <h1
+                      style={{ textAlign: "center" }}
+                      className={
+                        props?.datao?.anime?.info?.name.length < 30
+                          ? `title-large`
+                          : `title-large-long`
+                      }
                     >
-                      [ {descIsCollapsed ? "More" : "Less"} ]
-                    </span>
-                  </p>
-                  <p>
-                    Animoon is the best site to watch{" "}
-                    {props.datao.anime.info.name} SUB online, or you can even
-                    watch {props.datao.anime.info.name} DUB in HD quality. You
-                    can also find {props.datao.anime.moreInfo.studios} anime on
-                    Animoon website.
-                  </p>
+                      {props?.datao?.anime?.info?.name.length < 50
+                        ? props?.datao?.anime?.info?.name
+                        : props?.datao?.anime?.info?.name.slice(0, 50) + "..."}
+                    </h1>
+
+                    <div className="flex m-auto gap-2 items-center">
+                      <div className="flex gap-1">
+                        {" "}
+                        <div className="rat">
+                          {props.datao.anime.info.stats.rating}
+                        </div>
+                        <div className="qual">
+                          {props.datao.anime.info.stats.quality}
+                        </div>
+                        <div className="subE">
+                          <FaClosedCaptioning size={14} />{" "}
+                          {props.datao.anime.info.stats.episodes.sub ||
+                            "Unknown"}
+                        </div>
+                        {props.datao.anime.info.stats.episodes.dub ? (
+                          <div className="dubE">
+                            {" "}
+                            <AiFillAudio size={14} />{" "}
+                            {props.datao.anime.info.stats.episodes.dub ||
+                              "Unknown"}
+                          </div>
+                        ) : (
+                          ""
+                        )}
+                      </div>
+                      <div className="doto">&#x2022;</div>
+                      <div className="typo">
+                        {props.datao.anime.info.stats.type}
+                      </div>
+                      <div className="doto">&#x2022;</div>
+                      <div className="duran">
+                        {props.datao.anime.moreInfo.duration}
+                      </div>
+                    </div>
+
+                    <p className="descp">
+                      {descIsCollapsed
+                        ? props.datao.anime.info.description?.slice(0, 150) +
+                          "..."
+                        : props.datao.anime.info.description}
+                      <span
+                        style={{ cursor: "pointer" }}
+                        onClick={() => setDescIsCollapsed((prev) => !prev)}
+                      >
+                        [ {descIsCollapsed ? "More" : "Less"} ]
+                      </span>
+                    </p>
+                    <p>
+                      Animoon is the best site to watch{" "}
+                      {props.datao.anime.info.name} SUB online, or you can even
+                      watch {props.datao.anime.info.name} DUB in HD quality. You
+                      can also find {props.datao.anime.moreInfo.studios} anime
+                      on Animoon website.
+                    </p>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
+
+          <Share
+            style={{
+              paddingInline: 20,
+            }}
+            ShareUrl={props.ShareUrl}
+            arise={props.arise}
+          />
+
+          <Comments
+            epiod={props.epiod}
+            epId={props.epId}
+            anId={props.anId}
+            firstName={props.firstName}
+            userName={props.userName}
+            imageUrl={props.imageUrl}
+            emailAdd={props.emailAdd}
+            IsLoading={IsLoading}
+          />
+
+          <RecommendedTopTen
+            doIt={"doit"}
+            datap={props.datao}
+            data={props.datapp}
+            isInGrid={"true"}
+            IsLoading={IsLoading}
+          />
         </div>
-
-        <Share
-          style={{
-            paddingInline: 20,
-          }}
-          ShareUrl={props.ShareUrl}
-          arise={props.arise}
-        />
-
-        <Comments
-          epiod={props.epiod}
-          epId={props.epId}
-          anId={props.anId}
-          firstName={props.firstName}
-          userName={props.userName}
-          imageUrl={props.imageUrl}
-          emailAdd={props.emailAdd}
-        />
-
-        <RecommendedTopTen
-          doIt={"doit"}
-          datap={props.datao}
-          data={props.datapp}
-          isInGrid={"true"}
-        />
-      </div>
+      )}
     </>
   );
 }

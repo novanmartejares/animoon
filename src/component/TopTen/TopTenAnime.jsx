@@ -5,7 +5,9 @@ import { FaClosedCaptioning } from "react-icons/fa";
 import Link from "next/link";
 import { AiFillAudio } from "react-icons/ai";
 export default function TopTenAnime(props) {
-  
+  const handleNavigation = () => {
+    props.IsLoading(true);
+  };
   const [period, setPeriod] = useState("today");
   const animeList = props.data;
   let sortedList = [];
@@ -21,22 +23,20 @@ export default function TopTenAnime(props) {
   const list = sortedList?.map((el, idx) => {
     const title = el.name || el.attributes.titles.en_jp;
     return (
-      <li
-        key={title}
-        className="d-flex a-center"
-      >
+      <li key={title} className="d-flex a-center">
         <span
           className={`rank ${0 < el.rank && el.rank <= 3 ? "top-three" : ""}`}
         >
           {el.rank > 9 ? el.rank : "0" + el.rank.toString()}
         </span>
         <div className="top-10-item d-flex a-center">
-          <img src={el.poster} alt="poster"/>
+          <img src={el.poster} alt="poster" />
           <div className="anime-details d-flex-fd-column">
             <span className="title">
               <Link
                 href={`/${el.id}`}
                 className="trans-03"
+                onClick={handleNavigation}
               >
                 {title.length < 30 ? title : title.slice(0, 30) + "..."}
               </Link>
@@ -63,9 +63,7 @@ export default function TopTenAnime(props) {
   });
 
   return (
-    <div
-      className="top-ten-wrapper"
-    >
+    <div className="top-ten-wrapper">
       <div className="top-ten-header d-flex a-center">
         <h2 className="topTen">Top 10</h2>
         <div className="top-ten-tabs">

@@ -4,8 +4,11 @@ import { FaRandom, FaComments, FaBroadcastTower } from "react-icons/fa";
 import Link from "next/link";
 import { useRouter } from "next/navigation"; // Import useRouter
 
-export default function Actions({ isInSidebar }) {
+export default function Actions({ isInSidebar, IsLoading }) {
   const router = useRouter(); // Initialize the router
+  const handleNavigation = (data) => {
+    IsLoading(data);
+  };
 
   const handleRandomClick = () => {
     const randomId = Math.floor(Math.random() * 10000); // Generate random number
@@ -27,19 +30,19 @@ export default function Actions({ isInSidebar }) {
       }
     >
       <span>
-        <Link href="/working" className="anchor">
+        <Link href="/working" className="anchor" onClick={() => handleNavigation(true)}>
           <FaBroadcastTower size={20} />
           <p>Watch2gether</p>
         </Link>
       </span>
-      <span onClick={handleRandomClick} style={{ cursor: "pointer" }}>
+      <span onClick={() => handleRandomClick() & handleNavigation('true-random')} style={{ cursor: "pointer" }}>
         <FaRandom size={20} />
         <p>Random</p>
       </span>
 
       {!isInSidebar && (
         <span>
-          <Link href="/working" className="anchor">
+          <Link href="/working" className="anchor"  onClick={() => handleNavigation(true)}>
             <FaComments size={20} />
             <p>Community</p>
           </Link>

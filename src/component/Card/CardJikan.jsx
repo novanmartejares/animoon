@@ -46,6 +46,9 @@ export default function Card(props) {
       return () => window.removeEventListener("resize", setWidth);
     }
   }, []);
+  const handleNavigation = () => {
+    props.IsLoading(true);
+  };
 
   return (
     <div
@@ -61,6 +64,8 @@ export default function Card(props) {
               : `/watchi/${anime.data_id}`
             : `/${anime.data_id}`
         }`}
+        prefetch
+        onClick={handleNavigation}
         key={anime.data_id}
         className="anime-card d-flex"
       >

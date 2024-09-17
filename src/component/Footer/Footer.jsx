@@ -4,7 +4,10 @@ import SocialLinks from "../Navbar/SocialLinks";
 import logo from "../../../public/logo.png";
 import Link from "next/link";
 import Image from "next/image";
-export default function Footer() {
+export default function Footer(props) {
+  const handleNavigation = () => {
+    props.IsLoading(true);
+  };
   function getAlphabets() {
     const alphabets = [];
     const startChar = "A".charCodeAt(0);
@@ -14,7 +17,7 @@ export default function Footer() {
     }
     const links = alphabets.map((el) => {
       return (
-        <Link href={`/a-z/alpha?sort=${el}`} key={el} className="alphabet-tile">
+        <Link href={`/a-z/alpha?sort=${el}`} key={el} className="alphabet-tile" onClick={handleNavigation}>
           {el}
         </Link>
       );
@@ -26,7 +29,7 @@ export default function Footer() {
   return (
     <div className="footer-container d-flex-fd-column j-center">
       <div className="logo-social-links d-flex">
-        <Link className="main-element" href="/">
+        <Link className="main-element" href="/" onClick={handleNavigation}>
           <Image
             src={logo}
             className="logo"
@@ -43,13 +46,13 @@ export default function Footer() {
         <span>Searching anime order by alphabet name A to Z.</span>
       </div>
       <div className="alphabet-list d-flex">
-        <Link href={"/a-z/all"}>
+        <Link href={"/a-z/all"} onClick={handleNavigation}>
           <div className="alphabet-tile">All</div>
         </Link>
-        <Link href={"/a-z/other?sort=other"}>
+        <Link href={"/a-z/other?sort=other"} onClick={handleNavigation}>
           <div className="alphabet-tile">#</div>
         </Link>
-        <Link href={"/a-z/0-9?sort=0-9"}>
+        <Link href={"/a-z/0-9?sort=0-9"} onClick={handleNavigation}>
           <div className="alphabet-tile">0-9</div>
         </Link>
         {links}

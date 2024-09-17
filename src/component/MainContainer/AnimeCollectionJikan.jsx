@@ -9,6 +9,9 @@ import {
   FaAngleRight,
 } from "react-icons/fa";
 export default function AnimeCollection(props) {
+  const handleNavigation = (data) => {
+    props.IsLoading(true);
+  };
   function getAlphabets() {
     const alphabets = [];
     const startChar = "A".charCodeAt(0);
@@ -21,6 +24,7 @@ export default function AnimeCollection(props) {
         <Link
           href={`/a-z/alpha?sort=${el}`}
           key={el}
+          onClick={props.sort === el ? "" : handleNavigation}
           className={`alphabet-jile ${
             props.sort === el ? "alpha-selected" : ""
           }`}
@@ -40,6 +44,7 @@ export default function AnimeCollection(props) {
         key={data.data_id}
         data={data}
         collectionName={props.collectionName}
+        IsLoading={props.IsLoading}
       />
     );
   });
@@ -80,10 +85,11 @@ export default function AnimeCollection(props) {
   if (parseInt(props.page) === 2) {
     useArr = [1, 2, 3];
   }
+
   return (
     <div className="anime-collection-wrapper">
       <div className="backI">
-        <Link href={"/"} className="homiK">
+        <Link href={"/"} onClick={handleNavigation} className="homiK">
           Home
         </Link>
         <div className="colY">&#x2022;</div>
@@ -93,14 +99,17 @@ export default function AnimeCollection(props) {
         <h2 className="heddH9">{props.collectionName}</h2>{" "}
       </div>
       <div className="alphabet-jist d-flex">
-        <Link href={"/a-z/all"}>
+        <Link href={"/a-z/all"} onClick={props.sort ? handleNavigation : ""}>
           <div
             className={`alphabet-jile ${props.sort ? "" : "alpha-selected"}`}
           >
             All
           </div>
         </Link>
-        <Link href={"/a-z/other?sort=other"}>
+        <Link
+          href={"/a-z/other?sort=other"}
+          onClick={props.sort === "other" ? "" : handleNavigation}
+        >
           <div
             className={`alphabet-jile ${
               props.sort === "other" ? "alpha-selected" : ""
@@ -109,7 +118,10 @@ export default function AnimeCollection(props) {
             #
           </div>
         </Link>
-        <Link href={"/a-z/0-9?sort=0-9"}>
+        <Link
+          href={"/a-z/0-9?sort=0-9"}
+          onClick={props.sort === "0-9" ? "" : handleNavigation}
+        >
           <div
             className={`alphabet-jile ${
               props.sort === "0-9" ? "alpha-selected" : ""
@@ -131,6 +143,7 @@ export default function AnimeCollection(props) {
                   ? `/a-z/${props.para}?sort=${props.sort}`
                   : `/a-z/${props.para}`
               }
+              onClick={handleNavigation}
               className="pagin-tile"
             >
               <FaAngleDoubleLeft />
@@ -147,6 +160,7 @@ export default function AnimeCollection(props) {
                     }`
                   : `/a-z/${props.para}?page=${parseInt(props.page) - 1}`
               }
+              onClick={handleNavigation}
               className="pagin-tile"
             >
               <FaAngleLeft />
@@ -164,6 +178,15 @@ export default function AnimeCollection(props) {
                   : ii === 1
                   ? "/a-z/all"
                   : `/a-z/all?page=${ii}`
+              }
+              onClick={
+                props.page
+                  ? ii === parseInt(props.page)
+                    ? ""
+                    : handleNavigation
+                  : ii === 1
+                  ? ""
+                  : handleNavigation
               }
               className={`pagin-tile ${
                 props.page
@@ -189,6 +212,7 @@ export default function AnimeCollection(props) {
                       props.page ? parseInt(props.page) + 1 : 2
                     }`
               }
+              onClick={handleNavigation}
               className="pagin-tile"
             >
               <FaAngleRight />
@@ -203,6 +227,7 @@ export default function AnimeCollection(props) {
                   ? `/a-z/${props.para}?sort=${props.sort}&page=${props.data.results.totalPages}`
                   : `/a-z/${props.para}?page=${props.data.results.totalPages}`
               }
+              onClick={handleNavigation}
               className="pagin-tile"
             >
               <FaAngleDoubleRight />

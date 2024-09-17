@@ -20,6 +20,10 @@ export default function Trending(props) {
     setLocalStorageData(storageData);
   }, [props.data]);
 
+  const handleNavigation = () => {
+    props.IsLoading(true);
+  };
+
   const animeCard = props.data?.map((el) => {
     const title = el.name;
 
@@ -38,6 +42,8 @@ export default function Trending(props) {
                 ? `/watch/${localStorageData[el.id]}`
                 : `/watchi/${el.id}`
             }`}
+            prefetch
+            onClick={handleNavigation}
           >
             <img
               src={el.poster}

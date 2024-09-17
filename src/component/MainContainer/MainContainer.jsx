@@ -12,6 +12,7 @@ export default function MainContainer(props) {
           <div className="sidebar-wrapper">
             <MainSidebar
               data={props.data}
+              IsLoading={props.IsLoading}
             />
           </div>
           <div className="collections-wrapper d-flex-fd-column a-center ">
@@ -19,16 +20,19 @@ export default function MainContainer(props) {
               collectionName="Latest Episodes"
               data={props.data.latestEpisodeAnimes?.slice(0, 12)}
               filterName="recently-updated"
+              IsLoading={props.IsLoading}
             />
             <AnimeCollection
               collectionName="New on Animoon"
               data={props.dataNew.animes?.slice(0, 12)}
               filterName="recently-added"
+              IsLoading={props.IsLoading}
             />
             <AnimeCollection
               collectionName="Top Upcoming"
               data={props.data.topUpcomingAnimes?.slice(0, 12)}
               filterName="top-upcoming"
+              IsLoading={props.IsLoading}
             />
           </div>
         </>
