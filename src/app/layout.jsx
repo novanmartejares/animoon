@@ -1,7 +1,6 @@
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { ClerkProvider } from "@clerk/nextjs";
-import { Analytics } from "@vercel/analytics/react";
 import { dark } from "@clerk/themes";
 import Navic from "@/app/Navic/page";
 import Head from "next/head"; // Import the Head component
@@ -43,7 +42,6 @@ export default async function RootLayout({ children }) {
           <Navic>
             {children}
           </Navic>
-          <Analytics />
         </body>
       </html>
     </ClerkProvider>
