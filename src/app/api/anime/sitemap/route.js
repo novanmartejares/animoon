@@ -4,43 +4,54 @@ const apiUrl = 'https://demonking-7hti.onrender.com/api/az-list?page=';
 const baseUrl = 'https://animoon.me';
 const watchUrl = 'https://animoon.me/watch';
 
-// Fetch total number of pages
-const getTotalPages = async () => {
-  const response = await fetch(apiUrl + '1');
-  const data = await response.json();
-  return data.results.totalPages; // Correctly accessing totalPages from the fetched JSON
+// Fetch a batch of 10 pages in parallel
+const fetchPagesBatch = async (startPage, endPage) => {
+  const promises = [];
+
+  for (let page = startPage; page <= endPage; page++) {
+    promises.push(fetch(apiUrl + page).then(response => response.json()));
+  }
+
+  // Resolve all fetches for this batch
+  const results = await Promise.all(promises);
+  const urls = [];
+
+  // Process each page's data
+  results.forEach(data => {
+    const dataList = data.results.data;
+    dataList.forEach(item => {
+      urls.push(`${baseUrl}${item.data_id}`);
+      urls.push(`${watchUrl}${item.data_id}`);
+    });
+  });
+
+  return urls; // Return the collected URLs for this batch
 };
 
-// Fetch data from one page, process its IDs, then move to the next page
-const fetchUrlsSequentially = async () => {
-  const totalPages = await getTotalPages();
+// Fetch data from all pages in batches of 10
+const fetchAllUrls = async () => {
   let allUrls = [];
+  const totalPages = 135; // Replace this with a dynamic call to getTotalPages() if necessary.
 
-  for (let page = 1; page <= totalPages; page++) {
+  for (let page = 1; page <= totalPages; page += 10) {
+    const startPage = page;
+    const endPage = Math.min(page + 9, totalPages); // Ensure we don't exceed the total page limit
+
     try {
-      // Fetch one page at a time
-      const response = await fetch(apiUrl + page);
-      const data = await response.json(); // Parse JSON
+      // Fetch 10 pages in parallel
+      const batchUrls = await fetchPagesBatch(startPage, endPage);
+      allUrls = allUrls.concat(batchUrls);
 
-      const dataList = data.results.data; // Get the list of items
-
-      // Process IDs from the current page
-      dataList.forEach((item) => {
-        allUrls.push(`${baseUrl}${item.data_id}`); // Example: https://animoon.me/jx-online-3-the-adventure-of-shen-jianxin-3rd-season-19064
-        allUrls.push(`${watchUrl}${item.data_id}`); // Example: https://animoon.me/watch/jx-online-3-the-adventure-of-shen-jianxin-3rd-season-19064
-      });
-
-      console.log(`Fetched and processed page ${page}/${totalPages}`);
+      console.log(`Fetched and processed pages ${startPage}-${endPage}`);
     } catch (error) {
-      console.error(`Error fetching page ${page}:`, error);
-      // Optionally handle retries here if needed
+      console.error(`Error fetching pages ${startPage}-${endPage}:`, error);
     }
   }
 
   return allUrls; // Return all URLs after fetching all pages
 };
 
-// Generate XML for sitemap
+// Generate XML for the sitemap
 const generateSitemap = (urls) => {
   return `<?xml version="1.0" encoding="UTF-8"?>
   <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
@@ -61,7 +72,7 @@ const generateSitemap = (urls) => {
 // API Route handler for sitemap
 export async function GET() {
   try {
-    const urls = await fetchUrlsSequentially(); // Fetch all URLs one page at a time
+    const urls = await fetchAllUrls(); // Fetch all URLs in batches of 10 pages
     const sitemap = generateSitemap(urls); // Generate the sitemap
 
     // Return sitemap with appropriate headers
