@@ -25,23 +25,30 @@ export default async function RootLayout({ children }) {
     >
       <html lang="en">
         <Head>
+          {/* Google Site Verification */}
+          <meta
+            name="google-site-verification"
+            content="kYXVnTNfGMSS99gN9cOo6qdi8yymZEeXA1SvuHiAs4U"
+          />
           {/* Google Tag Manager */}
-          <script async src="https://www.googletagmanager.com/gtag/js?id=G-Y81ZRXNW2N"></script>
+          <script
+            async
+            src="https://www.googletagmanager.com/gtag/js?id=G-Y81ZRXNW2N"
+          ></script>
           <script
             dangerouslySetInnerHTML={{
               __html: `
-                window.dataLayer = window.dataLayer || [];
-                function gtag(){dataLayer.push(arguments);}
-                gtag('js', new Date());
-                gtag('config', 'G-Y81ZRXNW2N');
-              `,
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-Y81ZRXNW2N');
+      `,
             }}
           />
         </Head>
+
         <body className={inter.className}>
-          <Navic>
-            {children}
-          </Navic>
+          <Navic>{children}</Navic>
         </body>
       </html>
     </ClerkProvider>
