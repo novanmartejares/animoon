@@ -1,0 +1,8 @@
+{
+    "functions": {
+      "api/anime/sitemap": {
+        "maxDuration": 300
+      }
+    }
+  }
+  
