@@ -10,6 +10,8 @@ const nextConfig = {
     // !! WARN !!
     ignoreBuildErrors: true,
   },
+  // Increase static page generation timeout to 120 seconds
+  staticPageGenerationTimeout: 300,
 };
 
 export default nextConfig;
