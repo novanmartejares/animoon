@@ -12,7 +12,7 @@ const fetchPagesBatch = async (startPage, endPage) => {
     promises.push(fetch(apiUrl + page).then(response => response.json()));
   }
 
-  // Resolve all fetches for this batch
+  // Resolve all fetches for this batch 
   const results = await Promise.all(promises);
   const urls = [];
 
