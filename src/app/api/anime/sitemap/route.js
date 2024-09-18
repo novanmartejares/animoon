@@ -4,10 +4,29 @@ const apiUrl = 'https://demonking-7hti.onrender.com/api/az-list?page=';
 const baseUrl = 'https://animoon.me';
 const watchUrl = 'https://animoon.me/watch';
 
+// Helper function for retrying fetch in case of error
+const retryFetch = async (url, retries = 3, delay = 1000) => {
+  for (let i = 0; i < retries; i++) {
+    try {
+      const response = await fetch(url);
+      if (!response.ok) {
+        throw new Error(`Fetch failed with status ${response.status}`);
+      }
+      return await response.json(); // Return the parsed JSON if successful
+    } catch (error) {
+      console.error(`Fetch attempt ${i + 1} failed for ${url}:`, error);
+      if (i < retries - 1) {
+        await new Promise((resolve) => setTimeout(resolve, delay)); // Wait before retrying
+      } else {
+        throw error; // Rethrow error after final retry
+      }
+    }
+  }
+};
+
 // Fetch total number of pages from the first request
 const getTotalPages = async () => {
-  const response = await fetch(apiUrl + '1'); // Fetch the first page to get totalPages
-  const data = await response.json();
+  const data = await retryFetch(apiUrl + '1'); // Fetch the first page with retry logic
   return data.results.totalPages; // Return the total number of pages
 };
 
@@ -16,7 +35,7 @@ const fetchPagesBatch = async (startPage, endPage) => {
   const promises = [];
 
   for (let page = startPage; page <= endPage; page++) {
-    promises.push(fetch(apiUrl + page).then((response) => response.json()));
+    promises.push(retryFetch(apiUrl + page)); // Use retryFetch to handle errors
   }
 
   // Resolve all fetches for this batch
@@ -45,7 +64,7 @@ const fetchAllUrls = async () => {
     const endPage = Math.min(page + 9, totalPages); // Ensure we don't exceed the total page limit
 
     try {
-      // Fetch 10 pages in parallel
+      // Fetch 10 pages in parallel with retry logic
       const batchUrls = await fetchPagesBatch(startPage, endPage);
       allUrls = allUrls.concat(batchUrls);
 
