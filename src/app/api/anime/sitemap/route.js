@@ -1,39 +1,46 @@
-// app/api/sitemap/route.js
-import axios from "axios";
-import { NextResponse } from "next/server";
+import { NextResponse } from 'next/server';
 
-// Define base API and URL constants
-const apiUrl = "https://demonking-7hti.onrender.com/api/az-list?page=";
-const baseUrl = "https://animoon.me";
-const watchUrl = "https://animoon.me/watch";
+const apiUrl = 'https://demonking-7hti.onrender.com/api/az-list?page=';
+const baseUrl = 'https://animoon.me';
+const watchUrl = 'https://animoon.me/watch';
 
-// Function to fetch the total number of pages from the API
+// Fetch total number of pages
 const getTotalPages = async () => {
-  const response = await axios.get(apiUrl + "1");
-  return response.data.results.totalPages; // Correct access to totalPages
+  const response = await fetch(apiUrl + '1');
+  const data = await response.json();
+  return data.results.totalPages; // Correctly accessing totalPages from the fetched JSON
 };
 
-// Function to fetch all URLs by looping through pages
-const fetchAllUrls = async () => {
-  const totalPages = await getTotalPages(); // Get total pages
+// Fetch data from one page, process its IDs, then move to the next page
+const fetchUrlsSequentially = async () => {
+  const totalPages = await getTotalPages();
   let allUrls = [];
 
-  // Loop through each page to fetch data
   for (let page = 1; page <= totalPages; page++) {
-    const response = await axios.get(apiUrl + page);
-    const dataList = response.data.results.data; // Correctly access data from the response
+    try {
+      // Fetch one page at a time
+      const response = await fetch(apiUrl + page);
+      const data = await response.json(); // Parse JSON
 
-    // Generate URLs for each item in the data list
-    dataList.forEach((item) => {
-      allUrls.push(`${baseUrl}${item.data_id}`); // Generate the base URL
-      allUrls.push(`${watchUrl}${item.data_id}`); // Generate the watch URL
-    });
+      const dataList = data.results.data; // Get the list of items
+
+      // Process IDs from the current page
+      dataList.forEach((item) => {
+        allUrls.push(`${baseUrl}${item.data_id}`); // Example: https://animoon.me/jx-online-3-the-adventure-of-shen-jianxin-3rd-season-19064
+        allUrls.push(`${watchUrl}${item.data_id}`); // Example: https://animoon.me/watch/jx-online-3-the-adventure-of-shen-jianxin-3rd-season-19064
+      });
+
+      console.log(`Fetched and processed page ${page}/${totalPages}`);
+    } catch (error) {
+      console.error(`Error fetching page ${page}:`, error);
+      // Optionally handle retries here if needed
+    }
   }
 
-  return allUrls; // Return all generated URLs
+  return allUrls; // Return all URLs after fetching all pages
 };
 
-// Function to generate XML sitemap
+// Generate XML for sitemap
 const generateSitemap = (urls) => {
   return `<?xml version="1.0" encoding="UTF-8"?>
   <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
@@ -44,26 +51,27 @@ const generateSitemap = (urls) => {
           <loc>${url}</loc>
           <changefreq>daily</changefreq>
           <priority>0.8</priority>
-        </url>`;
+        </url>
+      `;
       })
-      .join("")}
+      .join('')}
   </urlset>`;
 };
 
-// API route handler for generating the sitemap
+// API Route handler for sitemap
 export async function GET() {
   try {
-    const urls = await fetchAllUrls(); // Fetch all URLs
-    const sitemap = generateSitemap(urls); // Generate the sitemap in XML format
+    const urls = await fetchUrlsSequentially(); // Fetch all URLs one page at a time
+    const sitemap = generateSitemap(urls); // Generate the sitemap
 
     // Return sitemap with appropriate headers
     return new NextResponse(sitemap, {
       headers: {
-        "Content-Type": "application/xml",
+        'Content-Type': 'application/xml',
       },
     });
   } catch (error) {
-    console.error("Error generating sitemap:", error);
-    return new NextResponse("Error generating sitemap", { status: 500 });
+    console.error('Error generating sitemap:', error);
+    return new NextResponse('Error generating sitemap', { status: 500 });
   }
 }
