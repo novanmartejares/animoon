@@ -4,22 +4,29 @@ const apiUrl = 'https://demonking-7hti.onrender.com/api/az-list?page=';
 const baseUrl = 'https://animoon.me';
 const watchUrl = 'https://animoon.me/watch';
 
+// Fetch total number of pages from the first request
+const getTotalPages = async () => {
+  const response = await fetch(apiUrl + '1'); // Fetch the first page to get totalPages
+  const data = await response.json();
+  return data.results.totalPages; // Return the total number of pages
+};
+
 // Fetch a batch of 10 pages in parallel
 const fetchPagesBatch = async (startPage, endPage) => {
   const promises = [];
 
   for (let page = startPage; page <= endPage; page++) {
-    promises.push(fetch(apiUrl + page).then(response => response.json()));
+    promises.push(fetch(apiUrl + page).then((response) => response.json()));
   }
 
-  // Resolve all fetches for this batch 
+  // Resolve all fetches for this batch
   const results = await Promise.all(promises);
   const urls = [];
 
   // Process each page's data
-  results.forEach(data => {
+  results.forEach((data) => {
     const dataList = data.results.data;
-    dataList.forEach(item => {
+    dataList.forEach((item) => {
       urls.push(`${baseUrl}${item.data_id}`);
       urls.push(`${watchUrl}${item.data_id}`);
     });
@@ -31,7 +38,7 @@ const fetchPagesBatch = async (startPage, endPage) => {
 // Fetch data from all pages in batches of 10
 const fetchAllUrls = async () => {
   let allUrls = [];
-  const totalPages = 135; // Replace this with a dynamic call to getTotalPages() if necessary.
+  const totalPages = await getTotalPages(); // Dynamically get total number of pages
 
   for (let page = 1; page <= totalPages; page += 10) {
     const startPage = page;
