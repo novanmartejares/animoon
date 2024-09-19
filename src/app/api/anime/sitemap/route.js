@@ -77,15 +77,26 @@ const fetchAllUrls = async () => {
   return allUrls; // Return all URLs after fetching all pages
 };
 
+// Helper function to escape XML characters
+const escapeXml = (url) => {
+  return url
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&apos;');
+};
+
 // Generate XML for the sitemap
 const generateSitemap = (urls) => {
   return `<?xml version="1.0" encoding="UTF-8"?>
   <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     ${urls
       .map((url) => {
+        const escapedUrl = escapeXml(url); // Escape the URL before adding it to the XML
         return `
         <url>
-          <loc>${url}</loc>
+          <loc>${escapedUrl}</loc>
           <changefreq>daily</changefreq>
           <priority>0.8</priority>
         </url>
@@ -95,11 +106,91 @@ const generateSitemap = (urls) => {
   </urlset>`;
 };
 
+// Fetch URLs for genres
+const genreUrls = () => {
+  const genres = [
+    'Action',
+    'Adventure',
+    'Cars',
+    'Comedy',
+    'Dementia',
+    'Demons',
+    'Drama',
+    'Ecchi',
+    'Fantasy',
+    'Game',
+    'Harem',
+    'Historical',
+    'Horror',
+    'Isekai',
+    'Josei',
+    'Kids',
+    'Magic',
+    'Martial Arts',
+    'Mecha',
+    'Military',
+    'Music',
+    'Mystery',
+    'Parody',
+    'Police',
+    'Psychological',
+    'Romance',
+    'Samurai',
+    'School',
+    'Sci-Fi',
+    'Seinen',
+    'Shoujo',
+    'Shoujo Ai',
+    'Shounen',
+    'Shounen Ai',
+    'Slice of Life',
+    'Space',
+    'Sports',
+    'Super Power',
+    'Supernatural',
+    'Thriller',
+    'Vampire',
+  ];
+
+  return genres.map((genre) => `${baseUrl}/genre?id=${genre}&name=${genre}`);
+};
+
+// Fetch URLs for categories
+const categoryUrls = () => {
+  const categories = [
+    'most-favorite',
+    'most-popular',
+    'subbed-anime',
+    'dubbed-anime',
+    'recently-updated',
+    'recently-added',
+    'top-upcoming',
+    'top-airing',
+    'movie',
+    'special',
+    'ova',
+    'ona',
+    'tv',
+    'completed',
+  ];
+
+  return categories.map(
+    (category) =>
+      `${baseUrl}/grid?name=${category}&heading=${category
+        .replace(/-/g, ' ')
+        .replace(/\b\w/g, (l) => l.toUpperCase())}`
+  );
+};
+
 // API Route handler for sitemap
 export async function GET() {
   try {
-    const urls = await fetchAllUrls(); // Fetch all URLs in batches of 10 pages
-    const sitemap = generateSitemap(urls); // Generate the sitemap
+    const urls = await fetchAllUrls(); // Fetch all URLs from pages
+    const genreUrlsList = genreUrls(); // Generate genre URLs
+    const categoryUrlsList = categoryUrls(); // Generate category URLs
+    const allUrls = [baseUrl, ...urls, ...genreUrlsList, ...categoryUrlsList]; // Include baseUrl and merge all URLs
+
+    const sitemap = generateSitemap(allUrls); // Generate the sitemap with all URLs
 
     // Return sitemap with appropriate headers
     return new NextResponse(sitemap, {
