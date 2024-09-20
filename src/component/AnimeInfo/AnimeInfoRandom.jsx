@@ -206,7 +206,7 @@ export default function Details(props) {
                   href={`${
                     ls.getItem(`Rewo-${gnt.info.id}`)
                       ? `/watch/${ls.getItem(`Rewo-${gnt.info.id}`)}`
-                      : `/watchi/${gnt.info.id}`
+                      : `/watch/${gnt.info.id}`
                   }`}
                   className="btn-primary hero-button"
                   onClick={handleNavigation}

@@ -83,7 +83,7 @@ export default function Hero(props) {
                 </p>
                 <div className="button-wrapper">
                   <Link
-                    href={storedId ? `/watch/${storedId}` : `/watchi/${el.id}`}
+                    href={storedId ? `/watch/${storedId}` : `/watch/${el.id}`}
                     className="btn-primary hero-button"
                     onClick={handleNavigation} // Show loading indicator on click
                   >

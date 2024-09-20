@@ -5,6 +5,7 @@ import Link from "next/link";
 import MouseOverCard from "./MouseOverCard";
 import { FaClosedCaptioning, FaPlayCircle } from "react-icons/fa";
 import { AiFillAudio } from "react-icons/ai";
+import Image from "next/image";
 
 export default function Card(props) {
   const anime = props.data;
@@ -67,7 +68,7 @@ export default function Card(props) {
     if (whole === 0) return 0;
     return (part / whole) * 100;
   }
-  
+
   let percentage = calculatePercentage(totalSecondstimo, totalSeconds);
 
   const handleNavigation = () => {
@@ -85,7 +86,7 @@ export default function Card(props) {
           props.collectionName !== "Top Upcoming"
             ? ls.getItem(`Rewo-${anime.id}`)
               ? `/watch/${ls.getItem(`Rewo-${anime.id}`)}`
-              : `/watchi/${anime.id}`
+              : `/watch/${anime.id}`
             : `/${anime.id}`
         }`}
         prefetch
@@ -114,7 +115,11 @@ export default function Card(props) {
             ""
           )}
           <div className="tick-item">
-            <span className={`episode-count ${anime?.episodes?.dub > 0 ? "borO" : "borR"}`}>
+            <span
+              className={`episode-count ${
+                anime?.episodes?.dub > 0 ? "borO" : "borR"
+              }`}
+            >
               <FaClosedCaptioning size={14} />
               {anime?.episodes?.sub || "?"}
             </span>
@@ -129,7 +134,9 @@ export default function Card(props) {
         </div>
         <div className="card-details">
           <span className="card-title">
-            {anime.name?.length > 15 ? anime.name.slice(0, 15) + "..." : anime.name}
+            {anime.name?.length > 15
+              ? anime.name.slice(0, 15) + "..."
+              : anime.name}
           </span>
           {props.keepIt ? (
             <div className="card-statK">
@@ -140,16 +147,23 @@ export default function Card(props) {
                 </div>
                 <div className="durnt">
                   <div className="durntS">
-                    {`${minutestimo < 10 ? "0" + minutestimo : minutestimo}:${secondstimo < 10 ? "0" + secondstimo : secondstimo}`}
+                    {`${minutestimo < 10 ? "0" + minutestimo : minutestimo}:${
+                      secondstimo < 10 ? "0" + secondstimo : secondstimo
+                    }`}
                   </div>
                   <div className="durntM">/</div>
                   <div className="durntL">
-                    {`${minutes < 10 ? "0" + minutes : minutes}:${seconds < 10 ? "0" + seconds : seconds}`}
+                    {`${minutes < 10 ? "0" + minutes : minutes}:${
+                      seconds < 10 ? "0" + seconds : seconds
+                    }`}
                   </div>
                 </div>
               </div>
               <div className="scaling">
-                <div className="inlino" style={{ width: `${percentage}%` }}></div>
+                <div
+                  className="inlino"
+                  style={{ width: `${percentage}%` }}
+                ></div>
               </div>
             </div>
           ) : (

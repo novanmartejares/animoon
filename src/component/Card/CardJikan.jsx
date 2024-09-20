@@ -5,6 +5,7 @@ import Link from "next/link";
 import MouseOverCard from "./MouseOverCard";
 import { FaClosedCaptioning, FaPlayCircle } from "react-icons/fa";
 import { AiFillAudio } from "react-icons/ai";
+import Image from "next/image";
 
 export default function Card(props) {
   const anime = props.data;
@@ -59,9 +60,9 @@ export default function Card(props) {
       <Link
         href={`${
           props.collectionName !== "Top Upcoming"
-            ? ls.getItem(`Rewo-${anime.data_id}`)
-              ? `/watch/${ls.getItem(`Rewo-${anime.data_id}`)}`
-              : `/watchi/${anime.data_id}`
+            ? ls.getItem(`Rewo-${anime.data_id.replace("/", "")}`)
+              ? `/watch/${ls.getItem(`Rewo-${anime.data_id.replace("/", "")}`)}`
+              : `/watch${anime.data_id}`
             : `/${anime.data_id}`
         }`}
         prefetch
@@ -110,7 +111,11 @@ export default function Card(props) {
             )}
           </div>
 
-          <img src={anime.poster} alt="anime-card" />
+          <Image
+            src={anime.poster}
+            alt="anime-card"
+            className="anime-card-img"
+          />
         </div>
         <div className="card-details">
           <span className="card-title">

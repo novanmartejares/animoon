@@ -187,10 +187,11 @@ function ArtPlayer(props, { ...rest }) {
       subtitle: {
         url:
           filteredCaptions && filteredCaptions.length > 0
-            ? filteredCaptions?.find((sub) => sub.default)?.file
-            : "", // Set the default subtitle
+            ? filteredCaptions.find((sub) => sub.default)?.file || ''
+            : "", // Set the default subtitle or first subtitle if default is not found
         className: "subtitle-text", // Use the CSS class
       },
+      
       settings: [
         {
           width: 200,
@@ -258,19 +259,19 @@ function ArtPlayer(props, { ...rest }) {
       ],
       highlight: [
         {
-          time: parseInt(props.introd?.start),
+          time: parseInt(props.introd?.start) || 0,
           text: "Opening Start",
         },
         {
-          time: parseInt(props.introd?.end),
+          time: parseInt(props.introd?.end) || 0,
           text: "Opening End",
         },
         {
-          time: parseInt(props.outrod?.start),
+          time: parseInt(props.outrod?.start) || 0,
           text: "Ending Start",
         },
         {
-          time: parseInt(props.outrod?.end),
+          time: parseInt(props.outrod?.end) || 0,
           text: "Ending End",
         },
       ],

@@ -40,7 +40,7 @@ export default function Trending(props) {
             href={`${
               localStorageData[el.id]
                 ? `/watch/${localStorageData[el.id]}`
-                : `/watchi/${el.id}`
+                : `/watch/${el.id}`
             }`}
             prefetch
             onClick={handleNavigation}
