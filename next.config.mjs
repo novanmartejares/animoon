@@ -10,8 +10,13 @@ const nextConfig = {
     // !! WARN !!
     ignoreBuildErrors: true,
   },
-  // Increase static page generation timeout to 120 seconds
+  // Increase static page generation timeout to 300 seconds
   staticPageGenerationTimeout: 300,
+
+  // Add image domain configuration for external image loading
+  images: {
+    domains: ['cdn.noitatnemucod.net', 'img.zorores.com'],
+  },
 };
 
 export default nextConfig;

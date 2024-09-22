@@ -1,9 +1,4 @@
 import React from "react";
-import Share from "@/component/Share/Share";
-import Hero from "@/component/Hero/hero";
-import Trending from "@/component/Trending/Trending";
-import Featured from "@/component/Featured/Featured";
-import MainContainer from "@/component/MainContainer/MainContainer";
 import { redis } from "@/lib/rediscache";
 import Home from "@/app/home/Home";
 

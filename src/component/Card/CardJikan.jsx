@@ -112,6 +112,8 @@ export default function Card(props) {
           </div>
 
           <Image
+            height={310}
+            width={250}
             src={anime.poster}
             alt="anime-card"
             className="anime-card-img"

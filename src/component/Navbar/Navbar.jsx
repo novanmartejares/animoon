@@ -9,8 +9,10 @@ import logo from "../../../public/logo.png";
 import Image from "next/image";
 import useAnime from "@/hooks/useAnime";
 import "./navbar.css";
+import { useRouter } from "next/router";
 
 export default function NavBar(props) {
+  const router = useRouter()
   const handleNavigation = () => {
     props.IsLoading(true);
   };
@@ -47,6 +49,7 @@ export default function NavBar(props) {
   const handleSearchClick = () => {
     if (searchForm.name !== "") {
       setSearchForm({ name: "" });
+      router.push(`/search?name=${searchForm?.name}`)
     }
   };
 
