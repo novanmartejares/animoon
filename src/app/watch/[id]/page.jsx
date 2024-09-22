@@ -1,27 +1,17 @@
 import React from "react";
 import WatchAnime from "../../WatchAnime/WatchAnime";
 import { currentUser } from "@clerk/nextjs/server";
-import { redis } from "@/lib/rediscache";
 
-// Helper function to get data from Redis or fetch from API
-async function getOrFetchFromRedis(key, url, revalidate) {
+// Helper function to fetch data with force-cache and revalidate options
+async function fetchDataFromAPI(url, revalidate) {
   try {
-    // Try getting data from Redis first
-    const cachedData = await redis.get(key);
-    if (cachedData) {
-      return JSON.parse(cachedData);
-    }
-
-    // Fetch data from API if not in cache
-    const response = await fetch(url, { next: { revalidate } });
-    const data = await response.json();
-
-    // Store the data in Redis with an expiration time (revalidate period)
-    await redis.set(key, JSON.stringify(data), "EX", revalidate);
-
-    return data;
+    const response = await fetch(url, {
+      cache: "force-cache", // Cache the response forcefully
+      next: { revalidate }, // Revalidate after the specified time (in seconds)
+    });
+    return await response.json();
   } catch (error) {
-    console.error(`Error fetching data from Redis or API for key ${key}: `, error);
+    console.error(`Error fetching data from API: `, error);
     return null;
   }
 }
@@ -30,7 +20,7 @@ async function getOrFetchFromRedis(key, url, revalidate) {
 export async function generateMetadata({ params }) {
   try {
     const url = `https://aniwatch-api-8fti.onrender.com/anime/info?id=${params.id}`;
-    const daty = await getOrFetchFromRedis(`anime-info-${params.id}`, url, 60); // 1 minute revalidate
+    const daty = await fetchDataFromAPI(url, 3600); // Revalidate after 1 hour
 
     return {
       title: `Watch ${daty.anime.info.name} English Sub/Dub online free on Animoon.me`,
@@ -56,18 +46,16 @@ export default async function page({ params, searchParams }) {
   const epis = searchParams.ep;
   const episodeIdParam = epis ? `${params.id}?ep=${epis}` : null;
 
-  // Fetch anime info using Redis
-  const datao = await getOrFetchFromRedis(
-    `anime-info-${params.id}`,
+  // Fetch anime info with force-cache and revalidation
+  const datao = await fetchDataFromAPI(
     `https://aniwatch-api-8fti.onrender.com/anime/info?id=${params.id}`,
-    18000 // 5 hours revalidate
+    18000 // Revalidate after 5 hours
   );
 
-  // Fetch episodes using Redis
-  const data = await getOrFetchFromRedis(
-    `anime-episodes-${params.id}`,
+  // Fetch episodes with force-cache and revalidation
+  const data = await fetchDataFromAPI(
     `https://aniwatch-api-8fti.onrender.com/anime/episodes/${params.id}`,
-    3600 // 1 hour revalidate
+    3600 // Revalidate after 1 hour
   );
 
   // Determine the episode ID
@@ -93,11 +81,10 @@ export default async function page({ params, searchParams }) {
     dataj = [];
   }
 
-  // Fetch homepage data using Redis
-  const datapp = await getOrFetchFromRedis(
-    `anime-home`,
+  // Fetch homepage data with force-cache and revalidation
+  const datapp = await fetchDataFromAPI(
     "https://aniwatch-api-8fti.onrender.com/anime/home",
-    3600 // 1 hour revalidate
+    3600 // Revalidate after 1 hour
   );
 
   // Share URL and title for the current episode

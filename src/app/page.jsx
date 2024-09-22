@@ -1,43 +1,25 @@
 import React from "react";
-import { redis } from "@/lib/rediscache";
 import Home from "@/app/home/Home";
 
 export default async function Page() {
   const ShareUrl = "https://animoon.me/";
 
-  // Function to fetch data from the API and cache it in Redis
-  async function fetchDataWithCache(key, url) {
-    let cachedData;
-
-    // Check if the data is already cached in Redis
-    if (redis) {
-      cachedData = await redis.get(key);
-    }
-
-    // If cached data is found, return it
-    if (cachedData) {
-      return JSON.parse(cachedData);
-    }
-
-    // If not cached, fetch the data from the API
-    const response = await fetch(url, { cache: "no-store" });
+  // Function to fetch data with cache and revalidation
+  async function fetchDataWithCache(url) {
+    const response = await fetch(url, {
+      cache: "force-cache",  // Forces the cache to be used
+      next: { revalidate: 3600 }  // Revalidates the cache after 1 hour (3600 seconds)
+    });
+    
     const data = await response.json();
-
-    // Cache the fetched data in Redis with an expiration time of 1 hour
-    if (redis && data && Object.keys(data).length > 0) {
-      await redis.set(key, JSON.stringify(data), "EX", 3600);
-    }
-
     return data;
   }
 
   // Fetch and cache data from the API routes
   const data = await fetchDataWithCache(
-    "anime-home",
     "https://aniwatch-api-8fti.onrender.com/anime/home"
   );
   const dataNew = await fetchDataWithCache(
-    "anime-recently-added",
     "https://aniwatch-api-8fti.onrender.com/anime/recently-added?page=1"
   );
 

@@ -1,41 +1,27 @@
-import axios from "axios";
-import { redis } from "@/lib/rediscache";
 import { NextResponse } from "next/server";
 
-axios.interceptors.request.use((config) => {
-  config.timeout = 9000;
-  return config;
-});
-
-async function fetchRecent(id) {
-  try {
-    const { data } = await axios.get(
-      `https://aniwatch-api-8fti.onrender.com/anime/info?id=${id}`
-    );
-    return data;
-  } catch (error) {
-    console.error("Error fetching Recent Episodes:", error);
-    return [];
-  }
-}
-
+// Main API handler function
 export async function GET(req, { params }) {
-  let cached;
-  if (redis) {
-    console.log("using redis");
-    cached = await redis.get(`info-${params.id}`);
-  }
-  if (cached && JSON.parse(cached) && JSON.parse(cached).length > 0) {
-    return NextResponse.json(JSON.parse(cached));
-  } else {
-    const data = await fetchRecent(params.id);
-    if (data) {
-      if (redis) {
-        await redis.set(`info-${params.id}`, JSON.stringify(data), "EX", 18000);
+  // Fetch data using 'force-cache' and revalidate mechanism
+  try {
+    const response = await fetch(
+      `https://aniwatch-api-8fti.onrender.com/anime/info?id=${params.id}`,
+      {
+        cache: "force-cache", // Force cache the response
+        next: { revalidate: 18000 }, // Revalidate after 5 hours (18000 seconds)
       }
+    );
+
+    // Parse response data
+    const data = await response.json();
+
+    if (data && data.length > 0) {
       return NextResponse.json(data);
     } else {
       return NextResponse.json({ message: "Recent Episodes not found" });
     }
+  } catch (error) {
+    console.error("Error fetching data:", error);
+    return NextResponse.json({ message: "Error fetching data" });
   }
 }
