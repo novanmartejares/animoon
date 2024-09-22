@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import AnimeCollection from "@/component/MainContainer/AnimeCollection";
 import Genre from "@/component/Genre/Genre";
 import TopTenAnime from "@/component/TopTen/TopTenAnime";
@@ -23,8 +23,8 @@ export default function SearchResults(props) {
       ) : (
         <div className=" main-container d-flex  ">
           <div className="sidebar-wrapper d-flex-fd-column">
-            <Genre data={props.datal} IsLoading={IsLoading} />
-            <TopTenAnime data={props.datal} IsLoading={IsLoading} />
+            <Genre data={props.datal.genres} IsLoading={IsLoading} />
+            <TopTenAnime data={props.datal.top10Animes} IsLoading={IsLoading} />
           </div>
           <div className="collections-wrapper">
             {props.data?.animes?.length < 1 ? (
@@ -34,6 +34,7 @@ export default function SearchResults(props) {
                 collectionName="Search Results"
                 data={props.data?.animes}
                 IsLoading={IsLoading}
+                isInGrid={"true"}
               />
             )}
           </div>
