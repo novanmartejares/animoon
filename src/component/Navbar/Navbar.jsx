@@ -9,7 +9,7 @@ import logo from "../../../public/logo.png";
 import Image from "next/image";
 import useAnime from "@/hooks/useAnime";
 import "./navbar.css";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 
 export default function NavBar(props) {
   const router = useRouter()
