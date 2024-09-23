@@ -15,7 +15,7 @@ export default function NavSidebar(props) {
         style={{
           transform: props.sidebarIsOpen
             ? "translateX(250px)"
-            : "translateX(-250px)",
+            : "translateX(-250px)", 
         }}
       >
         <div className="button-group d-flex-fd-column">
