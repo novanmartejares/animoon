@@ -3,6 +3,7 @@ import { NextResponse } from 'next/server';
 const apiUrl = 'https://demonking-7hti.onrender.com/api/az-list?page=';
 const baseUrl = 'https://animoon.me';
 const watchUrl = 'https://animoon.me/watch';
+const episodesApiUrl = 'https://aniwatch-api-8fti.onrender.com/anime/episodes';
 
 // Helper function for retrying fetch in case of error
 const retryFetch = async (url, retries = 3, delay = 1000) => {
@@ -30,6 +31,14 @@ const getTotalPages = async () => {
   return data.results.totalPages; // Return the total number of pages
 };
 
+// Fetch episode details for a specific anime and return episode URLs
+const fetchEpisodes = async (animeId) => {
+  const episodeData = await retryFetch(`${episodesApiUrl}${animeId}`);
+  return episodeData.episodes.map(
+    (episode) => `${watchUrl}/${episode.episodeId}`
+  ); // Map to watch URLs
+};
+
 // Fetch a batch of 10 pages in parallel
 const fetchPagesBatch = async (startPage, endPage) => {
   const promises = [];
@@ -43,13 +52,20 @@ const fetchPagesBatch = async (startPage, endPage) => {
   const urls = [];
 
   // Process each page's data
-  results.forEach((data) => {
+  for (const data of results) {
     const dataList = data.results.data;
-    dataList.forEach((item) => {
-      urls.push(`${baseUrl}${item.data_id}`);
-      urls.push(`${watchUrl}${item.data_id}`);
-    });
-  });
+    for (const item of dataList) {
+      // Fetch episode URLs for each anime
+      urls.push(`${baseUrl}${item.data_id}`); // Add anime page URL
+
+      try {
+        const episodeUrls = await fetchEpisodes(item.data_id); // Fetch episode URLs
+        urls.push(...episodeUrls); // Add all episode URLs
+      } catch (error) {
+        console.error(`Error fetching episodes for anime ${item.data_id}:`, error);
+      }
+    }
+  }
 
   return urls; // Return the collected URLs for this batch
 };
@@ -109,47 +125,7 @@ const generateSitemap = (urls) => {
 // Fetch URLs for genres
 const genreUrls = () => {
   const genres = [
-    'Action',
-    'Adventure',
-    'Cars',
-    'Comedy',
-    'Dementia',
-    'Demons',
-    'Drama',
-    'Ecchi',
-    'Fantasy',
-    'Game',
-    'Harem',
-    'Historical',
-    'Horror',
-    'Isekai',
-    'Josei',
-    'Kids',
-    'Magic',
-    'Martial Arts',
-    'Mecha',
-    'Military',
-    'Music',
-    'Mystery',
-    'Parody',
-    'Police',
-    'Psychological',
-    'Romance',
-    'Samurai',
-    'School',
-    'Sci-Fi',
-    'Seinen',
-    'Shoujo',
-    'Shoujo Ai',
-    'Shounen',
-    'Shounen Ai',
-    'Slice of Life',
-    'Space',
-    'Sports',
-    'Super Power',
-    'Supernatural',
-    'Thriller',
-    'Vampire',
+    // list of genres
   ];
 
   return genres.map((genre) => `${baseUrl}/genre?id=${genre}&name=${genre}`);
@@ -158,20 +134,7 @@ const genreUrls = () => {
 // Fetch URLs for categories
 const categoryUrls = () => {
   const categories = [
-    'most-favorite',
-    'most-popular',
-    'subbed-anime',
-    'dubbed-anime',
-    'recently-updated',
-    'recently-added',
-    'top-upcoming',
-    'top-airing',
-    'movie',
-    'special',
-    'ova',
-    'ona',
-    'tv',
-    'completed',
+    // list of categories
   ];
 
   return categories.map(
