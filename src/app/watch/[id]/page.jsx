@@ -7,7 +7,7 @@ async function fetchDataFromAPI(url, revalidate) {
   try {
     const response = await fetch(url, {
       cache: "force-cache", // Cache the response forcefully
-      next: { revalidate }, // Revalidate after the specified time (in seconds)
+      next: { revalidate },
     });
     return await response.json();
   } catch (error) {
@@ -30,7 +30,8 @@ export async function generateMetadata({ params }) {
     console.error("Error fetching metadata: ", error);
     return {
       title: "Watch Anime Online Free on Animoon.me",
-      description: "Animoon is the best site to watch anime in high quality with both sub and dub options.",
+      description:
+        "Animoon is the best site to watch anime in high quality with both sub and dub options.",
     };
   }
 }
@@ -64,7 +65,7 @@ export default async function page({ params, searchParams }) {
   // Find the episode number
   let episodeNumber = 0;
   if (data?.episodes?.length) {
-    const currentEpisode = data.episodes.find(ep => ep.episodeId === epId);
+    const currentEpisode = data.episodes.find((ep) => ep.episodeId === epId);
     episodeNumber = currentEpisode ? currentEpisode.number : 0;
   }
 
@@ -72,7 +73,7 @@ export default async function page({ params, searchParams }) {
   let dataj = [];
   try {
     const respStream = await fetch(
-      `https://demonking-7hti.onrender.com/api/stream?id=${epId}`,
+      `https://vimalking.vercel.app/api/stream?id=${epId}`,
       { cache: "no-store" } // No cache for real-time streaming data
     );
     dataj = await respStream.json();

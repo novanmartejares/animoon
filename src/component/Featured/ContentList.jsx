@@ -29,12 +29,12 @@ export default function ContentList(props) {
           <div className="episode-info d-flex f-ubuntu">
             <span className="episode-count">
               <FaClosedCaptioning size={14} />
-              {el.episodes.sub || "?"}
+              {el.episodes?.sub || "?"}
             </span>{" "}
-            {el.episodes.dub ? (
+            {el.episodes?.dub ? (
               <span className="episode-count-dub d-flex a-center j-center">
                 <AiFillAudio size={14} />
-                {el.episodes.dub || "?"}
+                {el.episodes?.dub || "?"}
               </span>
             ) : (
               ""

@@ -16,7 +16,7 @@ export async function middleware(request) {
   ]);
   if (request.nextUrl.pathname.startsWith("/watchi")) {
     const resp = await fetch(
-      `https://aniwatch-api-8fti.onrender.com/anime/episodes/${request.nextUrl.pathname.replace(
+      `https://hianimes.vercel.app/anime/episodes/${request.nextUrl.pathname.replace(
         "/watchi/",
         ""
       )}`
@@ -38,7 +38,7 @@ export async function middleware(request) {
     const paramValue = searchParams.get("ep");
     if (!paramValue) {
       const resp = await fetch(
-        `https://aniwatch-api-8fti.onrender.com/anime/episodes/${request.nextUrl.pathname.replace(
+        `https://hianimes.vercel.app/anime/episodes/${request.nextUrl.pathname.replace(
           "/watch/",
           ""
         )}`
@@ -55,7 +55,7 @@ export async function middleware(request) {
     // If all IDs are used or not fetched yet, fetch new ones
     if (currentIndex >= randomIds.length) {
       const resp = await fetch(
-        `https://aniwatch-api-8fti.onrender.com/anime/random?page=1`,
+        `https://hianimes.vercel.app/anime/random?page=1`,
         { cache: "no-store" }
       );
       const data = await resp.json();

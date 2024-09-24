@@ -24,12 +24,15 @@ const Home = (props) => {
       ) : (
         <div>
           <Hero data={props.data.spotlightAnimes} IsLoading={IsLoading} />
-          <Trending
-            data={props.data.trendingAnimes}
-            IsLoading={IsLoading}
-          />
+          <Trending data={props.data.trendingAnimes} IsLoading={IsLoading} />
           <Share ShareUrl={props.ShareUrl} />
-          <Featured data={props.data} IsLoading={IsLoading} />
+          <Featured
+            IsLoading={IsLoading}
+            dataComp={props.dataComp}
+            dataAir={props.dataAir}
+            dataFav={props.dataFav}
+            dataPopu={props.dataPopu}
+          />
           <MainContainer
             data={props.data}
             dataNew={props.dataNew}

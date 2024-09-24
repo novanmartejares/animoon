@@ -70,7 +70,7 @@ export default function WatchAnime(props) {
     )?.value?.decryptionResult?.source.sources[0].file
   );
   const [introd, setIntrod] = useState(
-    props.dataj.results.streamingInfo.find(
+    props.dataj.results?.streamingInfo.find(
       (info) =>
         (info.value.decryptionResult?.type === "sub" ||
           info.value.decryptionResult?.type === "raw") &&
@@ -78,7 +78,7 @@ export default function WatchAnime(props) {
     )?.value.decryptionResult.source.intro
   );
   const [outrod, setOutrod] = useState(
-    props.dataj.results.streamingInfo.find(
+    props.dataj.results?.streamingInfo.find(
       (info) =>
         (info.value.decryptionResult?.type === "sub" ||
           info.value.decryptionResult?.type === "raw") &&
@@ -86,7 +86,7 @@ export default function WatchAnime(props) {
     )?.value.decryptionResult.source.outro
   );
   const [subtitles, setSubtitles] = useState(
-    props.dataj.results.streamingInfo.find(
+    props.dataj.results?.streamingInfo.find(
       (info) =>
         (info.value.decryptionResult?.type === "sub" ||
           info.value.decryptionResult?.type === "raw") &&
