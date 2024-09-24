@@ -23,13 +23,13 @@ export default async function page({ searchParams }) {
   try {
     // Fetch genre-specific anime list and homepage data concurrently
     const [animeResp, homeResp] = await Promise.all([
-      fetch(`https://aniwatch-api-8fti.onrender.com/anime/genre/${date}?page=${pageParam}`, {
+      fetch(`https://hianimes.vercel.app/anime/genre/${date}?page=${pageParam}`, {
         cache: 'force-cache',
         headers: {
           'Cache-Control': `public, max-age=${cacheMaxAge}, stale-while-revalidate=${cacheMaxAge}`,
         },
       }),
-      fetch("https://aniwatch-api-8fti.onrender.com/anime/home", {
+      fetch("https://hianimes.vercel.app/anime/home", {
         cache: 'force-cache',
         headers: {
           'Cache-Control': `public, max-age=${cacheMaxAge}, stale-while-revalidate=${cacheMaxAge}`,

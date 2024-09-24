@@ -17,10 +17,10 @@ export default async function Page() {
 
   // Fetch and cache data from the API routes
   const data = await fetchDataWithCache(
-    "https://aniwatch-api-8fti.onrender.com/anime/home"
+    "https://hianimes.vercel.app/anime/home"
   );
   const dataNew = await fetchDataWithCache(
-    "https://aniwatch-api-8fti.onrender.com/anime/recently-added?page=1"
+    "https://hianimes.vercel.app/anime/recently-added?page=1"
   );
 
   return (

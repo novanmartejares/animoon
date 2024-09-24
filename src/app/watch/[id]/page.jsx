@@ -19,7 +19,7 @@ async function fetchDataFromAPI(url, revalidate) {
 // Generate metadata dynamically based on the anime info
 export async function generateMetadata({ params }) {
   try {
-    const url = `https://aniwatch-api-8fti.onrender.com/anime/info?id=${params.id}`;
+    const url = `https://hianimes.vercel.app/anime/info?id=${params.id}`;
     const daty = await fetchDataFromAPI(url, 3600); // Revalidate after 1 hour
 
     return {
@@ -48,13 +48,13 @@ export default async function page({ params, searchParams }) {
 
   // Fetch anime info with force-cache and revalidation
   const datao = await fetchDataFromAPI(
-    `https://aniwatch-api-8fti.onrender.com/anime/info?id=${params.id}`,
+    `https://hianimes.vercel.app/anime/info?id=${params.id}`,
     18000 // Revalidate after 5 hours
   );
 
   // Fetch episodes with force-cache and revalidation
   const data = await fetchDataFromAPI(
-    `https://aniwatch-api-8fti.onrender.com/anime/episodes/${params.id}`,
+    `https://hianimes.vercel.app/anime/episodes/${params.id}`,
     3600 // Revalidate after 1 hour
   );
 
@@ -83,7 +83,7 @@ export default async function page({ params, searchParams }) {
 
   // Fetch homepage data with force-cache and revalidation
   const datapp = await fetchDataFromAPI(
-    "https://aniwatch-api-8fti.onrender.com/anime/home",
+    "https://hianimes.vercel.app/anime/home",
     3600 // Revalidate after 1 hour
   );
 
