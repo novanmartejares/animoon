@@ -14,6 +14,9 @@ export const metadata = {
                       watch Anime DUB in HD quality. You
                       can also find UnderRated anime
                       on Animoon website.`,
+  verification: {
+    google: "x0aiWAODNGU-1UA2FXyORfyme9uWJir7mIMu8AMmLm4",
+  },
 };
 
 export default async function RootLayout({ children }) {
