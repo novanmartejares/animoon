@@ -11,7 +11,6 @@ const nextConfig = {
     ignoreBuildErrors: true,
   },
   // Increase static page generation timeout to 300 seconds
-  staticPageGenerationTimeout: 60,
 
   // Add image domain configuration for external image loading
   images: {
