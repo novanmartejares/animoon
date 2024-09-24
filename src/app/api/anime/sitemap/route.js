@@ -1,8 +1,7 @@
-import { NextResponse } from 'next/server';
+import { NextResponse } from "next/server";
 
-const apiUrl = 'https://vimalking.vercel.app/api/az-list?page=';
-const baseUrl = 'https://animoon.me';
-const watchUrl = 'https://animoon.me/watch';
+const apiUrl = "https://vimalking.vercel.app/api/az-list?page=";
+const baseUrl = "https://animoontv.vercel.app/";
 
 // Helper function for retrying fetch in case of error
 const retryFetch = async (url, retries = 3, delay = 1000) => {
@@ -26,7 +25,7 @@ const retryFetch = async (url, retries = 3, delay = 1000) => {
 
 // Fetch total number of pages from the first request
 const getTotalPages = async () => {
-  const data = await retryFetch(apiUrl + '1'); // Fetch the first page with retry logic
+  const data = await retryFetch(apiUrl + "1"); // Fetch the first page with retry logic
   return data.results.totalPages; // Return the total number of pages
 };
 
@@ -47,7 +46,6 @@ const fetchPagesBatch = async (startPage, endPage) => {
     const dataList = data.results.data;
     dataList.forEach((item) => {
       urls.push(`${baseUrl}${item.data_id}`);
-      urls.push(`${watchUrl}${item.data_id}`);
     });
   });
 
@@ -80,11 +78,11 @@ const fetchAllUrls = async () => {
 // Helper function to escape XML characters
 const escapeXml = (url) => {
   return url
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&apos;');
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&apos;");
 };
 
 // Generate XML for the sitemap
@@ -102,54 +100,54 @@ const generateSitemap = (urls) => {
         </url>
       `;
       })
-      .join('')}
+      .join("")}
   </urlset>`;
 };
 
 // Fetch URLs for genres
 const genreUrls = () => {
   const genres = [
-    'Action',
-    'Adventure',
-    'Cars',
-    'Comedy',
-    'Dementia',
-    'Demons',
-    'Drama',
-    'Ecchi',
-    'Fantasy',
-    'Game',
-    'Harem',
-    'Historical',
-    'Horror',
-    'Isekai',
-    'Josei',
-    'Kids',
-    'Magic',
-    'Martial Arts',
-    'Mecha',
-    'Military',
-    'Music',
-    'Mystery',
-    'Parody',
-    'Police',
-    'Psychological',
-    'Romance',
-    'Samurai',
-    'School',
-    'Sci-Fi',
-    'Seinen',
-    'Shoujo',
-    'Shoujo Ai',
-    'Shounen',
-    'Shounen Ai',
-    'Slice of Life',
-    'Space',
-    'Sports',
-    'Super Power',
-    'Supernatural',
-    'Thriller',
-    'Vampire',
+    "Action",
+    "Adventure",
+    "Cars",
+    "Comedy",
+    "Dementia",
+    "Demons",
+    "Drama",
+    "Ecchi",
+    "Fantasy",
+    "Game",
+    "Harem",
+    "Historical",
+    "Horror",
+    "Isekai",
+    "Josei",
+    "Kids",
+    "Magic",
+    "Martial Arts",
+    "Mecha",
+    "Military",
+    "Music",
+    "Mystery",
+    "Parody",
+    "Police",
+    "Psychological",
+    "Romance",
+    "Samurai",
+    "School",
+    "Sci-Fi",
+    "Seinen",
+    "Shoujo",
+    "Shoujo Ai",
+    "Shounen",
+    "Shounen Ai",
+    "Slice of Life",
+    "Space",
+    "Sports",
+    "Super Power",
+    "Supernatural",
+    "Thriller",
+    "Vampire",
   ];
 
   return genres.map((genre) => `${baseUrl}/genre?id=${genre}&name=${genre}`);
@@ -158,26 +156,26 @@ const genreUrls = () => {
 // Fetch URLs for categories
 const categoryUrls = () => {
   const categories = [
-    'most-favorite',
-    'most-popular',
-    'subbed-anime',
-    'dubbed-anime',
-    'recently-updated',
-    'recently-added',
-    'top-upcoming',
-    'top-airing',
-    'movie',
-    'special',
-    'ova',
-    'ona',
-    'tv',
-    'completed',
+    "most-favorite",
+    "most-popular",
+    "subbed-anime",
+    "dubbed-anime",
+    "recently-updated",
+    "recently-added",
+    "top-upcoming",
+    "top-airing",
+    "movie",
+    "special",
+    "ova",
+    "ona",
+    "tv",
+    "completed",
   ];
 
   return categories.map(
     (category) =>
       `${baseUrl}/grid?name=${category}&heading=${category
-        .replace(/-/g, ' ')
+        .replace(/-/g, " ")
         .replace(/\b\w/g, (l) => l.toUpperCase())}`
   );
 };
@@ -195,11 +193,11 @@ export async function GET() {
     // Return sitemap with appropriate headers
     return new NextResponse(sitemap, {
       headers: {
-        'Content-Type': 'application/xml',
+        "Content-Type": "application/xml",
       },
     });
   } catch (error) {
-    console.error('Error generating sitemap:', error);
-    return new NextResponse('Error generating sitemap', { status: 500 });
+    console.error("Error generating sitemap:", error);
+    return new NextResponse("Error generating sitemap", { status: 500 });
   }
 }
