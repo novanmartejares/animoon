@@ -14,7 +14,6 @@ export async function GET(req, { params }) {
 
     // Parse response data
     const data = await response.json();
-
     if (data && data.length > 0) {
       return NextResponse.json(data);
     } else {

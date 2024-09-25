@@ -15,9 +15,13 @@ export default function useAnime() {
     }
   }
   async function getAnimeInfo(id) {
-    const data = await fetch(location.origin + "/api/anime/infoT/" + id, {
-      cache: "no-store",
-    });
+    const data = await fetch(
+      `https://hianimes.vercel.app/anime/info?id=${id}`,
+      {
+        cache: "force-cache", // Force cache the response
+        next: { revalidate: 18000 }, // Revalidate after 5 hours (18000 seconds)
+      }
+    );
     let json = await data.json();
     console.log(json);
     return json;
@@ -65,10 +69,9 @@ export default function useAnime() {
     return data;
   }
   async function getRandomAnime() {
-    const data = await fetch(
-      location.origin + "/api/anime/random",
-      { cache: 'no-store' }
-    );
+    const data = await fetch(location.origin + "/api/anime/random", {
+      cache: "no-store",
+    });
     let json = await data.json();
     console.log(json);
     return json;

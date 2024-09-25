@@ -12,21 +12,17 @@ export default function MouseOverCard(props) {
   const [hoverAnime, setHoverAnime] = useState(null);
   const fetchFub = async () => {
     const dat = await getAnimeInfo(props.id);
-    console.log(dat);
+    console.log("2004", dat);
     setHoverAnime(dat);
   };
-  useEffect(()=>{
-    fetchFub()
-  },[])
-  const anime = hoverAnime?.anime
+  useEffect(() => {
+    fetchFub();
+  }, []);
+  const anime = hoverAnime?.anime;
   const ref = useRef(null);
-  const genre = anime?.moreInfo?.genres?.map((genre,idx) => {
+  const genre = anime?.moreInfo?.genres?.map((genre, idx) => {
     return (
-      <Link
-        className="genre-button"
-        key={idx}
-        href={`/`}
-      >
+      <Link className="genre-button" key={idx} href={`/`}>
         {genre}
       </Link>
     );
@@ -46,7 +42,9 @@ export default function MouseOverCard(props) {
         <LoadingSpinner />
       ) : (
         <>
-          <h1 className="greatN">{anime?.info?.name || anime?.title_japanese}</h1>
+          <h1 className="greatN">
+            {anime?.info?.name || anime?.title_japanese}
+          </h1>
           <div className="d-flex anime-st">
             <span className=" d-flex a-center j-center">
               <FaStar color="yellow" />
