@@ -1,4 +1,4 @@
 User-agent: *
 Disallow:
 
-Sitemap: https://animoontv.vercel.app/api/anime/sitemap?index=true
+Sitemap: https://animoontv.vercel.app/api/anime/sitemap

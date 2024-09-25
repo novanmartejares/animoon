@@ -15,7 +15,18 @@ const nextConfig = {
 
   // Add image domain configuration for external image loading
   images: {
-    domains: ['cdn.noitatnemucod.net', 'img.zorores.com'],
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'cdn.noitatnemucod.net',
+        pathname: '/**',  // Allow all paths under this hostname
+      },
+      {
+        protocol: 'https',
+        hostname: 'img.zorores.com',
+        pathname: '/**',
+      },
+    ],
   },
 };
 
