@@ -130,13 +130,7 @@ export default function Card(props) {
               </span>
             )}
           </div>
-          <Image
-            height={310}
-            width={250}
-            src={anime.poster}
-            alt="anime-card"
-            className="anime-card-img"
-          />
+          <img src={anime.poster} alt="anime-card" className="anime-card-img"/>
         </div>
         <div className="card-details">
           <span className="card-title">
