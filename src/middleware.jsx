@@ -14,40 +14,44 @@ export async function middleware(request) {
     "user/notification(.*)",
     "/user/settings(.*)",
   ]);
-  if (request.nextUrl.pathname.startsWith("/watchi")) {
-    const resp = await fetch(
-      `https://hianimes.vercel.app/anime/episodes/${request.nextUrl.pathname.replace(
-        "/watchi/",
-        ""
-      )}`
-    );
-    const data = await resp.json();
-
-    return NextResponse.redirect(
-      new URL(`/watch/${data.episodes[0].episodeId}`, request.url, 301)
-    );
-  }
-  if (request.nextUrl.pathname.startsWith("/watch")) {
-    // Create a new URL object from the request URL
-    const url = new URL(request.url);
-
-    // Access search parameters
-    const searchParams = url.searchParams;
-
-    // Example: Get a specific search parameter value
-    const paramValue = searchParams.get("ep");
-    if (!paramValue) {
+  if (!request.nextUrl.pathname.startsWith("/watch2gether")) {
+    if (request.nextUrl.pathname.startsWith("/watchi")) {
       const resp = await fetch(
         `https://hianimes.vercel.app/anime/episodes/${request.nextUrl.pathname.replace(
-          "/watch/",
+          "/watchi/",
           ""
         )}`
       );
       const data = await resp.json();
 
       return NextResponse.redirect(
-        new URL(`/watch/${data.episodes[0].episodeId}`, request.url, 301)
+        new URL(`/watch/${data.episodes[0].episodeId}`, request.url),
+        301
       );
+    }
+    if (request.nextUrl.pathname.startsWith("/watch")) {
+      // Create a new URL object from the request URL
+      const url = new URL(request.url);
+
+      // Access search parameters
+      const searchParams = url.searchParams;
+
+      // Example: Get a specific search parameter value
+      const paramValue = searchParams.get("ep");
+      if (!paramValue) {
+        const resp = await fetch(
+          `https://hianimes.vercel.app/anime/episodes/${request.nextUrl.pathname.replace(
+            "/watch/",
+            ""
+          )}`
+        );
+        const data = await resp.json();
+
+        return NextResponse.redirect(
+          new URL(`/watch/${data.episodes[0].episodeId}`, request.url),
+          301
+        );
+      }
     }
   }
 
@@ -69,7 +73,7 @@ export async function middleware(request) {
     currentIndex += 1; // Increment the index
 
     // Redirect to the next random ID
-    return NextResponse.redirect(new URL(`/${nextId}`, request.url, 301));
+    return NextResponse.redirect(new URL(`/${nextId}`, request.url), 301);
   }
   return clerkMiddleware((auth, req) => {
     if (isProtectedRoute(req)) auth().protect();
