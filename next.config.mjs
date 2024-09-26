@@ -28,6 +28,21 @@ const nextConfig = {
       },
     ],
   },
+
+  // Add HTTP headers configuration
+  async headers() {
+    return [
+      {
+        source: '/:path*', // Apply to all paths
+        headers: [
+          {
+            key: 'X-Robots-Tag',
+            value: 'index, follow', // Allow indexing for all pages
+          },
+        ],
+      },
+    ];
+  },
 };
 
 export default nextConfig;
