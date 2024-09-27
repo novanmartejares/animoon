@@ -2,3 +2,13 @@ User-agent: *
 Disallow:
 
 Sitemap: https://animoontv.vercel.app/api/anime/sitemap
+Sitemap: https://animoontv.vercel.app/api/anime/sitemap1
+Sitemap: https://animoontv.vercel.app/api/anime/sitemap2
+Sitemap: https://animoontv.vercel.app/api/anime/sitemap3
+Sitemap: https://animoontv.vercel.app/api/anime/sitemap4
+Sitemap: https://animoontv.vercel.app/api/anime/sitemap5
+Sitemap: https://animoontv.vercel.app/api/anime/sitemap6
+Sitemap: https://animoontv.vercel.app/api/anime/sitemap7
+Sitemap: https://animoontv.vercel.app/api/anime/sitemap8
+Sitemap: https://animoontv.vercel.app/api/anime/sitemap9
+Sitemap: https://animoontv.vercel.app/api/anime/sitemap10

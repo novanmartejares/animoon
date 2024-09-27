@@ -57,9 +57,9 @@ const fetchAllUrls = async () => {
   let allUrls = [];
   const totalPages = await getTotalPages(); // Dynamically get total number of pages
 
-  for (let page = 1; page <= 20; page += 10) {
+  for (let page = 180; page <= 200; page += 10) {
     const startPage = page;
-    const endPage = Math.min(page + 9, 20); // Ensure we don't exceed the total page limit
+    const endPage = Math.min(page + 9, 40); // Ensure we don't exceed the total page limit
 
     try {
       // Fetch 10 pages in parallel with retry logic
@@ -89,107 +89,28 @@ const escapeXml = (url) => {
 const generateSitemap = (urls) => {
   const lastModifiedDate = new Date().toISOString(); // Get the current date in ISO format
   return `<?xml version="1.0" encoding="UTF-8"?>
-  <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-    ${urls
-      .map((url) => {
-        const escapedUrl = escapeXml(url); // Escape the URL before adding it to the XML
-        return `
-        <url>
-          <loc>${escapedUrl}</loc>
-          <lastmod>${lastModifiedDate}</lastmod> <!-- Add lastmod element -->
-          <changefreq>daily</changefreq>
-          <priority>0.8</priority>
-        </url>
-      `;
-      })
-      .join("")}
-  </urlset>`;
-};
-
-
-// Fetch URLs for genres
-const genreUrls = () => {
-  const genres = [
-    "Action",
-    "Adventure",
-    "Cars",
-    "Comedy",
-    "Dementia",
-    "Demons",
-    "Drama",
-    "Ecchi",
-    "Fantasy",
-    "Game",
-    "Harem",
-    "Historical",
-    "Horror",
-    "Isekai",
-    "Josei",
-    "Kids",
-    "Magic",
-    "Martial Arts",
-    "Mecha",
-    "Military",
-    "Music",
-    "Mystery",
-    "Parody",
-    "Police",
-    "Psychological",
-    "Romance",
-    "Samurai",
-    "School",
-    "Sci-Fi",
-    "Seinen",
-    "Shoujo",
-    "Shoujo Ai",
-    "Shounen",
-    "Shounen Ai",
-    "Slice of Life",
-    "Space",
-    "Sports",
-    "Super Power",
-    "Supernatural",
-    "Thriller",
-    "Vampire",
-  ];
-
-  return genres.map((genre) => `${baseUrl}/genre?id=${genre}&name=${genre}`);
-};
-
-// Fetch URLs for categories
-const categoryUrls = () => {
-  const categories = [
-    "most-favorite",
-    "most-popular",
-    "subbed-anime",
-    "dubbed-anime",
-    "recently-updated",
-    "recently-added",
-    "top-upcoming",
-    "top-airing",
-    "movie",
-    "special",
-    "ova",
-    "ona",
-    "tv",
-    "completed",
-  ];
-
-  return categories.map(
-    (category) =>
-      `${baseUrl}/grid?name=${category}&heading=${category
-        .replace(/-/g, " ")
-        .replace(/\b\w/g, (l) => l.toUpperCase())}`
-  );
+    <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+      ${urls
+        .map((url) => {
+          const escapedUrl = escapeXml(url); // Escape the URL before adding it to the XML
+          return `
+          <url>
+            <loc>${escapedUrl}</loc>
+            <lastmod>${lastModifiedDate}</lastmod> <!-- Add lastmod element -->
+            <changefreq>daily</changefreq>
+            <priority>0.8</priority>
+          </url>
+        `;
+        })
+        .join("")}
+    </urlset>`;
 };
 
 // API Route handler for sitemap
 export async function GET() {
   try {
     const urls = await fetchAllUrls(); // Fetch all URLs from pages
-    const genreUrlsList = genreUrls(); // Generate genre URLs
-    const categoryUrlsList = categoryUrls(); // Generate category URLs
-    const allUrls = [baseUrl, ...urls, ...genreUrlsList, ...categoryUrlsList]; // Include baseUrl and merge all URLs
+    const allUrls = [baseUrl, ...urls]; // Include baseUrl and merge all URLs
 
     const sitemap = generateSitemap(allUrls); // Generate the sitemap with all URLs
 
