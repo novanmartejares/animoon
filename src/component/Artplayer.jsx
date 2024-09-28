@@ -22,6 +22,25 @@ function ArtPlayer(props, { ...rest }) {
     : "";
   // Create the subtitle selector based on available subtitles
 
+  const qualities = props.quality?.map((source) => ({
+    url: source.url,
+    html: source.quality, // This will be displayed in the quality switch menu
+    isM3U8: source.isM3U8,
+    default: source.quality === "1080p", // Mark 1080p as the default quality
+  }));
+
+  // Handle case where qualities array is empty
+  const selectedUrl =
+    qualities?.length > 0
+      ? qualities.find((q) => q.default)?.url || qualities[0].url
+      : ""; // Fallback to empty string if no sources available
+
+  const finalUrl = selectedUrl || props.bhaiLink || "";
+
+  if (finalUrl === "") {
+    console.warn("No valid URL available.");
+  }
+
   function playM3u8(video, url, art) {
     if (Hls.isSupported()) {
       if (art.hls) art.hls.destroy();
@@ -141,8 +160,9 @@ function ArtPlayer(props, { ...rest }) {
     const art = new Artplayer({
       title: "hahahaha",
       container: ".artplayer-app",
-      url: props.bhaiLink ? props.bhaiLink : "",
+      url: finalUrl,
       type: "m3u8",
+      quality: qualities?.length > 0 ? qualities : null,
       plugins: [
         artplayerPluginHlsQuality({
           control: false,
@@ -187,11 +207,11 @@ function ArtPlayer(props, { ...rest }) {
       subtitle: {
         url:
           filteredCaptions && filteredCaptions.length > 0
-            ? filteredCaptions.find((sub) => sub.default)?.file || ''
+            ? filteredCaptions.find((sub) => sub.default)?.file || ""
             : "", // Set the default subtitle or first subtitle if default is not found
         className: "subtitle-text", // Use the CSS class
       },
-      
+
       settings: [
         {
           width: 200,

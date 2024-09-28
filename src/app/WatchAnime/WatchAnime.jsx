@@ -58,7 +58,7 @@ export default function WatchAnime(props) {
   const [clickedId, setClickedId] = useState(props.epId);
   const [serverName, setServerName] = useState("Vidstreaming");
   const [descIsCollapsed, setDescIsCollapsed] = useState(true);
-
+  const [quality, setQuality] = useState("");
   const [subIsSelected, setSubIsSelected] = useState(true);
   const [selectedServer, setSelectedServer] = useState(0);
   const [bhaiLink, setBhaiLink] = useState(
@@ -392,6 +392,7 @@ export default function WatchAnime(props) {
                         ratUra={props.datao.anime.info.stats.rating}
                         imgUra={props.datao.anime.info.poster}
                         nameUra={props?.datao?.anime?.info?.name}
+                        quality={quality}
                         sub={sub}
                         IsLoading={IsLoading}
                       />
@@ -517,14 +518,14 @@ export default function WatchAnime(props) {
                         </div>
                         <div className=" flex flex-col serves">
                           <>
-                            {props.dataj.results.streamingInfo.filter(
+                            {props.dataj.results.streamingInfo.some(
                               (info) =>
                                 info.value.decryptionResult?.type !== "raw"
                             ) ? (
                               <>
                                 <div
                                   className={`serveSub ${
-                                    props.dataj.results.streamingInfo.filter(
+                                    props.dataj.results.streamingInfo.some(
                                       (info) =>
                                         info.value.decryptionResult?.type ===
                                         "dub"
@@ -584,29 +585,33 @@ export default function WatchAnime(props) {
                                       <div
                                         className={`subDub ${
                                           subIsSelected
-                                            ? selectedServer === 'gogo'
+                                            ? selectedServer === "gogo"
                                               ? "selected"
                                               : ""
                                             : ""
                                         }`}
                                         onClick={() =>
-                                          setSelectedServer('gogo') &
+                                          setSelectedServer("gogo") &
                                           setSubIsSelected(true) &
-                                          setServerName(
-                                            'GogoCdn'
-                                          ) &
+                                          setServerName("GogoCdn") &
                                           setBhaiLink(
-                                            props.gogoSub
+                                            (
+                                              props.gogoSub.sources.find(
+                                                (source) =>
+                                                  [
+                                                    "1080p",
+                                                    "720p",
+                                                    "480p",
+                                                    "360p",
+                                                    "backup",
+                                                  ].includes(source.quality)
+                                              ) || {}
+                                            ).url
                                           ) &
-                                          setSubtitles(
-                                            ''
-                                          ) &
-                                          setIntrod(
-                                            ''
-                                          ) &
-                                          setOutrod(
-                                            ''
-                                          )
+                                          setQuality(props.gogoSub.sources) &
+                                          setSubtitles("") &
+                                          setIntrod("") &
+                                          setOutrod("")
                                         }
                                       >
                                         GogoCdn
@@ -616,7 +621,7 @@ export default function WatchAnime(props) {
                                     )}
                                   </div>
                                 </div>
-                                {props.dataj.results.streamingInfo.filter(
+                                {props.dataj.results.streamingInfo.some(
                                   (info) =>
                                     info.value.decryptionResult?.type === "dub"
                                 ) ? (
@@ -666,40 +671,44 @@ export default function WatchAnime(props) {
                                             {no.value.decryptionResult.server}
                                           </div>
                                         ))}
-                                        {props.gogoDub ? (
-                                      <div
-                                        className={`subDub ${
-                                          subIsSelected
-                                            ? selectedServer === 'gogo'
-                                              ? "selected"
+                                      {props.gogoDub ? (
+                                        <div
+                                          className={`subDub ${
+                                            subIsSelected
+                                              ? selectedServer === "gogo"
+                                                ? "selected"
+                                                : ""
                                               : ""
-                                            : ""
-                                        }`}
-                                        onClick={() =>
-                                          setSelectedServer('gogo') &
-                                          setSubIsSelected(false) &
-                                          setServerName(
-                                            'GogoCdn'
-                                          ) &
-                                          setBhaiLink(
-                                            props.gogoDub
-                                          ) &
-                                          setSubtitles(
-                                            ''
-                                          ) &
-                                          setIntrod(
-                                            ''
-                                          ) &
-                                          setOutrod(
-                                            ''
-                                          )
-                                        }
-                                      >
-                                        GogoCdn
-                                      </div>
-                                    ) : (
-                                      ""
-                                    )}
+                                          }`}
+                                          onClick={() =>
+                                            setSelectedServer("gogo") &
+                                            setSubIsSelected(false) &
+                                            setServerName("GogoCdn") &
+                                            setBhaiLink(
+                                              (
+                                                props.gogoDub.sources.find(
+                                                  (source) =>
+                                                    [
+                                                      "1080p",
+                                                      "720p",
+                                                      "480p",
+                                                      "360p",
+                                                      "backup",
+                                                    ].includes(source.quality)
+                                                ) || {}
+                                              ).url
+                                            ) &
+                                            setQuality(props.gogoDub.sources) &
+                                            setSubtitles("") &
+                                            setIntrod("") &
+                                            setOutrod("")
+                                          }
+                                        >
+                                          GogoCdn
+                                        </div>
+                                      ) : (
+                                        ""
+                                      )}
                                     </div>
                                   </div>
                                 ) : (
@@ -756,40 +765,44 @@ export default function WatchAnime(props) {
                                         {no.value.decryptionResult.server}
                                       </div>
                                     ))}
-                                    {props.gogoSub ? (
-                                      <div
-                                        className={`subDub ${
-                                          subIsSelected
-                                            ? selectedServer === 'gogo'
-                                              ? "selected"
-                                              : ""
+                                  {props.gogoSub ? (
+                                    <div
+                                      className={`subDub ${
+                                        subIsSelected
+                                          ? selectedServer === "gogo"
+                                            ? "selected"
                                             : ""
-                                        }`}
-                                        onClick={() =>
-                                          setSelectedServer('gogo') &
-                                          setSubIsSelected(true) &
-                                          setServerName(
-                                            'GogoCdn'
-                                          ) &
-                                          setBhaiLink(
-                                            props.gogoSub
-                                          ) &
-                                          setSubtitles(
-                                            ''
-                                          ) &
-                                          setIntrod(
-                                            ''
-                                          ) &
-                                          setOutrod(
-                                            ''
-                                          )
-                                        }
-                                      >
-                                        GogoCdn
-                                      </div>
-                                    ) : (
-                                      ""
-                                    )}
+                                          : ""
+                                      }`}
+                                      onClick={() =>
+                                        setSelectedServer("gogo") &
+                                        setSubIsSelected(true) &
+                                        setServerName("GogoCdn") &
+                                        setBhaiLink(
+                                          (
+                                            props.gogoSub.sources.find(
+                                              (source) =>
+                                                [
+                                                  "1080p",
+                                                  "720p",
+                                                  "480p",
+                                                  "360p",
+                                                  "backup",
+                                                ].includes(source.quality)
+                                            ) || {}
+                                          ).url
+                                        ) &
+                                        setQuality(props.gogoSub.sources) &
+                                        setSubtitles("") &
+                                        setIntrod("") &
+                                        setOutrod("")
+                                      }
+                                    >
+                                      GogoCdn
+                                    </div>
+                                  ) : (
+                                    ""
+                                  )}
                                 </div>
                               </div>
                             )}{" "}
