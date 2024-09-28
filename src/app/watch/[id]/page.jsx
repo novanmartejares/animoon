@@ -82,6 +82,76 @@ export default async function page({ params, searchParams }) {
     dataj = [];
   }
 
+  let datau = [];
+  try {
+    const respS = await fetchDataFromAPI(
+      `https://aniwatch-api-8fti.onrender.com/anime/search/suggest?q=${params.id}`,
+      18000
+    );
+    datau = respS;
+  } catch (error) {
+    datau = [];
+  }
+
+  let jname = "";
+  datau &&
+    datau.suggestions &&
+    datau?.suggestions?.map((i) => {
+      if (i.id === params.id) {
+        jname = i.jname;
+      }
+    });
+  let epiod = 0;
+  let i = 0;
+  for (i > 0; i < data.episodes.length; i++) {
+    if (data?.episodes[i].episodeId.includes(epis?.toString())) {
+      epiod = data.episodes[i].number;
+    }
+  }
+  let gogoEP = [];
+  try {
+    const gogoTP = await fetchDataFromAPI(
+      `https://newgogoking.vercel.app/${datao?.anime?.info?.name}?page=1`,
+      3600
+    );
+    gogoEP = gogoTP;
+  } catch (error) {
+    gogoEP = [];
+  }
+
+  const caseEP = gogoEP?.results?.length > 0 ? gogoEP.results[0]?.id : "";
+  let gogoId =
+    "/" +
+    (
+      caseEP.replace(":", "").toLocaleLowerCase().replaceAll(" ", "-") +
+      `-dub-episode-${epiod}`
+    ).replace(/[^a-zA-Z0-9\-]/g, "");
+  let caseId =
+    "/" +
+    (
+      caseEP.replace(":", "").toLocaleLowerCase().replaceAll(" ", "-") +
+      `-episode-${epiod}`
+    ).replace(/[^a-zA-Z0-9\-]/g, "");
+  let gogoSub = [];
+  try {
+    let gogoSC = await fetch(`https://newgogoking.vercel.app/watch/${caseId}`, {
+      cache: "force-cache",
+    });
+    gogoSub = await gogoSC.json();
+  } catch (error) {
+    gogoSub = [];
+  }
+
+  let gogoDub = [];
+  try {
+    let gogoSC = await fetch(`https://newgogoking.vercel.app/watch/${gogoId}`, {
+      cache: "force-cache",
+    });
+    gogoDub = await gogoSC.json();
+  } catch (error) {
+    gogoDub = [];
+  }
+
   // Fetch homepage data with force-cache and revalidation
   const datapp = await fetchDataFromAPI(
     "https://hianimes.vercel.app/anime/home",
@@ -104,6 +174,8 @@ export default async function page({ params, searchParams }) {
         epis={epis}
         dataj={dataj}
         datapp={datapp}
+        gogoDub={gogoDub}
+        gogoSub={gogoSub}
         ShareUrl={ShareUrl}
         arise={arise}
         firstName={firstName}

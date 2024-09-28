@@ -29,46 +29,25 @@ const getTotalPages = async () => {
   return data.results.totalPages; // Return the total number of pages
 };
 
-// Fetch a batch of 10 pages in parallel
-const fetchPagesBatch = async (startPage, endPage) => {
-  const promises = [];
-
-  for (let page = startPage; page <= endPage; page++) {
-    promises.push(retryFetch(apiUrl + page)); // Use retryFetch to handle errors
-  }
-
-  // Resolve all fetches for this batch
-  const results = await Promise.all(promises);
-  const urls = [];
-
-  // Process each page's data
-  results.forEach((data) => {
-    const dataList = data.results.data;
-    dataList.forEach((item) => {
-      urls.push(`${baseUrl}${item.data_id}`);
-    });
-  });
-
-  return urls; // Return the collected URLs for this batch
-};
-
-// Fetch data from all pages in batches of 10
+// Fetch data from all pages one by one
 const fetchAllUrls = async () => {
   let allUrls = [];
   const totalPages = await getTotalPages(); // Dynamically get total number of pages
 
-  for (let page = 1; page <= 20; page += 10) {
-    const startPage = page;
-    const endPage = Math.min(page + 9, 20); // Ensure we don't exceed the total page limit
-
+  for (let page = 1; page <= totalPages && page <= 20; page++) {
     try {
-      // Fetch 10 pages in parallel with retry logic
-      const batchUrls = await fetchPagesBatch(startPage, endPage);
-      allUrls = allUrls.concat(batchUrls);
+      // Fetch one page at a time with retry logic
+      const data = await retryFetch(apiUrl + page);
+      const dataList = data.results.data;
 
-      console.log(`Fetched and processed pages ${startPage}-${endPage}`);
+      // Process each item's data
+      dataList.forEach((item) => {
+        allUrls.push(`${baseUrl}${item.data_id}`);
+      });
+
+      console.log(`Fetched and processed page ${page}`);
     } catch (error) {
-      console.error(`Error fetching pages ${startPage}-${endPage}:`, error);
+      console.error(`Error fetching page ${page}:`, error);
     }
   }
 
@@ -105,7 +84,6 @@ const generateSitemap = (urls) => {
       .join("")}
   </urlset>`;
 };
-
 
 // Fetch URLs for genres
 const genreUrls = () => {

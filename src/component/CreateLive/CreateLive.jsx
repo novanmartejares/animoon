@@ -78,7 +78,13 @@ const CreateLive = (props) => {
         </div>
 
         <div>
-          <div></div>
+          <div>
+            <div>Room Name</div>
+            <div>
+              <div></div>
+              <div></div>
+            </div>
+          </div>
           <div></div>
         </div>
         <div></div>

@@ -580,6 +580,40 @@ export default function WatchAnime(props) {
                                           {no.value.decryptionResult.server}
                                         </div>
                                       ))}
+                                    {props.gogoSub ? (
+                                      <div
+                                        className={`subDub ${
+                                          subIsSelected
+                                            ? selectedServer === 'gogo'
+                                              ? "selected"
+                                              : ""
+                                            : ""
+                                        }`}
+                                        onClick={() =>
+                                          setSelectedServer('gogo') &
+                                          setSubIsSelected(true) &
+                                          setServerName(
+                                            'GogoCdn'
+                                          ) &
+                                          setBhaiLink(
+                                            props.gogoSub
+                                          ) &
+                                          setSubtitles(
+                                            ''
+                                          ) &
+                                          setIntrod(
+                                            ''
+                                          ) &
+                                          setOutrod(
+                                            ''
+                                          )
+                                        }
+                                      >
+                                        GogoCdn
+                                      </div>
+                                    ) : (
+                                      ""
+                                    )}
                                   </div>
                                 </div>
                                 {props.dataj.results.streamingInfo.filter(
@@ -632,6 +666,40 @@ export default function WatchAnime(props) {
                                             {no.value.decryptionResult.server}
                                           </div>
                                         ))}
+                                        {props.gogoDub ? (
+                                      <div
+                                        className={`subDub ${
+                                          subIsSelected
+                                            ? selectedServer === 'gogo'
+                                              ? "selected"
+                                              : ""
+                                            : ""
+                                        }`}
+                                        onClick={() =>
+                                          setSelectedServer('gogo') &
+                                          setSubIsSelected(false) &
+                                          setServerName(
+                                            'GogoCdn'
+                                          ) &
+                                          setBhaiLink(
+                                            props.gogoDub
+                                          ) &
+                                          setSubtitles(
+                                            ''
+                                          ) &
+                                          setIntrod(
+                                            ''
+                                          ) &
+                                          setOutrod(
+                                            ''
+                                          )
+                                        }
+                                      >
+                                        GogoCdn
+                                      </div>
+                                    ) : (
+                                      ""
+                                    )}
                                     </div>
                                   </div>
                                 ) : (
@@ -688,6 +756,40 @@ export default function WatchAnime(props) {
                                         {no.value.decryptionResult.server}
                                       </div>
                                     ))}
+                                    {props.gogoSub ? (
+                                      <div
+                                        className={`subDub ${
+                                          subIsSelected
+                                            ? selectedServer === 'gogo'
+                                              ? "selected"
+                                              : ""
+                                            : ""
+                                        }`}
+                                        onClick={() =>
+                                          setSelectedServer('gogo') &
+                                          setSubIsSelected(true) &
+                                          setServerName(
+                                            'GogoCdn'
+                                          ) &
+                                          setBhaiLink(
+                                            props.gogoSub
+                                          ) &
+                                          setSubtitles(
+                                            ''
+                                          ) &
+                                          setIntrod(
+                                            ''
+                                          ) &
+                                          setOutrod(
+                                            ''
+                                          )
+                                        }
+                                      >
+                                        GogoCdn
+                                      </div>
+                                    ) : (
+                                      ""
+                                    )}
                                 </div>
                               </div>
                             )}{" "}

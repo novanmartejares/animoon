@@ -1,4 +1,4 @@
-import { NextResponse } from "next/server";
+import { NextResponse } from "next/server"; 
 
 const apiUrl = "https://vimalking.vercel.app/api/az-list?page=";
 const baseUrl = "https://animoontv.vercel.app";
@@ -29,46 +29,32 @@ const getTotalPages = async () => {
   return data.results.totalPages; // Return the total number of pages
 };
 
-// Fetch a batch of 10 pages in parallel
-const fetchPagesBatch = async (startPage, endPage) => {
-  const promises = [];
-
-  for (let page = startPage; page <= endPage; page++) {
-    promises.push(retryFetch(apiUrl + page)); // Use retryFetch to handle errors
-  }
-
-  // Resolve all fetches for this batch
-  const results = await Promise.all(promises);
+// Fetch a single page of data
+const fetchPage = async (page) => {
+  const data = await retryFetch(apiUrl + page); // Use retryFetch to handle errors
   const urls = [];
+  const dataList = data.results.data;
 
-  // Process each page's data
-  results.forEach((data) => {
-    const dataList = data.results.data;
-    dataList.forEach((item) => {
-      urls.push(`${baseUrl}${item.data_id}`);
-    });
+  dataList.forEach((item) => {
+    urls.push(`${baseUrl}${item.data_id}`);
   });
 
-  return urls; // Return the collected URLs for this batch
+  return urls; // Return the collected URLs for this page
 };
 
-// Fetch data from all pages in batches of 10
+// Fetch data from all pages one by one
 const fetchAllUrls = async () => {
   let allUrls = [];
   const totalPages = await getTotalPages(); // Dynamically get total number of pages
 
-  for (let page = 40; page <= 60; page += 10) {
-    const startPage = page;
-    const endPage = Math.min(page + 9, 60); // Ensure we don't exceed the total page limit
-
+  // Loop through each page one by one
+  for (let page = 40; page <= totalPages && page <= 60; page++) {
     try {
-      // Fetch 10 pages in parallel with retry logic
-      const batchUrls = await fetchPagesBatch(startPage, endPage);
-      allUrls = allUrls.concat(batchUrls);
-
-      console.log(`Fetched and processed pages ${startPage}-${endPage}`);
+      const pageUrls = await fetchPage(page); // Fetch a single page
+      allUrls = allUrls.concat(pageUrls); // Concatenate the URLs from the page
+      console.log(`Fetched and processed page ${page}`);
     } catch (error) {
-      console.error(`Error fetching pages ${startPage}-${endPage}:`, error);
+      console.error(`Error fetching page ${page}:`, error);
     }
   }
 
@@ -88,8 +74,8 @@ const escapeXml = (url) => {
 // Generate XML for the sitemap
 const generateSitemap = (urls) => {
   const lastModifiedDate = new Date().toISOString(); // Get the current date in ISO format
-  return `<?xml version="1.0" encoding="UTF-8"?>
-    <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  return `<?xml version="1.0" encoding="UTF-8"?>  
+    <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">  
       ${urls
         .map((url) => {
           const escapedUrl = escapeXml(url); // Escape the URL before adding it to the XML
@@ -102,15 +88,15 @@ const generateSitemap = (urls) => {
           </url>
         `;
         })
-        .join("")}
+        .join("")}  
     </urlset>`;
 };
 
-// API Route handler for sitemap
+// API Route handler for sitemap export
 export async function GET() {
   try {
     const urls = await fetchAllUrls(); // Fetch all URLs from pages
-    const allUrls = [baseUrl, ...urls]; // Include baseUrl and merge all URLs
+    const allUrls = [...urls]; // Include baseUrl and merge all URLs
 
     const sitemap = generateSitemap(allUrls); // Generate the sitemap with all URLs
 
