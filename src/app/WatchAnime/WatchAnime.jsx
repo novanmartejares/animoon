@@ -60,7 +60,8 @@ export default function WatchAnime(props) {
   const [descIsCollapsed, setDescIsCollapsed] = useState(true);
   const [quality, setQuality] = useState("");
   const [subIsSelected, setSubIsSelected] = useState(
-    ls.getItem("subordub") === "true"
+    props.datao.anime.info.stats.episodes.dub > 0 ?
+    ls.getItem("subordub") === "true" : false
   );
   const [selectedServer, setSelectedServer] = useState(0);
   const [bhaiLink, setBhaiLink] = useState(() => {
