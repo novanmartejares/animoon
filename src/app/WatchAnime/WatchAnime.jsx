@@ -62,36 +62,84 @@ export default function WatchAnime(props) {
   const [subIsSelected, setSubIsSelected] = useState(true);
   const [selectedServer, setSelectedServer] = useState(0);
   const [bhaiLink, setBhaiLink] = useState(
-    props.dataj.results?.streamingInfo.find(
-      (info) =>
-        (info.value?.decryptionResult?.type === "sub" ||
-          info.value?.decryptionResult?.type === "raw") &&
-        info.value?.decryptionResult?.server === "Vidstreaming"
-    )?.value?.decryptionResult?.source.sources[0].file
+    ls.getItem("subordub") === "false" &&
+      props.dataj.results.streamingInfo.some(
+        (info) => info.value.decryptionResult?.type === "dub"
+      )
+      ? props.dataj.results?.streamingInfo.find(
+          (info) =>
+            info.value?.decryptionResult?.type === "dub" &&
+            info.value?.decryptionResult?.server === "Vidstreaming"
+        )?.value?.decryptionResult?.source.sources[0].file ||
+        props.gogoDub.sources
+        ? (
+            props.gogoDub.sources.find((source) =>
+              ["1080p", "720p", "480p", "360p", "backup"].includes(
+                source.quality
+              )
+            ) || {}
+          ).url
+        : ""
+      : props.dataj.results?.streamingInfo.find(
+          (info) =>
+            (info.value?.decryptionResult?.type === "sub" ||
+              info.value?.decryptionResult?.type === "raw") &&
+            info.value?.decryptionResult?.server === "Vidstreaming"
+        )?.value?.decryptionResult?.source.sources[0].file ||
+        props.gogoDub.sources
+      ? (
+          props.gogoSub.sources.find((source) =>
+            ["1080p", "720p", "480p", "360p", "backup"].includes(source.quality)
+          ) || {}
+        ).url
+      : ""
   );
   const [introd, setIntrod] = useState(
-    props.dataj.results?.streamingInfo.find(
-      (info) =>
-        (info.value.decryptionResult?.type === "sub" ||
-          info.value.decryptionResult?.type === "raw") &&
-        info.value.decryptionResult.server === "Vidstreaming"
-    )?.value.decryptionResult.source.intro
+    ls.getItem("subordub") === "false" &&
+      props.dataj.results.streamingInfo.some(
+        (info) => info.value.decryptionResult?.type === "dub"
+      )
+      ? props.dataj.results?.streamingInfo.find(
+          (info) =>
+            info.value.decryptionResult?.type === "dub" &&
+            info.value.decryptionResult.server === "Vidstreaming"
+        )?.value.decryptionResult.source.intro
+      : props.dataj.results?.streamingInfo.find(
+          (info) =>
+            (info.value.decryptionResult?.type === "sub" ||
+              info.value.decryptionResult?.type === "raw") &&
+            info.value.decryptionResult.server === "Vidstreaming"
+        )?.value.decryptionResult.source.intro
   );
   const [outrod, setOutrod] = useState(
-    props.dataj.results?.streamingInfo.find(
-      (info) =>
-        (info.value.decryptionResult?.type === "sub" ||
-          info.value.decryptionResult?.type === "raw") &&
-        info.value.decryptionResult.server === "Vidstreaming"
-    )?.value.decryptionResult.source.outro
+    ls.getItem("subordub") === "false" &&
+      props.dataj.results.streamingInfo.some(
+        (info) => info.value.decryptionResult?.type === "dub"
+      )
+      ? props.dataj.results?.streamingInfo.find(
+          (info) =>
+            info.value.decryptionResult?.type === "dub" &&
+            info.value.decryptionResult.server === "Vidstreaming"
+        )?.value.decryptionResult.source.intro
+      : props.dataj.results?.streamingInfo.find(
+          (info) =>
+            (info.value.decryptionResult?.type === "sub" ||
+              info.value.decryptionResult?.type === "raw") &&
+            info.value.decryptionResult.server === "Vidstreaming"
+        )?.value.decryptionResult.source.outro
   );
   const [subtitles, setSubtitles] = useState(
-    props.dataj.results?.streamingInfo.find(
-      (info) =>
-        (info.value.decryptionResult?.type === "sub" ||
-          info.value.decryptionResult?.type === "raw") &&
-        info.value.decryptionResult.server === "Vidstreaming"
-    )?.value.decryptionResult.source.tracks
+    ls.getItem("subordub") === "false" &&
+      props.dataj.results.streamingInfo.some(
+        (info) => info.value.decryptionResult?.type === "dub"
+      )
+      ? ""
+      : props.dataj.results?.streamingInfo.find(
+          (info) =>
+            (info.value.decryptionResult?.type === "sub" ||
+              info.value.decryptionResult?.type === "raw") &&
+            info.value.decryptionResult.server === "Vidstreaming"
+        )?.value.decryptionResult.source.tracks
   );
   const [onn1, setOnn1] = useState(
     ls.getItem("Onn1") ? ls.getItem("Onn1") : "Off"
@@ -206,6 +254,8 @@ export default function WatchAnime(props) {
     router.push(`/watch/${props.data.episodes[epiod]?.episodeId}`);
     setEpNumb(props.data.episodes[epiod].number);
   };
+
+  ls.setItem("subordub", subIsSelected.toString());
 
   const episodeButtons = episodeList?.map((el, idx) => {
     return (
@@ -564,7 +614,7 @@ export default function WatchAnime(props) {
                                               no.value.decryptionResult.source
                                                 .sources[0].file
                                             ) &
-                                            setQuality('') &
+                                            setQuality("") &
                                             setSubtitles(
                                               no.value.decryptionResult.source
                                                 .tracks
@@ -582,7 +632,7 @@ export default function WatchAnime(props) {
                                           {no.value.decryptionResult.server}
                                         </div>
                                       ))}
-                                    {props.gogoSub && props.gogoSub.sources  ? (
+                                    {props.gogoSub && props.gogoSub.sources ? (
                                       <div
                                         className={`subDub ${
                                           subIsSelected
@@ -658,7 +708,7 @@ export default function WatchAnime(props) {
                                                 no.value.decryptionResult.source
                                                   .sources[0].file
                                               ) &
-                                              setQuality('') &
+                                              setQuality("") &
                                               setSubtitles("") &
                                               setIntrod(
                                                 no.value.decryptionResult.source
@@ -673,7 +723,8 @@ export default function WatchAnime(props) {
                                             {no.value.decryptionResult.server}
                                           </div>
                                         ))}
-                                      {props.gogoDub && props.gogoDub.sources  ? (
+                                      {props.gogoDub &&
+                                      props.gogoDub.sources ? (
                                         <div
                                           className={`subDub ${
                                             !subIsSelected
@@ -746,7 +797,7 @@ export default function WatchAnime(props) {
                                           setServerName(
                                             no.value.decryptionResult.server
                                           ) &
-                                          setQuality('') &
+                                          setQuality("") &
                                           setBhaiLink(
                                             no.value.decryptionResult.source
                                               .sources[0].file
