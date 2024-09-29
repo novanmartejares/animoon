@@ -59,11 +59,11 @@ export default function WatchAnime(props) {
   const [serverName, setServerName] = useState("Vidstreaming");
   const [descIsCollapsed, setDescIsCollapsed] = useState(true);
   const [quality, setQuality] = useState("");
-  const [subIsSelected, setSubIsSelected] = useState(true);
+  const [subIsSelected, setSubIsSelected] = useState(ls.getItem('subordub') === 'true' ? true : false);
   const [selectedServer, setSelectedServer] = useState(0);
   const [bhaiLink, setBhaiLink] = useState(
     ls.getItem("subordub") === "false" &&
-      props.dataj.results.streamingInfo.some(
+      props.dataj.results?.streamingInfo.some(
         (info) => info.value.decryptionResult?.type === "dub"
       )
       ? props.dataj.results?.streamingInfo.find(
@@ -71,7 +71,7 @@ export default function WatchAnime(props) {
             info.value?.decryptionResult?.type === "dub" &&
             info.value?.decryptionResult?.server === "Vidstreaming"
         )?.value?.decryptionResult?.source.sources[0].file ||
-        props.gogoDub.sources
+        (props.gogoDub && props.gogoDub.sources)
         ? (
             props.gogoDub.sources.find((source) =>
               ["1080p", "720p", "480p", "360p", "backup"].includes(
@@ -86,7 +86,7 @@ export default function WatchAnime(props) {
               info.value?.decryptionResult?.type === "raw") &&
             info.value?.decryptionResult?.server === "Vidstreaming"
         )?.value?.decryptionResult?.source.sources[0].file ||
-        props.gogoDub.sources
+        (props.gogoSub && props.gogoSub.sources)
       ? (
           props.gogoSub.sources.find((source) =>
             ["1080p", "720p", "480p", "360p", "backup"].includes(source.quality)
@@ -96,7 +96,7 @@ export default function WatchAnime(props) {
   );
   const [introd, setIntrod] = useState(
     ls.getItem("subordub") === "false" &&
-      props.dataj.results.streamingInfo.some(
+      props.dataj.results?.streamingInfo.some(
         (info) => info.value.decryptionResult?.type === "dub"
       )
       ? props.dataj.results?.streamingInfo.find(
@@ -113,7 +113,7 @@ export default function WatchAnime(props) {
   );
   const [outrod, setOutrod] = useState(
     ls.getItem("subordub") === "false" &&
-      props.dataj.results.streamingInfo.some(
+      props.dataj.results?.streamingInfo.some(
         (info) => info.value.decryptionResult?.type === "dub"
       )
       ? props.dataj.results?.streamingInfo.find(
@@ -130,7 +130,7 @@ export default function WatchAnime(props) {
   );
   const [subtitles, setSubtitles] = useState(
     ls.getItem("subordub") === "false" &&
-      props.dataj.results.streamingInfo.some(
+      props.dataj.results?.streamingInfo.some(
         (info) => info.value.decryptionResult?.type === "dub"
       )
       ? ""
