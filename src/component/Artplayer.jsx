@@ -22,12 +22,15 @@ function ArtPlayer(props, { ...rest }) {
     : "";
   // Create the subtitle selector based on available subtitles
 
-  const qualities = props.quality?.map((source) => ({
-    url: source.url,
-    html: source.quality, // This will be displayed in the quality switch menu
-    isM3U8: source.isM3U8,
-    default: source.quality === "1080p", // Mark 1080p as the default quality
-  }));
+  const qualities =
+    props.quality && props.quality.length
+      ? props.quality?.map((source) => ({
+          url: source.url,
+          html: source.quality, // This will be displayed in the quality switch menu
+          isM3U8: source.isM3U8,
+          default: source.quality === "1080p", // Mark 1080p as the default quality
+        }))
+      : [];
 
   // Handle case where qualities array is empty
   const selectedUrl =
@@ -162,7 +165,7 @@ function ArtPlayer(props, { ...rest }) {
       container: ".artplayer-app",
       url: finalUrl,
       type: "m3u8",
-      quality: qualities?.length > 0 ? qualities : null,
+      quality: qualities?.length > 0 ? qualities : [],
       plugins: [
         artplayerPluginHlsQuality({
           control: false,

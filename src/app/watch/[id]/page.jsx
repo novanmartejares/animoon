@@ -132,6 +132,11 @@ export default async function page({ params, searchParams }) {
       caseEP.replace(":", "").toLocaleLowerCase().replaceAll(" ", "-") +
       `-episode-${epiod}`
     ).replace(/[^a-zA-Z0-9\-]/g, "");
+  // Example data from your `datao` object
+
+  // Example gogoData (with sub and dub information)
+
+
   let gogoSub = [];
   try {
     let gogoSC = await fetch(`https://newgogoking.vercel.app/watch/${caseId}`, {

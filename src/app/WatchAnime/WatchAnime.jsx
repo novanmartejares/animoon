@@ -564,6 +564,7 @@ export default function WatchAnime(props) {
                                               no.value.decryptionResult.source
                                                 .sources[0].file
                                             ) &
+                                            setQuality('') &
                                             setSubtitles(
                                               no.value.decryptionResult.source
                                                 .tracks
@@ -581,7 +582,7 @@ export default function WatchAnime(props) {
                                           {no.value.decryptionResult.server}
                                         </div>
                                       ))}
-                                    {props.gogoSub ? (
+                                    {props.gogoSub && props.gogoSub.sources  ? (
                                       <div
                                         className={`subDub ${
                                           subIsSelected
@@ -657,6 +658,7 @@ export default function WatchAnime(props) {
                                                 no.value.decryptionResult.source
                                                   .sources[0].file
                                               ) &
+                                              setQuality('') &
                                               setSubtitles("") &
                                               setIntrod(
                                                 no.value.decryptionResult.source
@@ -671,10 +673,10 @@ export default function WatchAnime(props) {
                                             {no.value.decryptionResult.server}
                                           </div>
                                         ))}
-                                      {props.gogoDub ? (
+                                      {props.gogoDub && props.gogoDub.sources  ? (
                                         <div
                                           className={`subDub ${
-                                            subIsSelected
+                                            !subIsSelected
                                               ? selectedServer === "gogo"
                                                 ? "selected"
                                                 : ""
@@ -744,6 +746,7 @@ export default function WatchAnime(props) {
                                           setServerName(
                                             no.value.decryptionResult.server
                                           ) &
+                                          setQuality('') &
                                           setBhaiLink(
                                             no.value.decryptionResult.source
                                               .sources[0].file
