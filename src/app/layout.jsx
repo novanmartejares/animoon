@@ -3,7 +3,6 @@ import "./globals.css";
 import { ClerkProvider } from "@clerk/nextjs";
 import { dark } from "@clerk/themes";
 import Navic from "@/app/Navic/page";
-import Head from "next/head"; // Import the Head component
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -15,11 +14,29 @@ export const metadata = {
                       can also find UnderRated anime
                       on Animoon website.`,
   verification: {
-    google: "x0aiWAODNGU-1UA2FXyORfyme9uWJir7mIMu8AMmLm4",
+    google: "kYXVnTNfGMSS99gN9cOo6qdi8yymZEeXA1SvuHiAs4U",
   },
+
+  script: [
+    {
+      src: "https://www.googletagmanager.com/gtag/js?id=G-Y81ZRXNW2N",
+      async: true,
+    },
+    {
+      type: "application/javascript",
+      dangerouslySetInnerHTML: {
+        __html: `
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-Y81ZRXNW2N');
+      `,
+      },
+    },
+  ],
 };
 
-export default async function RootLayout({ children }) {
+export default function RootLayout({ children }) {
   return (
     <ClerkProvider
       appearance={{
@@ -27,29 +44,6 @@ export default async function RootLayout({ children }) {
       }}
     >
       <html lang="en">
-        <Head>
-          {/* Google Site Verification */}
-          <meta
-            name="google-site-verification"
-            content="kYXVnTNfGMSS99gN9cOo6qdi8yymZEeXA1SvuHiAs4U"
-          />
-          {/* Google Tag Manager */}
-          <script
-            async
-            src="https://www.googletagmanager.com/gtag/js?id=G-Y81ZRXNW2N"
-          ></script>
-          <script
-            dangerouslySetInnerHTML={{
-              __html: `
-        window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
-        gtag('js', new Date());
-        gtag('config', 'G-Y81ZRXNW2N');
-      `,
-            }}
-          />
-        </Head>
-
         <body className={inter.className}>
           <Navic>{children}</Navic>
         </body>

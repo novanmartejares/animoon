@@ -60,8 +60,12 @@ export default function WatchAnime(props) {
   const [descIsCollapsed, setDescIsCollapsed] = useState(true);
   const [quality, setQuality] = useState("");
   const [subIsSelected, setSubIsSelected] = useState(
-    props.datao.anime.info.stats.episodes.dub > 0 ?
-    ls.getItem("subordub") === "true" : false
+    props.datao.anime.info.stats.episodes.dub > 0 &&
+      props.dataj.results.streamingInfo.some(
+        (info) => info.value.decryptionResult?.type === "dub"
+      )
+      ? ls.getItem("subordub") === "true"
+      : true
   );
   const [selectedServer, setSelectedServer] = useState(0);
   const [bhaiLink, setBhaiLink] = useState(() => {
@@ -254,6 +258,17 @@ export default function WatchAnime(props) {
     // the key doesn't exist yet, add it and the new value
     ls.setItem(`Watched-${props.anId.toString()}`, props.epId.toString());
   }
+
+  useEffect(() => {
+    setSubIsSelected(
+      props.datao.anime.info.stats.episodes.dub > 0 &&
+        props.dataj.results.streamingInfo.some(
+          (info) => info.value.decryptionResult?.type === "dub"
+        )
+        ? ls.getItem("subordub") === "true"
+        : true
+    );
+  }, [props.datao, props.dataj]);
 
   let episodeList = props.dataj.results.streamingInfo.some(
     (info) => info.value.decryptionResult?.type === "raw"
