@@ -1,5 +1,7 @@
 User-agent: *
 Allow: /
+Disallow: /sign-in
+Disallow: /sign-up
 
 Sitemap: https://animoon.me/api/anime/sitemap
 Sitemap: https://animoon.me/api/anime/sitemap1

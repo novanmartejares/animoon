@@ -11,7 +11,7 @@ export async function middleware(request) {
     "/user/profile(.*)",
     "/user/continue-watching(.*)",
     "/user/watch-list(.*)",
-    "user/notification(.*)",
+    "/user/notification(.*)",
     "/user/settings(.*)",
   ]);
   if (!request.nextUrl.pathname.startsWith("/watch2gether")) {
