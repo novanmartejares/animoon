@@ -1,0 +1,37 @@
+.center-container {
+  display: flex; /* Enable Flexbox */
+  justify-content: center; /* Center horizontally */
+  align-items: center; /* Center vertically */
+  height: 100px; /* Full height of the viewport */
+  text-align: center; /* Center text inside the link */
+}
+
+.link-background {
+  background-color: rgba(43, 48, 54, 0.7); /* Add a semi-transparent background */
+  padding: 20px; /* Add padding for some space around the content */
+  border-radius: 10px; /* Optional: round the corners */
+  text-decoration: none; /* Remove underline from the link */
+  color: #fff; /* Set text color */
+}
+
+.visiClu {
+  font-size: 14px;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.henClu {
+  color: var(--theme); /* Theme color for branding */
+}
+
+.ciciClu {
+  font-size: 14px;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}

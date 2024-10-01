@@ -5,6 +5,7 @@ import Hero from "@/component/Hero/hero";
 import Trending from "@/component/Trending/Trending";
 import Featured from "@/component/Featured/Featured";
 import MainContainer from "@/component/MainContainer/MainContainer";
+import Henpro from "@/component/Henpro/Henpro"
 import LoadingSpinner from "@/component/loadingSpinner";
 
 const Home = (props) => {
@@ -24,6 +25,7 @@ const Home = (props) => {
       ) : (
         <div>
           <Hero data={props.data.spotlightAnimes} IsLoading={IsLoading} />
+          <Henpro/>
           <Trending data={props.data.trendingAnimes} IsLoading={IsLoading} />
           <Share ShareUrl={props.ShareUrl} />
           <Featured
