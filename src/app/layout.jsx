@@ -43,10 +43,16 @@ export default function RootLayout({ children }) {
       }}
     >
       <html lang="en">
+        <head>
+          <meta name="google-site-verification" content="x0aiWAODNGU-1UA2FXyORfyme9uWJir7mIMu8AMmLm4" />
+        </head>
         <body className={inter.className}>
-          <Navic>{children}</Navic>
+          <Navic>
+            {children}
+          </Navic>
         </body>
       </html>
     </ClerkProvider>
   );
 }
+
