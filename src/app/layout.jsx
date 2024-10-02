@@ -14,9 +14,8 @@ export const metadata = {
                       can also find UnderRated anime
                       on Animoon website.`,
   verification: {
-    google: "kYXVnTNfGMSS99gN9cOo6qdi8yymZEeXA1SvuHiAs4U",
+    google: "x0aiWAODNGU-1UA2FXyORfyme9uWJir7mIMu8AMmLm4",
   },
-
   script: [
     {
       src: "https://www.googletagmanager.com/gtag/js?id=G-Y81ZRXNW2N",
