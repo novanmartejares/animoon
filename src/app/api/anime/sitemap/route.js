@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 
 const apiUrl = "https://vimalking.vercel.app/api/az-list?page=";
 const baseUrl = "https://animoonn.vercel.app";
- 
+
 // Helper function for retrying fetch in case of error
 const retryFetch = async (url, retries = 3, delay = 1000) => {
   for (let i = 0; i < retries; i++) {
