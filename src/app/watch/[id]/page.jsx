@@ -104,7 +104,7 @@ export default async function page({ params, searchParams }) {
   let epiod = 0;
   let i = 0;
   for (i > 0; i < data.episodes.length; i++) {
-    if (data?.episodes[i].episodeId.includes(epis?.toString())) {
+    if (data?.episodes[i].episodeId === epis?.toString()) {
       epiod = data.episodes[i].number;
     }
   }
@@ -136,7 +136,6 @@ export default async function page({ params, searchParams }) {
 
   // Example gogoData (with sub and dub information)
 
-
   let gogoSub = [];
   try {
     let gogoSC = await fetch(`https://newgogoking.vercel.app/watch/${caseId}`, {
@@ -157,6 +156,21 @@ export default async function page({ params, searchParams }) {
     gogoDub = [];
   }
 
+  let subPri = [];
+  try {
+    let gogoSC = await fetch(
+      `https://hianimes.vercel.app/anime/episode-srcs?id=${epId}&serverId=4&category=sub`,
+      {
+        cache: "force-cache",
+      }
+    );
+    subPri = await gogoSC.json();
+  } catch (error) {
+    subPri = [];
+  }
+
+  const subPrio = subPri && subPri.tracks ? subPri.tracks : "";
+
   // Fetch homepage data with force-cache and revalidation
   const datapp = await fetchDataFromAPI(
     "https://hianimes.vercel.app/anime/home",
@@ -173,6 +187,7 @@ export default async function page({ params, searchParams }) {
       <WatchAnime
         data={data}
         anId={params.id}
+        subPrio={subPrio}
         datao={datao}
         epiod={episodeNumber}
         epId={epId}

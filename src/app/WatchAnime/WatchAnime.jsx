@@ -156,12 +156,13 @@ export default function WatchAnime(props) {
         (info) => info.value.decryptionResult?.type === "dub"
       )
       ? ""
-      : props.dataj.results?.streamingInfo.find(
-          (info) =>
-            (info.value.decryptionResult?.type === "sub" ||
-              info.value.decryptionResult?.type === "raw") &&
-            info.value.decryptionResult.server === "Vidstreaming"
-        )?.value.decryptionResult.source.tracks
+      : props.subPrio ||
+          props.dataj.results?.streamingInfo.find(
+            (info) =>
+              (info.value.decryptionResult?.type === "sub" ||
+                info.value.decryptionResult?.type === "raw") &&
+              info.value.decryptionResult.server === "Vidstreaming"
+          )?.value.decryptionResult.source.tracks
   );
   const [onn1, setOnn1] = useState(
     ls.getItem("Onn1") ? ls.getItem("Onn1") : "Off"
@@ -385,12 +386,13 @@ export default function WatchAnime(props) {
           )?.value.decryptionResult.source.sources[0].file
         );
         setSubtitles(
-          props.dataj.results.streamingInfo.find(
-            (info) =>
-              (info.value.decryptionResult?.type === "sub" ||
-                info.value.decryptionResult?.type === "raw") &&
-              info.value.decryptionResult.server === "Vidstreaming"
-          )?.value.decryptionResult.source.tracks
+          props.subPrio ||
+            props.dataj.results.streamingInfo.find(
+              (info) =>
+                (info.value.decryptionResult?.type === "sub" ||
+                  info.value.decryptionResult?.type === "raw") &&
+                info.value.decryptionResult.server === "Vidstreaming"
+            )?.value.decryptionResult.source.tracks
         );
         setIntrod(
           props.dataj.results.streamingInfo.find(
@@ -655,8 +657,9 @@ export default function WatchAnime(props) {
                                             ) &
                                             setQuality("") &
                                             setSubtitles(
-                                              no.value.decryptionResult.source
-                                                .tracks
+                                              props.subPrio ||
+                                                no.value.decryptionResult.source
+                                                  .tracks
                                             ) &
                                             setIntrod(
                                               no.value.decryptionResult.source
@@ -842,8 +845,9 @@ export default function WatchAnime(props) {
                                               .sources[0].file
                                           ) &
                                           setSubtitles(
-                                            no.value.decryptionResult.source
-                                              .tracks
+                                            props.subPrio ||
+                                              no.value.decryptionResult.source
+                                                .tracks
                                           ) &
                                           setIntrod(
                                             no.value.decryptionResult.source

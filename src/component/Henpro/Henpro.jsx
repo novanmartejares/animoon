@@ -11,7 +11,7 @@ const Henpro = () => {
         className="link-background" // Add a class for background styling
       >
         <div className="visiClu">
-          <div>Click to visit</div>
+          <div>Click Here to visit</div>
           <div className="henClu">Henpro</div>
         </div>
 
