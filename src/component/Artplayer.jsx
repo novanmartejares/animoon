@@ -211,16 +211,18 @@ function ArtPlayer(props, { ...rest }) {
         url:
           filteredCaptions && filteredCaptions.length > 0
             ? filteredCaptions.find((sub) => sub.default)?.file || ""
-            : "", // Set the default subtitle or first subtitle if default is not found
-        className: "subtitle-text", // Use the CSS class
+            : "", // Set the default subtitle or first subtitle if default is not found,
+        type: "srt",
+        className: "subtitle-text",
+        encoding: "utf-8",
       },
 
       settings: [
         {
           width: 200,
-          html: "Subtitles",
-          tooltip: "Select Subtitle",
-          icon: '<img width="22" height="22" src="https://artplayer.org/assets/img/subtitle.svg">',
+          html: "Subtitle",
+          tooltip: "English",
+          icon: '<img width="22" heigth="22" src="https://artplayer.org/assets/img/subtitle.svg">',
           selector: [
             {
               html: "Display",
@@ -232,54 +234,23 @@ function ArtPlayer(props, { ...rest }) {
                 return !item.switch;
               },
             },
-            // Conditionally include subtitles if filteredCaptions exists and has elements
             ...(filteredCaptions && filteredCaptions.length > 0
               ? filteredCaptions.map((sub) => ({
                   default: sub.default || false,
                   html: sub.label,
                   url: sub.file,
-                  tooltip: "Off",
-                  switch: false,
-                  onSwitch: function (item) {
-                    // Reset all subtitles to "Off" and switch to false
-
-                    // Set values for the specific index
-                    item.tooltip = item.tooltip === "Off" ? "On" : "Off";
-                    item.switch = !item.switch;
-
-                    // Switch the selected subtitle
-                    art.subtitle.switch(item.url, {
-                      name: item.html,
-                      type: "vtt",
-                      encoding: "utf-8",
-                    });
-
-                    return item.switch;
-                  },
                 }))
               : []),
           ],
-
           onSelect: function (item) {
-            console.log("Selected Subtitle: ", item.html);
-
-            // First, reset all other subtitles' tooltips and switches
-            filteredCaptions?.forEach((sub) => {
-              sub.tooltip = "Off";
-              sub.switch = false;
+            art.subtitle.switch(item.url, {
+              name: item.html,
             });
-
-            // Set the selected subtitle's tooltip and switch to true
-            item.tooltip = "On";
-            item.switch = true;
-
-            return {
-              html: item.html,
-              switch: item.switch,
-            };
+            return item.html;
           },
         },
       ],
+
       highlight: [
         {
           time: parseInt(props.introd?.start) || 0,
@@ -306,16 +277,6 @@ function ArtPlayer(props, { ...rest }) {
           '<img width="16" height="16" src="https://artplayer.org/assets/img/indicator.svg">',
       },
     });
-    if (filteredCaptions && filteredCaptions.lengt > 0) {
-      if (filteredCaptions?.find((sub) => sub.default)) {
-        const defaultSubtitle = filteredCaptions.find((sub) => sub.default);
-        art.subtitle.switch(defaultSubtitle.file, {
-          name: defaultSubtitle.label,
-          type: "vtt",
-          encoding: "utf-8",
-        });
-      }
-    }
 
     if (getInstance && typeof getInstance === "function") {
       getInstance(art);
@@ -413,5 +374,49 @@ function ArtPlayer(props, { ...rest }) {
     </>
   );
 }
+
+// var art = new Artplayer({
+// 	container: '.artplayer-app',
+// 	url: '/assets/sample/video.mp4',
+// });
+
+// art.on('ready', () => {
+// 	// Create a custom control element manually
+// 	const customControl = document.createElement('div');
+// 	customControl.innerHTML = 'Skip 10s';
+// 	Object.assign(customControl.style, {
+// 		position: 'absolute',
+// 		right: '10px',
+// 		top: 'calc(100% - 60px)', // Adjust the top position above the progress bar
+// 		transform: 'translateY(-100%)', // Move it up above the progress bar
+// 		zIndex: 1000, // Set a high z-index value to ensure it's above the video
+// 		cursor: 'pointer',
+// 		background: 'rgba(0, 0, 0, 0.7)',
+// 		color: 'white',
+// 		padding: '5px 10px',
+// 		borderRadius: '5px',
+// 		display: 'none', // Initially hidden
+// 		pointerEvents: 'auto', // Ensure the control is clickable
+// 	});
+
+// 	// Append the custom control to the Artplayer container
+// 	art.template.$player.appendChild(customControl);
+
+// 	// Handle control click event
+// 	customControl.addEventListener('click', () => {
+// 		art.currentTime = Math.min(art.currentTime + 10, art.duration);
+// 	});
+
+// 	// Continuously check currentTime and show/hide control dynamically
+// 	art.on('video:timeupdate', () => {
+// 		const currentTime = art.currentTime;
+// 		// Show custom control only between 10 and 20 seconds
+// 		if (currentTime >= 10 && currentTime <= 20) {
+// 			customControl.style.display = 'block'; // Show control
+// 		} else {
+// 			customControl.style.display = 'none'; // Hide control
+// 		}
+// 	});
+// });
 
 export default ArtPlayer;

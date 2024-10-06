@@ -377,36 +377,48 @@ export default function WatchAnime(props) {
   useEffect(() => {
     if (trutie) {
       if (props.dataj) {
-        setBhaiLink(
+        setBhaiLink( subIsSelected ?
           props.dataj.results.streamingInfo.find(
             (info) =>
               (info.value.decryptionResult?.type === "sub" ||
                 info.value.decryptionResult?.type === "raw") &&
               info.value.decryptionResult.server === "Vidstreaming"
+          )?.value.decryptionResult.source.sources[0].file : props.dataj.results.streamingInfo.find(
+            (info) =>
+              (info.value.decryptionResult?.type === "dub") &&
+              info.value.decryptionResult.server === "Vidstreaming"
           )?.value.decryptionResult.source.sources[0].file
         );
-        setSubtitles(
+        setSubtitles( subIsSelected ? 
           props.subPrio ||
             props.dataj.results.streamingInfo.find(
               (info) =>
                 (info.value.decryptionResult?.type === "sub" ||
                   info.value.decryptionResult?.type === "raw") &&
                 info.value.decryptionResult.server === "Vidstreaming"
-            )?.value.decryptionResult.source.tracks
+            )?.value.decryptionResult.source.tracks : ''
         );
-        setIntrod(
+        setIntrod( subIsSelected ?
           props.dataj.results.streamingInfo.find(
             (info) =>
               (info.value.decryptionResult?.type === "sub" ||
                 info.value.decryptionResult?.type === "raw") &&
               info.value.decryptionResult.server === "Vidstreaming"
+          )?.value.decryptionResult.source.intro : props.dataj.results.streamingInfo.find(
+            (info) =>
+              (info.value.decryptionResult?.type === "dub") &&
+              info.value.decryptionResult.server === "Vidstreaming"
           )?.value.decryptionResult.source.intro
         );
-        setOutrod(
+        setOutrod( subIsSelected ?
           props.dataj.results.streamingInfo.find(
             (info) =>
               (info.value.decryptionResult?.type === "sub" ||
                 info.value.decryptionResult?.type === "raw") &&
+              info.value.decryptionResult.server === "Vidstreaming"
+          )?.value.decryptionResult.source.outro : props.dataj.results.streamingInfo.find(
+            (info) =>
+              (info.value.decryptionResult?.type === "dub") &&
               info.value.decryptionResult.server === "Vidstreaming"
           )?.value.decryptionResult.source.outro
         );

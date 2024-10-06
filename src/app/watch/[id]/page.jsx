@@ -104,7 +104,7 @@ export default async function page({ params, searchParams }) {
   let epiod = 0;
   let i = 0;
   for (i > 0; i < data.episodes.length; i++) {
-    if (data?.episodes[i].episodeId === epis?.toString()) {
+    if (data?.episodes[i].episodeId.includes(epis?.toString())) {
       epiod = data.episodes[i].number;
     }
   }
@@ -145,6 +145,7 @@ export default async function page({ params, searchParams }) {
   } catch (error) {
     gogoSub = [];
   }
+  console.log(gogoSub)
 
   let gogoDub = [];
   try {
@@ -155,16 +156,17 @@ export default async function page({ params, searchParams }) {
   } catch (error) {
     gogoDub = [];
   }
+  console.log('sub',gogoSub)
 
   let subPri = [];
   try {
-    let gogoSC = await fetch(
+    let gogoMC = await fetch(
       `https://hianimes.vercel.app/anime/episode-srcs?id=${epId}&serverId=4&category=sub`,
       {
         cache: "force-cache",
       }
     );
-    subPri = await gogoSC.json();
+    subPri = await gogoMC.json();
   } catch (error) {
     subPri = [];
   }
