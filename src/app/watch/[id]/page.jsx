@@ -73,7 +73,7 @@ export default async function page({ params, searchParams }) {
   let dataj = [];
   try {
     const respStream = await fetch(
-      `https://vimalking.vercel.app/api/stream?id=${epId}`,
+      `https://vimal-f2f1.onrender.com/api/stream?id=${epId}`,
       { cache: "no-store" } // No cache for real-time streaming data
     );
     dataj = await respStream.json();
