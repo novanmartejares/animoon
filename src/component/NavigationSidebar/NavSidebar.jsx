@@ -27,7 +27,7 @@ export default function NavSidebar(props) {
             <FaChevronLeft size={12} />
             Close Menu
           </div>
-          <Actions isInSidebar={true} />
+          <Actions isInSidebar={true} data={props.data}/>
           <a href="/" className="d-flex a-center j-center">
             <FaComments size={14} />
             Community

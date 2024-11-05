@@ -1056,10 +1056,6 @@ export default function WatchAnime(props) {
             epiod={props.epiod}
             epId={props.epId}
             anId={props.anId}
-            firstName={props.firstName}
-            userName={props.userName}
-            imageUrl={props.imageUrl}
-            emailAdd={props.emailAdd}
             IsLoading={IsLoading}
           />
 

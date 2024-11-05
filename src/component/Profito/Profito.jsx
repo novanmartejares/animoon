@@ -1,13 +1,15 @@
 "use client";
 import React from "react";
-import { FaKey, FaUser } from "react-icons/fa";
+import { FaKey, FaPen, FaUser } from "react-icons/fa";
 import "./profito.css";
+import { useSession } from "next-auth/react";
 
 export default function Profito(props) {
-  const timestampMs = props.joined;
-
   // Create a new Date object
-  const date = new Date(timestampMs);
+
+  const { data: session } = useSession();
+
+  const date = new Date(session?.user.timeOfJoining);
 
   // Get the date and time in a more readable format
   const dated = date.getDate();
@@ -34,8 +36,17 @@ export default function Profito(props) {
         <FaUser /> Edit Profile
       </div>
       <div className="profile-content">
-        <div className={`rofile-image`}>
-          <img src={props.imageUrl} className="profile-img" alt="Profile" />
+        <div className="cofs">
+          <div className={`rofile-image`}>
+            <img
+              src={session?.user.randomImage}
+              className="profile-img"
+              alt="Profile"
+            />
+            <div className="cof-pen">
+              <FaPen />
+            </div>
+          </div>
         </div>
 
         <div className="profile-details">
@@ -44,7 +55,7 @@ export default function Profito(props) {
             <input
               className="field-input"
               type="text"
-              placeholder={props.emailAdd}
+              placeholder={session?.user.email}
               name="email"
             />
           </div>
@@ -53,7 +64,7 @@ export default function Profito(props) {
             <input
               className="field-input"
               type="text"
-              placeholder={props.firstName}
+              placeholder={session?.user.username}
               name="name"
             />
           </div>
@@ -70,8 +81,14 @@ export default function Profito(props) {
           <div className="save-button">Save</div>
         </div>
 
-        <div className={`profile-image`}>
-          <img src={props.imageUrl} className="profile-img" alt="Profile" />
+        <div className="cofs">
+          <div className={`profile-image`}>
+            <img
+              src={session?.user.randomImage}
+              className="profile-img"
+              alt="Profile"
+            />
+          </div>
         </div>
       </div>
     </div>

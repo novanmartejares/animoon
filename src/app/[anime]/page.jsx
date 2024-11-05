@@ -1,5 +1,4 @@
 import React from "react";
-import { currentUser } from "@clerk/nextjs/server";
 import RecommendedTopTen from "../../layouts/RecommendedTopTen";
 
 export async function generateMetadata({ params }) {
@@ -20,9 +19,6 @@ export async function generateMetadata({ params }) {
 
 export default async function page({ params }) {
   const idd = params.anime;
-
-  const user = await currentUser();
-  const firstName = user?.firstName;
 
   const respo = await fetch(
     `https://hianimes.vercel.app/anime/info?id=${idd}`,
@@ -45,7 +41,7 @@ export default async function page({ params }) {
         data={data}
         ShareUrl={ShareUrl}
         arise={arise}
-        firstName={firstName}
+        // firstName={firstName}
       />
     </div>
   );

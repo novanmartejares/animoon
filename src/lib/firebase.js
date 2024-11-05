@@ -1,5 +1,5 @@
 // firebase.js
-import { initializeApp, getApp, getApps } from "firebase/app";
+import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
 import { getFirestore } from "firebase/firestore"; // Import Firestore if needed
 import { getAuth } from "firebase/auth"; // Import Auth if needed
@@ -7,19 +7,18 @@ import { getStorage } from "firebase/storage"; // Import Storage if needed
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
-  apiKey: "AIzaSyCRX40ECHTwjtEfEYFdjcWG6R4_lyJwibM",
-  authDomain: "oppo-53ea5.firebaseapp.com",
-  projectId: "oppo-53ea5",
-  storageBucket: "oppo-53ea5.appspot.com",
-  messagingSenderId: "848670914715",
-  appId: "1:848670914715:web:8be3ce5f45d4e4ed2f2e3e",
-  measurementId: "G-BHE64YS3QH"
+  apiKey: "AIzaSyDCqUTH6qNdJe89cQ2vqD8tpOk6FL9b2Zk",
+  authDomain: "fir-to-firestore.firebaseapp.com",
+  projectId: "firebase-to-firestore",
+  storageBucket: "firebase-to-firestore.appspot.com",
+  messagingSenderId: "547489165252",
+  appId: "1:547489165252:web:73260715c633067075be91"
 };
 
-// Initialize Firebase only if it hasn't been initialized yet
-const app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
 
-// Optional: Initialize analytics if needed (ensure this is used only in the browser)
+// Optional: Initialize analytics if needed (ensure this is used only in browser)
 let analytics;
 if (typeof window !== "undefined") {
   analytics = getAnalytics(app);

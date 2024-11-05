@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from "react";
+"use client";
+import React, { useState } from "react";
 import "./profilo.css";
 import {
   FaArrowRight,
@@ -9,20 +10,23 @@ import {
   FaUser,
 } from "react-icons/fa";
 import useAnime from "@/hooks/useAnime";
-import { useClerk } from "@clerk/nextjs";
 import Link from "next/link";
+import { signOut, useSession } from "next-auth/react";
 
 export default function Profilo(props) {
-  const { getUsers } = useAnime();
-  const { signOut } = useClerk()
-  const [user, setUser] = useState([]);
-  const fetchUub = async () => {
-    let dat = await getUsers();
-    setUser(dat);
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false); // Loading state for sign-out
+  const handleSignOut = async () => {
+    setLoading(true); // Start loading
+    try {
+      await signOut(); // Sign out user using NextAuth
+    } catch (err) {
+      setError("Error signing out: " + err.message); // Handle sign out error
+    } finally {
+      setLoading(false); // End loading
+    }
   };
-  useEffect(() => {
-    fetchUub();
-  }, []);
+  const { data: session } = useSession();
   return (
     <div
       className="profi"
@@ -37,33 +41,30 @@ export default function Profilo(props) {
             : "translateX(250px)",
         }}
       >
-        <div className="logA logAC">{props?.firstName}</div>
-        <div className="logA logAB">
-          {props.emailAdd}
-        </div>
-        <Link href={'/user/profile'} className="profD">
+        <div className="logA logAC">{session?.user.username}</div>
+        <div className="logA logAB">{session?.user.email}</div>
+        <Link href={"/user/profile"} className="profD">
           <FaUser />
           Profile
         </Link>
-        <Link href={'/user/continue-watching'} className="profD">
+        <Link href={"/user/continue-watching"} className="profD">
           <FaHistory />
           Continue Watching
         </Link>
-        <Link href={'/user/watch-list'} className="profD">
+        <Link href={"/user/watch-list"} className="profD">
           <FaHeart />
           Watch List
         </Link>
-        <Link href={'/user/notification'} className="profD">
+        <Link href={"/user/notification"} className="profD">
           <FaBell />
           Notification
         </Link>
-        <Link href={'/user/settings'} className="profD">
+        <Link href={"/user/settings"} className="profD">
           <FaCog />
           Settings
         </Link>
-
-        <div className="logD" onClick={() => signOut({redirectUrl: '/'})}>
-          Logout
+        <div className="logD" onClick={handleSignOut} disabled={loading}>
+          {loading ? "Loging Out..." : "Logout"}
           <FaArrowRight />
         </div>
       </div>

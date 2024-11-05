@@ -25,6 +25,7 @@
     "isomorphic-unfetch": "^4.0.2",
     "jwt-decode": "^4.0.0",
     "next": "14.2.3",
+    "next-auth": "^4.24.10",
     "plyr": "^3.7.8",
     "puppeteer": "^22.11.2",
     "react": "^18",

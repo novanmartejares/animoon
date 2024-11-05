@@ -21,7 +21,6 @@ export default function Card(props) {
         clear: () => localStorage.clear(),
       };
     } else {
-      // Handle the case when localStorage is not available
       return {
         getItem: () => null,
         setItem: () => {},
@@ -35,41 +34,53 @@ export default function Card(props) {
   const ls = localStorageWrapper();
 
   useEffect(() => {
-    // Ensure this code runs on the client-side only
     if (typeof window !== "undefined") {
-      // Set the initial screen width
       setScreenWidth(window.innerWidth);
 
-      // Handle window resize event
       const handleResize = () => {
         setScreenWidth(window.innerWidth);
       };
 
-      // Attach the event listener
       window.addEventListener("resize", handleResize);
 
-      // Clean up the event listener on component unmount
       return () => window.removeEventListener("resize", handleResize);
     }
   }, []);
 
-  let totalSecondstimo = anime.Secds;
+  // Assuming 'anime.Secds' is the number of seconds watched so far
+  let totalSecondstimo = anime.Secds || 0;
 
-  // Calculate the minutes and remaining seconds
-  let minutestimo = Math.floor(totalSecondstimo / 60) || 0;
-  let secondstimo = totalSecondstimo % 60 || 0;
+  // Calculate the minutes and remaining seconds for watched time
+  let minutestimo = Math.floor(totalSecondstimo / 60);
+  let secondstimo = totalSecondstimo % 60;
 
-  let totalSeconds = anime.duration;
+  // Assuming 'anime.duration' is the total duration in seconds
+  let totalSeconds = anime.duration || 0;
+
+  // Calculate the minutes and remaining seconds for total duration
   let minutes = Math.floor(totalSeconds / 60);
   let seconds = totalSeconds % 60;
 
-  // Calculate the percentage
+  minutestimo = parseFloat(minutestimo.toFixed(0));
+  secondstimo = parseFloat(secondstimo.toFixed(0));
+  minutes = parseFloat(minutes.toFixed(0));
+  seconds = parseFloat(seconds.toFixed(0));
+
+  // Function to calculate percentage of time watched
   function calculatePercentage(part, whole) {
     if (whole === 0) return 0;
     return (part / whole) * 100;
   }
 
+  // Calculate the percentage of the video watched
   let percentage = calculatePercentage(totalSecondstimo, totalSeconds);
+
+  // Format time values to be two digits (e.g., 01:05)
+  const formatTime = (time) => (time < 10 ? `0${time}` : time);
+
+  // Output time in two-digit format
+  const watchedTime = `${formatTime(minutestimo)}:${formatTime(secondstimo)}`;
+  const totalTime = `${formatTime(minutes)}:${formatTime(seconds)}`;
 
   const handleNavigation = () => {
     props.IsLoading(true);
@@ -104,7 +115,7 @@ export default function Card(props) {
             </div>
           )}
           {props.keepIt || props.itsMe ? (
-            anime.rating.includes("R") ? (
+            anime.rating?.includes("R") ? (
               <span className="rating">18+</span>
             ) : (
               ""
@@ -130,7 +141,7 @@ export default function Card(props) {
               </span>
             )}
           </div>
-          <img src={anime.poster} alt="anime-card" className="anime-card-img"/>
+          <img src={anime.poster} alt="anime-card" className="anime-card-img" />
         </div>
         <div className="card-details">
           <span className="card-title">
@@ -146,17 +157,9 @@ export default function Card(props) {
                   <div>{anime.epNo}</div>
                 </div>
                 <div className="durnt">
-                  <div className="durntS">
-                    {`${minutestimo < 10 ? "0" + minutestimo : minutestimo}:${
-                      secondstimo < 10 ? "0" + secondstimo : secondstimo
-                    }`}
-                  </div>
+                  <div className="durntS">{watchedTime}</div>
                   <div className="durntM">/</div>
-                  <div className="durntL">
-                    {`${minutes < 10 ? "0" + minutes : minutes}:${
-                      seconds < 10 ? "0" + seconds : seconds
-                    }`}
-                  </div>
+                  <div className="durntL">{totalTime}</div>
                 </div>
               </div>
               <div className="scaling">

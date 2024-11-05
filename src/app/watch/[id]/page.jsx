@@ -1,6 +1,6 @@
 import React from "react";
 import WatchAnime from "../../WatchAnime/WatchAnime";
-import { currentUser } from "@clerk/nextjs/server";
+// import { currentUser } from "@clerk/nextjs/server";
 
 // Helper function to fetch data with force-cache and revalidate options
 async function fetchDataFromAPI(url, revalidate) {
@@ -38,12 +38,6 @@ export async function generateMetadata({ params }) {
 
 // Main page component
 export default async function page({ params, searchParams }) {
-  const user = await currentUser();
-  const firstName = user?.firstName;
-  const userName = user?.username;
-  const imageUrl = user?.imageUrl;
-  const emailAdd = user?.emailAddresses[0]?.emailAddress;
-
   const epis = searchParams.ep;
   const episodeIdParam = epis ? `${params.id}?ep=${epis}` : null;
 
@@ -73,7 +67,7 @@ export default async function page({ params, searchParams }) {
   let dataj = [];
   try {
     const respStream = await fetch(
-      `https://vimal-f2f1.onrender.com/api/stream?id=${epId}`,
+      `https://vimalking.vercel.app/api/stream?id=${epId}`,
       { cache: "no-store" } // No cache for real-time streaming data
     );
     dataj = await respStream.json();
@@ -85,7 +79,7 @@ export default async function page({ params, searchParams }) {
   let datau = [];
   try {
     const respS = await fetchDataFromAPI(
-      `https://aniwatch-api-8fti.onrender.com/anime/search/suggest?q=${params.id}`,
+      `https://hianimes.vercel.app/anime/search/suggest?q=${params.id}`,
       18000
     );
     datau = respS;
@@ -104,7 +98,7 @@ export default async function page({ params, searchParams }) {
   let epiod = 0;
   let i = 0;
   for (i > 0; i < data.episodes.length; i++) {
-    if (data?.episodes[i].episodeId.includes(epis?.toString())) {
+    if (data?.episodes[i].episodeId.includes(epId)) {
       epiod = data.episodes[i].number;
     }
   }
@@ -200,10 +194,6 @@ export default async function page({ params, searchParams }) {
         gogoSub={gogoSub}
         ShareUrl={ShareUrl}
         arise={arise}
-        firstName={firstName}
-        userName={userName}
-        imageUrl={imageUrl}
-        emailAdd={emailAdd}
       />
     </div>
   );

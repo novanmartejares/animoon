@@ -1,6 +1,5 @@
 import React from "react";
 import Slab from "@/component/Slab/Slab";
-import { currentUser } from "@clerk/nextjs/server";
 import Profito from "@/component/Profito/Profito";
 import MyComponent from "@/component/ContinueWatching/ContinueWatching";
 import WatchList from "@/component/WatchList/WatchList";
@@ -22,25 +21,16 @@ export async function generateMetadata({ params }) {
 
 
 export default async function page({ params, searchParams }) {
-  const param = params.id;
+  const param = (await params).id;
   const slabId = param.replace("-", " ");
-  const user = await currentUser();
-  const firstName = user?.firstName;
-  const imageUrl = user?.imageUrl;
-  const emailAdd = user?.emailAddresses[0].emailAddress;
-  const joined = user?.createdAt;
 
   return (
     <>
       <div>
-        <Slab slabId={slabId} firstName={firstName} imageUrl={imageUrl} />
+        <Slab slabId={slabId} />
       </div>
       {param === "profile" ? (
         <Profito
-          emailAdd={emailAdd}
-          firstName={firstName}
-          joined={joined}
-          imageUrl={imageUrl}
         />
       ) : (
         ""

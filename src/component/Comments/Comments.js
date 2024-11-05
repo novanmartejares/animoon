@@ -30,8 +30,12 @@ import {
 } from "react-icons/fa";
 import { LinkedinIcon } from "react-share";
 import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
+import SignInSignUpModal from "../SignSignup/SignInSignUpModal";
 
 const Comments = (props) => {
+  const { data: session } = useSession();
+  const [logIsOpen, setLogIsOpen] = useState(false);
   const [comment, setComment] = useState("");
   const [replyTo, setReplyTo] = useState(null); // For replying to comment or reply
   const [likeTo, setLikeTo] = useState(null); // For replying to comment or reply
@@ -49,9 +53,10 @@ const Comments = (props) => {
 
   const anId = props.anId; // Anime ID
   const epId = props.epId; // Episode ID
-  const email = props.emailAdd || "";
-  const userName = props.userName || ""; // Default userName
-  const imageUrl = props.imageUrl || "https://hianime.to/images/no-avatar.jpeg"; // Default profile image
+  const email = session?.user?.email || "";
+  const userName = session?.user?.username || ""; // Default userName
+  const imageUrl =
+    session?.user?.randomImage || "https://hianime.to/images/no-avatar.jpeg"; // Default profile image
 
   // Fetch comments and replies from Firestore
   const fetchComments = async (anId, epId) => {
@@ -910,12 +915,14 @@ const Comments = (props) => {
   const router = useRouter();
 
   const logg = () => {
-    if (!props.userName) {
-      router.push("/sign-in");
+    if (!session) {
+      setLogIsOpen(true)
     }
   };
   return (
     <>
+      <SignInSignUpModal setLogIsOpen={setLogIsOpen} logIsOpen={logIsOpen} />
+
       <div className="heading-Com">Comments</div>
       <div className="igg">
         <div className="upperBir">
@@ -1112,7 +1119,9 @@ const Comments = (props) => {
                   <div className="gropi">
                     <div className="gropiPart">
                       <div className="i-head">
-                        <div className="userN">{commentData.userName || commentData.email}</div>
+                        <div className="userN">
+                          {commentData.userName || commentData.email}
+                        </div>
                         <div className="timeAgo-t">
                           {timeAgo(commentData.commentId.split("_")[0])}
                         </div>
@@ -1432,7 +1441,9 @@ const Comments = (props) => {
                   <div className="gropi">
                     <div className="gropiPart">
                       <div className="i-head">
-                        <div className="userN">{commentData.userName || commentData.email}</div>
+                        <div className="userN">
+                          {commentData.userName || commentData.email}
+                        </div>
                         <div className="timeAgo-t">
                           {timeAgo(commentData.commentId.split("_")[0])}
                         </div>

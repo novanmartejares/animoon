@@ -1,26 +1,17 @@
 "use client";
-import React, { useEffect, useState } from "react";
-import useAnime from "@/hooks/useAnime";
-import { useClerk } from "@clerk/nextjs";
+import React from "react";
 import { FaBell, FaCog, FaHeart, FaHistory, FaUser } from "react-icons/fa";
 import Link from "next/link";
 import "./slab.css";
+import { useSession } from "next-auth/react";
 
 export default function Slab(props) {
-  const { getUsers } = useAnime();
-  const [user, setUser] = useState([]);
-  const fetchUub = async () => {
-    let dat = await getUsers();
-    setUser(dat);
-    console.log(dat);
-  };
-  useEffect(() => {
-    fetchUub();
-  }, []);
+
+  const { data: session } = useSession();
   return (
     <div className="allpit">
-      <img className="allpit-background" src={props?.imageUrl} alt="pop" />
-      <div className="hiik">Hi, {props?.firstName}</div>
+      <img className="allpit-background" src={session?.user.randomImage} alt="pop" />
+      <div className="hiik">Hi, {session?.user.username}</div>
       <div className="linkok">
         <Link
           href={"/user/profile"}

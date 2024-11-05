@@ -2,17 +2,14 @@
 import React from "react";
 import { FaRandom, FaComments, FaBroadcastTower } from "react-icons/fa";
 import Link from "next/link";
-import { useRouter } from "next/navigation"; // Import useRouter
+// import { useRouter } from "next/navigation"; // Import useRouter
 
-export default function Actions({ isInSidebar, IsLoading }) {
-  const router = useRouter(); // Initialize the router
-  const handleNavigation = (data) => {
-    IsLoading(data);
-  };
+export default function Actions({ isInSidebar , data}) {
+  // const router = useRouter(); // Initialize the router
 
   const handleRandomClick = () => {
-    const randomId = Math.floor(Math.random() * 10000); // Generate random number
-    router.push(`/random?rand=${randomId}`); // Push the route manually
+    // const randomId = Math.floor(Math.random() * 10000); // Generate random number
+    window.location.href = `/${data?.animes[0]?.id}`; // Push the route manually
   };
 
   return (
@@ -30,19 +27,19 @@ export default function Actions({ isInSidebar, IsLoading }) {
       }
     >
       <span>
-        <Link href="/working" className="anchor" onClick={() => handleNavigation(true)}>
+        <Link href="/working" className="anchor">
           <FaBroadcastTower size={20} />
           <p>Watch2gether</p>
         </Link>
       </span>
-      <span onClick={() => handleRandomClick() & handleNavigation('true-random')} style={{ cursor: "pointer" }}>
+      <span onClick={handleRandomClick} style={{ cursor: "pointer" }}>
         <FaRandom size={20} />
         <p>Random</p>
       </span>
 
       {!isInSidebar && (
         <span>
-          <Link href="/working" className="anchor"  onClick={() => handleNavigation(true)}>
+          <Link href="/working" className="anchor">
             <FaComments size={20} />
             <p>Community</p>
           </Link>

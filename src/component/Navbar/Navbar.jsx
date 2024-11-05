@@ -2,7 +2,6 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { FaSearch, FaBars, FaAngleRight } from "react-icons/fa";
-
 import Actions from "./Actions";
 import SocialLinks from "./SocialLinks";
 import logo from "../../../public/logo.png";
@@ -10,80 +9,116 @@ import Image from "next/image";
 import useAnime from "@/hooks/useAnime";
 import "./navbar.css";
 import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
 
 export default function NavBar(props) {
-  const router = useRouter()
-  const handleNavigation = () => {
-    props.IsLoading(true);
-  };
+  const router = useRouter();
+  const { data: session } = useSession();
   const [searchForm, setSearchForm] = useState({ name: "" });
+  const [userData, setUserData] = useState(null);
   const [floatSearchIsVisible, setFloatSearchIsVisible] = useState(false);
-
-  const pageIsScrolled = props.isScrolled;
   const [data, setData] = useState([]);
+  const localStorageWrapper = () => {
+    if (typeof window !== "undefined" && window.localStorage) {
+      return {
+        getItem: (key) => localStorage.getItem(key),
+        setItem: (key, value) => localStorage.setItem(key, value),
+        removeItem: (key) => localStorage.removeItem(key),
+        clear: () => localStorage.clear(),
+      };
+    } else {
+      return {
+        getItem: () => null,
+        setItem: () => {},
+        removeItem: () => {},
+        clear: () => {},
+      };
+    }
+  };
+  const ls = localStorageWrapper();
 
   const { getSuggestSearch } = useAnime();
+  const month = [
+    "Jan",
+    "Feb",
+    "Mar",
+    "Apr",
+    "May",
+    "Jun",
+    "Jul",
+    "Aug",
+    "Sept",
+    "Oct",
+    "Nov",
+    "Dec",
+  ];
 
-  const fetchLub = async () => {
-    if (searchForm.name !== "") {
-      const dat = await getSuggestSearch(searchForm.name);
-      setData(dat);
+  const fetchSuggestions = async () => {
+    if (searchForm.name) {
+      const results = await getSuggestSearch(searchForm.name);
+      setData(results);
     }
   };
 
   useEffect(() => {
-    fetchLub();
+    const storedUser = ls.getItem("user-animoon");
+    if (storedUser) {
+      const parsedUser = JSON.parse(storedUser);
+      setUserData(parsedUser.user);
+    }
+  }, [session]);
+
+  useEffect(() => {
+    fetchSuggestions();
   }, [searchForm.name]);
 
-  const handleSearchForm = (event) => {
-    const { name, value } = event.target;
-    setSearchForm((prev) => ({ ...prev, [name]: value }));
-  };
-
-  const handleKeyPress = (e) => {
-    if (e.key === "Enter" && searchForm.name !== "") {
-      handleSearchClick();
+  useEffect(() => {
+    if (session?.user?.randomImage) {
+      ls.setItem("user-animoon", JSON.stringify(session));
     }
+  }, [session]);
+
+  const handleInputChange = (e) => {
+    setSearchForm({ ...searchForm, [e.target.name]: e.target.value });
   };
 
-  const handleSearchClick = () => {
-    if (searchForm.name !== "") {
+  const handleSearch = () => {
+    if (searchForm.name) {
+      router.push(`/search?name=${searchForm.name}`);
       setSearchForm({ name: "" });
-      router.push(`/search?name=${searchForm?.name}`)
     }
   };
 
-  const handleProfileClick = () => {
-    props.setProfiIsOpen(true);
+  const handleEnterPress = (e) => {
+    if (e.key === "Enter" && searchForm.name) handleSearch();
   };
 
-  const handleSidebarClick = () => {
-    props.setSidebarIsOpen(true);
-  };
+  const toggleProfile = () => props.setProfiIsOpen(true);
+  const toggleSidebar = () => props.setSidebarIsOpen(true);
+  const toggleLogin = () => props.setLogIsOpen(true);
+  const toggleFloatSearch = () => setFloatSearchIsVisible((prev) => !prev);
 
   return (
     <>
       <nav
         className={`navigation-bar a-center d-flex ${
-          pageIsScrolled ? "dark" : "transparent"
+          props.isScrolled ? "dark" : "transparent"
         } trans-03`}
       >
         <div className="menu-group a-center d-flex">
           <FaBars
             size={20}
             className="burger-icon trans-05"
-            onClick={handleSidebarClick}
+            onClick={toggleSidebar}
           />
           <div className="logo-wrapper a-center d-flex">
-            <Link href="/" passHref onClick={handleNavigation}>
+            <Link href="/" passHref onClick={() => props.IsLoading(true)}>
               <div style={{ width: "auto", height: "40px" }}>
                 <Image
                   width={0}
                   height={0}
                   sizes="3%"
-                  style={{
-                    width: "auto",
-                  }}
+                  style={{ width: "auto" }}
                   src={logo}
                   className="logo"
                   alt="logo"
@@ -92,68 +127,83 @@ export default function NavBar(props) {
             </Link>
           </div>
         </div>
+
         <div className="search-all">
           <div className="search-wrapper">
             <input
+              type="text"
+              className="search-text f-poppins trans-03"
+              placeholder="Search anime..."
+              name="name"
+              value={searchForm.name}
+              onChange={handleInputChange}
+              onKeyDown={handleEnterPress}
               style={
-                pageIsScrolled
+                props.isScrolled
                   ? {
                       backgroundColor: "var(--grey-dark)",
                       color: "var(--theme)",
                     }
                   : { backgroundColor: "white", color: "black" }
               }
-              type="text"
-              className="search-text f-poppins trans-03"
-              placeholder="Search anime..."
-              name="name"
-              value={searchForm.name}
-              onChange={handleSearchForm}
-              onKeyDown={handleKeyPress}
             />
             <FaSearch
-              onClick={handleSearchClick}
+              onClick={handleSearch}
               className="search-icon search-icons trans-03"
               size={20}
-              style={
-                props.isScrolled
-                  ? { color: "var(--theme)" }
-                  : { color: "black" }
-              }
+              style={{ color: props.isScrolled ? "var(--theme)" : "black" }}
             />
           </div>
-          {searchForm.name !== "" && data.suggestions ? (
+
+          {searchForm.name && data.length > 0 && (
             <div className="raam-one flex flex-col gap-2">
-              {data.suggestions.map((i) => (
-                <Link key={i.id} href={`/${i.id}`} passHref onClick={handleNavigation}>
+              {data.map((anime) => (
+                <Link
+                  key={anime.id}
+                  href={`/${anime.id}`}
+                  passHref
+                  onClick={() => props.IsLoading(true)}
+                >
                   <div
                     onClick={() => setSearchForm({ name: "" })}
                     className="suggestion-item flex gap-2"
                   >
-                    <img width={50} src={i.poster} alt={i.name} />
+                    <img
+                      width={50}
+                      src={anime.coverImage.large}
+                      alt={anime.title.romaji}
+                    />
                     <div>
                       <div className="goi">
-                        {i.name.length < 30
-                          ? i.name
-                          : `${i.name.slice(0, 30)}...`}
+                        {anime.title.english && anime.title.english.length < 30
+                          ? anime.title.english
+                          : anime.title.romaji && anime.title.romaji.length < 30
+                          ? anime.title.romaji
+                          : `${anime.title.romaji?.slice(0, 30)}...`}
                       </div>
                       <div className="uoi">
-                        {i.jname.length < 30
-                          ? i.jname
-                          : `${i.jname.slice(0, 30)}...`}
+                        {anime.title.romaji.length < 30
+                          ? anime.title.romaji
+                          : `${anime.title.romaji.slice(0, 30)}...`}
                       </div>
-                      <div className="flex gap-1 items-center content-center">
-                        <div className="uoi">{i.moreInfo[0]}</div>
+                      <div className="flex gap-1 items-center">
+                        <div className="uoi">{`${anime.startDate.day} ${
+                          month[anime.startDate.month - 1]
+                        }, ${anime.startDate.year}`}</div>
                         <div className="dotol">&#x2022;</div>
-                        <div className="doi">{i.moreInfo[1]}</div>
+                        <div className="doi">{anime.format}</div>
                         <div className="dotol">&#x2022;</div>
-                        <div className="uoi">{i.moreInfo[2]}</div>
+                        <div className="uoi">{`${anime.duration}m`}</div>
                       </div>
                     </div>
                   </div>
                 </Link>
               ))}
-              <Link href={`/search?name=${searchForm.name}`} passHref onClick={handleNavigation}>
+              <Link
+                href={`/search?name=${searchForm.name}`}
+                passHref
+                onClick={() => props.IsLoading(true)}
+              >
                 <div
                   className="vire flex items-center gap-2"
                   onClick={() => setSearchForm({ name: "" })}
@@ -162,32 +212,37 @@ export default function NavBar(props) {
                 </div>
               </Link>
             </div>
-          ) : null}
+          )}
         </div>
+
         <SocialLinks />
-        <Actions isInSidebar={false} IsLoading={props.IsLoading}/>
+        <Actions
+          isInSidebar={false}
+          IsLoading={props.IsLoading}
+          data={props.data}
+        />
+
         <div className="righty">
           <div className="user-profile-nots a-center j-center d-flex trans-c-03">
             <div className="floating">
-              <FaSearch
-                onClick={() => setFloatSearchIsVisible((prev) => !prev)}
-              />
-            </div>{" "}
+              <FaSearch onClick={toggleFloatSearch} />
+            </div>
           </div>
-          {props.imageUrl ? (
+          {session ? (
             <img
-              src={props.imageUrl}
+              src={session.user.randomImage || userData?.randomImage}
               className="profile-ico"
-              onClick={handleProfileClick}
-              alt="user"
+              onClick={toggleProfile}
+              alt={session.user.username || userData?.username || "user"}
             />
           ) : (
-            <Link href="/sign-in" passHref onClick={handleNavigation}>
+            <div onClick={toggleLogin}>
               <div className="Lognn">LogIn</div>
-            </Link>
+            </div>
           )}
         </div>
       </nav>
+
       {floatSearchIsVisible && (
         <div className="floating-search-wrapper">
           <input
@@ -196,36 +251,64 @@ export default function NavBar(props) {
             placeholder="Search anime..."
             name="name"
             value={searchForm.name}
-            onChange={handleSearchForm}
-            onKeyDown={handleKeyPress}
+            onChange={handleInputChange}
+            onKeyDown={handleEnterPress}
           />
           <FaSearch
-            onClick={handleSearchClick}
+            onClick={handleSearch}
             className="search-icon search-icons"
             size={20}
             color="black"
           />
-          {searchForm.name !== "" && data.suggestions ? (
-            <div className="raam flex flex-col gap-2">
-              {data.suggestions.map((i) => (
-                <Link key={i.id} href={`/${i.id}`} passHref onClick={handleNavigation}>
+          {searchForm.name && data.length > 0 && (
+            <div className="raam-one flex flex-col gap-2">
+              {data.map((anime) => (
+                <Link
+                  key={anime.id}
+                  href={`/${anime.id}`}
+                  passHref
+                  onClick={() => props.IsLoading(true)}
+                >
                   <div
                     onClick={() => setSearchForm({ name: "" })}
                     className="suggestion-item flex gap-2"
                   >
-                    <img width={50} src={i.poster} alt={i.name} />
+                    <img
+                      width={50}
+                      src={anime.coverImage.large}
+                      alt={anime.title.romaji}
+                    />
                     <div>
-                      <div>{i.name}</div>
+                      <div className="goi">
+                        {anime.title.english && anime.title.english.length < 30
+                          ? anime.title.english
+                          : anime.title.romaji && anime.title.romaji.length < 30
+                          ? anime.title.romaji
+                          : `${anime.title.romaji?.slice(0, 30)}...`}
+                      </div>
                       <div className="uoi">
-                        {i.jname.length < 30
-                          ? i.jname
-                          : `${i.jname.slice(0, 30)}...`}
+                        {anime.title.romaji.length < 30
+                          ? anime.title.romaji
+                          : `${anime.title.romaji.slice(0, 30)}...`}
+                      </div>
+                      <div className="flex gap-1 items-center">
+                        <div className="uoi">{`${anime.startDate.day} ${
+                          month[anime.startDate.month - 1]
+                        }, ${anime.startDate.year}`}</div>
+                        <div className="dotol">&#x2022;</div>
+                        <div className="doi">{anime.format}</div>
+                        <div className="dotol">&#x2022;</div>
+                        <div className="uoi">{`${anime.duration}m`}</div>
                       </div>
                     </div>
                   </div>
                 </Link>
               ))}
-              <Link href={`/search?name=${searchForm.name}`} passHref onClick={handleNavigation}>
+              <Link
+                href={`/search?name=${searchForm.name}`}
+                passHref
+                onClick={() => props.IsLoading(true)}
+              >
                 <div
                   className="vire flex items-center gap-2"
                   onClick={() => setSearchForm({ name: "" })}
@@ -234,7 +317,7 @@ export default function NavBar(props) {
                 </div>
               </Link>
             </div>
-          ) : null}
+          )}
         </div>
       )}
     </>

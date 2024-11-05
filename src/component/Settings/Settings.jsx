@@ -4,8 +4,29 @@ import "./settings.css";
 import { FaCog } from "react-icons/fa";
 
 const Settings = () => {
+  const localStorageWrapper = () => {
+    if (typeof window !== "undefined" && window.localStorage) {
+      return {
+        getItem: (key) => localStorage.getItem(key),
+        setItem: (key, value) => localStorage.setItem(key, value),
+        removeItem: (key) => localStorage.removeItem(key),
+        clear: () => localStorage.clear(),
+      };
+    } else {
+      // Handle the case when localStorage is not available
+      return {
+        getItem: () => null,
+        setItem: () => {},
+        removeItem: () => {},
+        clear: () => {},
+      };
+    }
+  };
+
+  // Usage
+  const ls = localStorageWrapper();
   const getInitialState = (key, defaultValue) =>
-    JSON.parse(localStorage.getItem(key)) ?? defaultValue;
+    JSON.parse(ls.getItem(key)) ?? defaultValue;
 
   const [autoNext, setAutoNext] = useState(getInitialState("autoNext", false));
   const [autoPlay, setAutoPlay] = useState(getInitialState("autoPlay", false));
@@ -41,49 +62,49 @@ const Settings = () => {
   );
 
   useEffect(() => {
-    localStorage.setItem("autoNext", JSON.stringify(autoNext));
+    ls.setItem("autoNext", JSON.stringify(autoNext));
   }, [autoNext]);
 
   useEffect(() => {
-    localStorage.setItem("autoPlay", JSON.stringify(autoPlay));
+    ls.setItem("autoPlay", JSON.stringify(autoPlay));
   }, [autoPlay]);
 
   useEffect(() => {
-    localStorage.setItem("autoSkipIntro", JSON.stringify(autoSkipIntro));
+    ls.setItem("autoSkipIntro", JSON.stringify(autoSkipIntro));
   }, [autoSkipIntro]);
 
   useEffect(() => {
-    localStorage.setItem("enableDub", JSON.stringify(enableDub));
+    ls.setItem("enableDub", JSON.stringify(enableDub));
   }, [enableDub]);
 
   useEffect(() => {
-    localStorage.setItem(
+    ls.setItem(
       "playOriginalAudio",
       JSON.stringify(playOriginalAudio)
     );
   }, [playOriginalAudio]);
 
   useEffect(() => {
-    localStorage.setItem("language", JSON.stringify(language));
+    ls.setItem("language", JSON.stringify(language));
   }, [language]);
 
   useEffect(() => {
-    localStorage.setItem("showComments", JSON.stringify(showComments));
+    ls.setItem("showComments", JSON.stringify(showComments));
   }, [showComments]);
 
   useEffect(() => {
-    localStorage.setItem("publicWatchList", JSON.stringify(publicWatchList));
+    ls.setItem("publicWatchList", JSON.stringify(publicWatchList));
   }, [publicWatchList]);
 
   useEffect(() => {
-    localStorage.setItem(
+    ls.setItem(
       "notificationFolders",
       JSON.stringify(notificationFolders)
     );
   }, [notificationFolders]);
 
   useEffect(() => {
-    localStorage.setItem(
+    ls.setItem(
       "notificationLanguage",
       JSON.stringify(notificationLanguage)
     );
@@ -117,7 +138,7 @@ const Settings = () => {
                 <input
                   type="checkbox"
                   checked={autoNext}
-                  onChange={() => setAutoNext(!autoNext) & localStorage.setItem("Onn2","Off")}
+                  onChange={() => setAutoNext(!autoNext) & ls.setItem("Onn2","Off")}
                 />
                 <span className="slider round"></span>
               </label>
@@ -130,7 +151,7 @@ const Settings = () => {
                 <input
                   type="checkbox"
                   checked={autoPlay}
-                  onChange={() => setAutoPlay(!autoPlay) & localStorage.setItem("Onn1","Off")}
+                  onChange={() => setAutoPlay(!autoPlay) & ls.setItem("Onn1","Off")}
                 />
                 <span className="slider round"></span>
               </label>
@@ -143,7 +164,7 @@ const Settings = () => {
                 <input
                   type="checkbox"
                   checked={autoSkipIntro}
-                  onChange={() => setAutoSkipIntro(!autoSkipIntro) & localStorage.setItem("Onn3","Off")}
+                  onChange={() => setAutoSkipIntro(!autoSkipIntro) & ls.setItem("Onn3","Off")}
                 />
                 <span className="slider round"></span>
               </label>
