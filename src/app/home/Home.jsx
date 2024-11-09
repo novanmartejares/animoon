@@ -27,27 +27,18 @@ const Home = (props) => {
         <div>
           <Hero data={props.data.spotlightAnimes} IsLoading={IsLoading} />
           {/* <Henpro/> */}
-          <Script
-            id="ad-options-script"
-            strategy="afterInteractive"
-            dangerouslySetInnerHTML={{
-              __html: `
-          atOptions = {
-            'key' : '3e5c0db0e54f3f6872ff8546641e31c0',
-            'format' : 'iframe',
-            'height' : 60,
-            'width' : 468,
-            'params' : {}
-          };
-        `,
-            }}
-          />
-
-          {/* External script to invoke the ad */}
-          <Script
-            src="//disgustingmad.com/3e5c0db0e54f3f6872ff8546641e31c0/invoke.js"
-            strategy="afterInteractive"
-          />
+          <div style="text-align: center; margin: 20px 0;">
+            {/* <!-- Embed the iframe to show the ad --> */}
+            <iframe
+              src="//disgustingmad.com/3e5c0db0e54f3f6872ff8546641e31c0/invoke.js"
+              width="468"
+              height="60"
+              style="border: none; overflow: hidden;"
+              scrolling="no"
+              frameborder="0"
+              title="Banner Ad"
+            ></iframe>
+          </div>
           <Trending data={props.data.trendingAnimes} IsLoading={IsLoading} />
           <Share ShareUrl={props.ShareUrl} />
           <Featured
