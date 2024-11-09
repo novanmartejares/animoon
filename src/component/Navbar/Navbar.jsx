@@ -155,45 +155,36 @@ export default function NavBar(props) {
             />
           </div>
 
-          {searchForm.name && data.length > 0 && (
+          {searchForm.name !== "" && data.suggestions ? (
             <div className="raam-one flex flex-col gap-2">
-              {data.map((anime) => (
+              {data.suggestions.map((i) => (
                 <Link
-                  key={anime.id}
-                  href={`/${anime.id}`}
+                  key={i.id}
+                  href={`/${i.id}`}
                   passHref
-                  onClick={() => props.IsLoading(true)}
                 >
                   <div
                     onClick={() => setSearchForm({ name: "" })}
                     className="suggestion-item flex gap-2"
                   >
-                    <img
-                      width={50}
-                      src={anime.coverImage.large}
-                      alt={anime.title.romaji}
-                    />
+                    <img width={50} src={i.poster} alt={i.name} />
                     <div>
                       <div className="goi">
-                        {anime.title.english && anime.title.english.length < 30
-                          ? anime.title.english
-                          : anime.title.romaji && anime.title.romaji.length < 30
-                          ? anime.title.romaji
-                          : `${anime.title.romaji?.slice(0, 30)}...`}
+                        {i.name.length < 30
+                          ? i.name
+                          : `${i.name.slice(0, 30)}...`}
                       </div>
                       <div className="uoi">
-                        {anime.title.romaji.length < 30
-                          ? anime.title.romaji
-                          : `${anime.title.romaji.slice(0, 30)}...`}
+                        {i.jname.length < 30
+                          ? i.jname
+                          : `${i.jname.slice(0, 30)}...`}
                       </div>
-                      <div className="flex gap-1 items-center">
-                        <div className="uoi">{`${anime.startDate.day} ${
-                          month[anime.startDate.month - 1]
-                        }, ${anime.startDate.year}`}</div>
+                      <div className="flex gap-1 items-center content-center">
+                        <div className="uoi">{i.moreInfo[0]}</div>
                         <div className="dotol">&#x2022;</div>
-                        <div className="doi">{anime.format}</div>
+                        <div className="doi">{i.moreInfo[1]}</div>
                         <div className="dotol">&#x2022;</div>
-                        <div className="uoi">{`${anime.duration}m`}</div>
+                        <div className="uoi">{i.moreInfo[2]}</div>
                       </div>
                     </div>
                   </div>
@@ -202,7 +193,6 @@ export default function NavBar(props) {
               <Link
                 href={`/search?name=${searchForm.name}`}
                 passHref
-                onClick={() => props.IsLoading(true)}
               >
                 <div
                   className="vire flex items-center gap-2"
@@ -212,7 +202,7 @@ export default function NavBar(props) {
                 </div>
               </Link>
             </div>
-          )}
+          ) : null}
         </div>
 
         <SocialLinks />

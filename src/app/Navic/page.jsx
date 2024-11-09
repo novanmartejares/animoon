@@ -6,6 +6,8 @@ import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 export default async function Navic({ children }) {
   const session = await getServerSession(authOptions);
 
+  // console.log(session.user)
+
   const resp = await fetch(`https://hianimes.vercel.app/anime/random?page=1`, {
     cache: "no-store",
   });
