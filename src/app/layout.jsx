@@ -2,7 +2,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import Navic from "@/app/Navic/page";
 // Uncomment if you intend to use session management
-// import { SessionProvider } from "next-auth/react"; 
+// import { SessionProvider } from "next-auth/react";
 import Script from "next/script";
 
 const inter = Inter({ subsets: ["latin"] });
@@ -12,6 +12,7 @@ export const metadata = {
   description: `Animoon is the best site to watch Anime SUB online, or you can even watch Anime DUB in HD quality. You can also find UnderRated anime on Animoon website.`,
   verification: {
     google: "x0aiWAODNGU-1UA2FXyORfyme9uWJir7mIMu8AMmLm4",
+    "google-adsense-account": "ca-pub-9295326902131480",
   },
 };
 
@@ -45,7 +46,7 @@ export default function RootLayout({ children }) {
 
         {/* Wrap children with SessionProvider if needed */}
         {/* <SessionProvider session={session}> */}
-          <Navic>{children}</Navic>
+        <Navic>{children}</Navic>
         {/* </SessionProvider> */}
       </body>
     </html>
