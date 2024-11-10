@@ -49,6 +49,25 @@ export default function RootLayout({ children }) {
           crossOrigin="anonymous"
           async
         />
+        <Script
+          id="ad-script"
+          strategy="afterInteractive"
+          dangerouslySetInnerHTML={{
+            __html: `
+                  atOptions = {
+                    'key': '3e5c0db0e54f3f6872ff8546641e31c0',
+                    'format': 'iframe',
+                    'height': 60,
+                    'width': 468,
+                    'params': {}
+                  };
+                `,
+          }}
+        />
+        <Script
+          src="//disgustingmad.com/3e5c0db0e54f3f6872ff8546641e31c0/invoke.js"
+          strategy="afterInteractive"
+        />
 
         {/* Wrap children with SessionProvider if needed */}
         {/* <SessionProvider session={session}> */}

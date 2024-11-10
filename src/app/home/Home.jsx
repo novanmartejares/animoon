@@ -31,15 +31,25 @@ const Home = (props) => {
           
           {/* Banner Ad Section */}
           <div style={{ textAlign: "center", margin: "20px 0" }}>
-            <iframe
+            <Script
+              id="ad-script"
+              strategy="afterInteractive"
+              dangerouslySetInnerHTML={{
+                __html: `
+                  atOptions = {
+                    'key': '3e5c0db0e54f3f6872ff8546641e31c0',
+                    'format': 'iframe',
+                    'height': 60,
+                    'width': 468,
+                    'params': {}
+                  };
+                `,
+              }}
+            />
+            <Script
               src="//disgustingmad.com/3e5c0db0e54f3f6872ff8546641e31c0/invoke.js"
-              width="468"
-              height="60"
-              style={{ border: "none", overflow: "hidden" }}
-              scrolling="no"
-              frameBorder="0"
-              title="Banner Ad"
-            ></iframe>
+              strategy="afterInteractive"
+            />
           </div>
 
           <Trending data={props.data.trendingAnimes} IsLoading={IsLoading} />
