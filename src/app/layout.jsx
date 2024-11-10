@@ -43,6 +43,12 @@ export default function RootLayout({ children }) {
             `,
           }}
         />
+        <Script
+          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9295326902131480"
+          strategy="afterInteractive"
+          crossOrigin="anonymous"
+          async
+        />
 
         {/* Wrap children with SessionProvider if needed */}
         {/* <SessionProvider session={session}> */}
