@@ -69,6 +69,11 @@ export default function RootLayout({ children }) {
           strategy="afterInteractive"
         />
 
+        <Script
+          src="//disgustingmad.com/a5/d2/60/a5d260a809e0ec23b08c279ab693d778.js"
+          strategy="afterInteractive" // Loads the script after the page becomes interactive
+        />
+
         {/* Wrap children with SessionProvider if needed */}
         {/* <SessionProvider session={session}> */}
         <Navic>{children}</Navic>
