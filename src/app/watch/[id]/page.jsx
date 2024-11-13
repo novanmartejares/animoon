@@ -65,16 +65,26 @@ export default async function page({ params, searchParams }) {
 
   // Fetch stream data (real-time, no caching)
   let dataj = [];
-  try {
-    const respStream = await fetch(
-      `https://vimalking.vercel.app/api/stream?id=${epId}`,
-      { cache: "no-store" } // No cache for real-time streaming data
-    );
-    dataj = await respStream.json();
-  } catch (error) {
-    console.error("Error fetching stream data: ", error);
-    dataj = [];
+  const maxRetries = 2; // Number of additional retry attempts
+  let attempts = 0;
+  
+  while (attempts <= maxRetries) {
+    try {
+      const respStream = await fetch(
+        `https://vimalking.vercel.app/api/stream?id=${epId}`,
+        { cache: "no-store" } // No cache for real-time streaming data
+      );
+      dataj = await respStream.json();
+      break; // Exit loop if fetch is successful
+    } catch (error) {
+      console.error(`Attempt ${attempts + 1} - Error fetching stream data: `, error);
+      attempts += 1;
+      if (attempts > maxRetries) {
+        dataj = []; // Set to empty array after max retries
+      }
+    }
   }
+  
 
   let datau = [];
   try {
