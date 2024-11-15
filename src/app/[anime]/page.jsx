@@ -3,7 +3,7 @@ import RecommendedTopTen from "../../layouts/RecommendedTopTen";
 
 export async function generateMetadata({ params }) {
   const respo = await fetch(
-    `https://hianimes.vercel.app/anime/info?id=${params.anime}`,
+    `https://hianimes.animoon.me/anime/info?id=${params.anime}`,
     { next: { revalidate: 60 } }
   );
   const daty = await respo.json();
@@ -21,13 +21,13 @@ export default async function page({ params }) {
   const idd = params.anime;
 
   const respo = await fetch(
-    `https://hianimes.vercel.app/anime/info?id=${idd}`,
+    `https://hianimes.animoon.me/anime/info?id=${idd}`,
     { next: { revalidate: 60 } }
   );
   const daty = await respo.json();
   let datp = daty;
 
-  const resp = await fetch("https://hianimes.vercel.app/anime/home");
+  const resp = await fetch("https://hianimes.animoon.me/anime/home");
   const data = await resp.json();
 
   const ShareUrl = `https://animoon.me/${params.anime}`;

@@ -19,7 +19,7 @@ async function fetchDataFromAPI(url, revalidate) {
 // Generate metadata dynamically based on the anime info
 export async function generateMetadata({ params }) {
   try {
-    const url = `https://hianimes.vercel.app/anime/info?id=${params.id}`;
+    const url = `https://hianimes.animoon.me/anime/info?id=${params.id}`;
     const daty = await fetchDataFromAPI(url, 3600); // Revalidate after 1 hour
 
     return {
@@ -43,13 +43,13 @@ export default async function page({ params, searchParams }) {
 
   // Fetch anime info with force-cache and revalidation
   const datao = await fetchDataFromAPI(
-    `https://hianimes.vercel.app/anime/info?id=${params.id}`,
+    `https://hianimes.animoon.me/anime/info?id=${params.id}`,
     18000 // Revalidate after 5 hours
   );
 
   // Fetch episodes with force-cache and revalidation
   const data = await fetchDataFromAPI(
-    `https://hianimes.vercel.app/anime/episodes/${params.id}`,
+    `https://hianimes.animoon.me/anime/episodes/${params.id}`,
     3600 // Revalidate after 1 hour
   );
 
@@ -71,7 +71,7 @@ export default async function page({ params, searchParams }) {
   while (attempts <= maxRetries) {
     try {
       const respStream = await fetch(
-        `https://vimalking.vercel.app/api/stream?id=${epId}`,
+        `https://vimal.animoon.me/api/stream?id=${epId}`,
         { cache: "no-store" } // No cache for real-time streaming data
       );
       dataj = await respStream.json();
@@ -89,7 +89,7 @@ export default async function page({ params, searchParams }) {
   let datau = [];
   try {
     const respS = await fetchDataFromAPI(
-      `https://hianimes.vercel.app/anime/search/suggest?q=${params.id}`,
+      `https://hianimes.animoon.me/anime/search/suggest?q=${params.id}`,
       18000
     );
     datau = respS;
@@ -165,7 +165,7 @@ export default async function page({ params, searchParams }) {
   let subPri = [];
   try {
     let gogoMC = await fetch(
-      `https://hianimes.vercel.app/anime/episode-srcs?id=${epId}&serverId=4&category=sub`,
+      `https://hianimes.animoon.me/anime/episode-srcs?id=${epId}&serverId=4&category=sub`,
       {
         cache: "force-cache",
       }
@@ -179,7 +179,7 @@ export default async function page({ params, searchParams }) {
 
   // Fetch homepage data with force-cache and revalidation
   const datapp = await fetchDataFromAPI(
-    "https://hianimes.vercel.app/anime/home",
+    "https://hianimes.animoon.me/anime/home",
     3600 // Revalidate after 1 hour
   );
 

@@ -19,13 +19,13 @@ export default async function page({ searchParams }) {
   try {
     // Fetch data for category-specific anime list
     const [animeResp, homeResp] = await Promise.all([
-      fetch(`https://hianimes.vercel.app/anime/${cate}?page=${pageParam}`, {
+      fetch(`https://hianimes.animoon.me/anime/${cate}?page=${pageParam}`, {
         cache: 'force-cache',
         headers: {
           'Cache-Control': `public, max-age=${cacheMaxAge}, stale-while-revalidate=${cacheMaxAge}`,
         },
       }),
-      fetch("https://hianimes.vercel.app/anime/home", {
+      fetch("https://hianimes.animoon.me/anime/home", {
         cache: 'force-cache',
         headers: {
           'Cache-Control': `public, max-age=${cacheMaxAge}, stale-while-revalidate=${cacheMaxAge}`,

@@ -16,7 +16,7 @@ export default function useAnime() {
   }
   async function getAnimeInfo(id) {
     const data = await fetch(
-      `https://hianimes.vercel.app/anime/info?id=${id}`,
+      `https://hianimes.animoon.me/anime/info?id=${id}`,
       {
         cache: "force-cache", // Force cache the response
         next: { revalidate: 18000 }, // Revalidate after 5 hours (18000 seconds)
