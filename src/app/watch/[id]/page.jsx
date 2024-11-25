@@ -170,7 +170,7 @@ export default async function page({ params, searchParams }) {
   try {
     const respStream = await fetch(
       `https://vimalking.vercel.app/api/stream?id=${epId}`,
-      { cache: "force-cache" } // No cache for real-time streaming data
+      { cache: "no-store" } // No cache for real-time streaming data
     );
     dataj = await respStream.json();
   } catch (error) {
