@@ -17,22 +17,22 @@ export default async function Page() {
 
   // Fetch and cache data from the API routes
   const data = await fetchDataWithCache(
-    "https://hianimes.animoon.me/anime/home"
+    "https://hianimes.vercel.app/anime/home"
   );
   const dataNew = await fetchDataWithCache(
-    "https://hianimes.animoon.me/anime/recently-added?page=1"
+    "https://hianimes.vercel.app/anime/recently-added?page=1"
   );
   const dataComp = await fetchDataWithCache(
-    "https://hianimes.animoon.me/anime/completed?page=1"
+    "https://hianimes.vercel.app/anime/completed?page=1"
   );
   const dataFav = await fetchDataWithCache(
-    "https://hianimes.animoon.me/anime/most-favorite?page=1"
+    "https://hianimes.vercel.app/anime/most-favorite?page=1"
   );
   const dataPopu = await fetchDataWithCache(
-    "https://hianimes.animoon.me/anime/most-popular?page=1"
+    "https://hianimes.vercel.app/anime/most-popular?page=1"
   );
   const dataAir = await fetchDataWithCache(
-    "https://hianimes.animoon.me/anime/top-airing?page=1"
+    "https://hianimes.vercel.app/anime/top-airing?page=1"
   );
   return (
     <div>

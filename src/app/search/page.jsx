@@ -17,13 +17,13 @@ export async function generateMetadata({ params }) {
 export default async function page({ searchParams }) {
   const query = searchParams.name ? searchParams.name : "naruto";
   const resp = await fetch(
-    `https://hianimes.animoon.me/anime/search?q=${query}&page=1`,
+    `https://hianimes.vercel.app/anime/search?q=${query}&page=1`,
     { cache: "no-store" }
   );
   const data = await resp.json();
   console.log(data);
   const respl = await fetch(
-    "https://hianimes.animoon.me/anime/home"
+    "https://hianimes.vercel.app/anime/home"
   );
   const datal = await respl.json();
   return (

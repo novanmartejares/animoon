@@ -5,7 +5,7 @@ export async function GET(req, { params }) {
   // Fetch data using 'force-cache' and revalidate mechanism
   try {
     const response = await fetch(
-      `https://hianimes.animoon.me/anime/info?id=${params.id}`,
+      `https://hianimes.vercel.app/anime/info?id=${params.id}`,
       {
         cache: "force-cache", // Force cache the response
         next: { revalidate: 18000 }, // Revalidate after 5 hours (18000 seconds)

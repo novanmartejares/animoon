@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server"; 
 
-const apiUrl = "https://vimal.animoon.me/api/az-list?page=";
+const apiUrl = "https://vimalking.vercel.app/api/az-list?page=";
 const baseUrl = "https://animoon.me";
 
 // Helper function for retrying fetch in case of error

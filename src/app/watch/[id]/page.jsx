@@ -1,8 +1,108 @@
-import React from "react";
+import React, { cache } from "react";
 import WatchAnime from "../../WatchAnime/WatchAnime";
 // import { currentUser } from "@clerk/nextjs/server";
 
 // Helper function to fetch data with force-cache and revalidate options
+
+async function fetchAnimeSchedulesAndValidate(idToCheck) {
+  const baseURL = "https://hianimes.vercel.app/anime/schedule?date=";
+  const infoURL = "https://hianimes.vercel.app/anime/info?id=";
+  const episURL = "https://hianimes.vercel.app/anime/episodes/";
+  const today = new Date();
+
+  for (let i = 0; i < 7; i++) {
+    const currentDate = new Date(today);
+    currentDate.setDate(today.getDate() + i);
+    const formattedDate = currentDate.toISOString().split("T")[0];
+
+    try {
+      // Fetch the schedule
+      const response = await fetch(`${baseURL}${formattedDate}`, {
+        cache: "force-cache",
+      });
+      if (!response.ok) {
+        console.error(`Failed to fetch schedule for ${formattedDate}`);
+        continue;
+      }
+
+      const scheduleData = await response.json();
+
+      // Check if anime ID exists in the schedule
+      if (scheduleData?.scheduledAnimes) {
+        for (const anime of scheduleData.scheduledAnimes) {
+          if (anime.id === idToCheck) {
+            const now = new Date();
+            const [hour, minute] = anime.time.split(":").map(Number);
+            const scheduledTime = new Date(now);
+            scheduledTime.setHours(hour, minute);
+
+            // Check if the time falls within the 30-minute window
+            if (
+              formattedDate === now.toISOString().split("T")[0] &&
+              now >= scheduledTime &&
+              now <= new Date(scheduledTime.getTime() + 30 * 60000)
+            ) {
+              const revalidatedResponse = await fetch(
+                `${infoURL}${idToCheck}`,
+                {
+                  cache: "no-cache",
+                }
+              );
+              if (revalidatedResponse.ok) {
+                const animeInfo = await revalidatedResponse.json();
+
+                // Fetch episodes for the anime
+                const episodesResponse = await fetch(`${episURL}${idToCheck}`, {
+                  cache: "no-cache",
+                });
+                const episodes = episodesResponse.ok
+                  ? await episodesResponse.json()
+                  : null;
+
+                return {
+                  animeInfo,
+                  episodes,
+                };
+              }
+            }
+          }
+        }
+      }
+    } catch (error) {
+      console.error(
+        `Error while processing schedule for ${formattedDate}: ${error.message}`
+      );
+    }
+  }
+
+  // Fallback to fetching the info and episodes directly
+  try {
+    const fallbackResponse = await fetch(`${infoURL}${idToCheck}`, {
+      cache: "force-cache",
+    });
+    if (fallbackResponse.ok) {
+      const animeInfo = await fallbackResponse.json();
+
+      // Fetch episodes for the anime
+      const episodesResponse = await fetch(`${episURL}${idToCheck}`, {
+        cache: "force-cache",
+      });
+      const episodes = episodesResponse.ok
+        ? await episodesResponse.json()
+        : null;
+
+      return {
+        animeInfo,
+        episodes,
+      };
+    }
+  } catch (error) {
+    console.error(`Error fetching anime info or episodes: ${error.message}`);
+  }
+
+  return null;
+}
+
 async function fetchDataFromAPI(url, revalidate) {
   try {
     const response = await fetch(url, {
@@ -19,8 +119,8 @@ async function fetchDataFromAPI(url, revalidate) {
 // Generate metadata dynamically based on the anime info
 export async function generateMetadata({ params }) {
   try {
-    const url = `https://hianimes.animoon.me/anime/info?id=${params.id}`;
-    const daty = await fetchDataFromAPI(url, 3600); // Revalidate after 1 hour
+    const dat = await fetchAnimeSchedulesAndValidate(params.id); // Revalidate after 1 hour
+    const daty = dat.animeInfo;
 
     return {
       title: `Watch ${daty.anime.info.name} English Sub/Dub online free on Animoon.me`,
@@ -41,17 +141,19 @@ export default async function page({ params, searchParams }) {
   const epis = searchParams.ep;
   const episodeIdParam = epis ? `${params.id}?ep=${epis}` : null;
 
+  const idToCheck = params.id;
+
+  // Fetch the anime details
+  const revalidatedData = await fetchAnimeSchedulesAndValidate(idToCheck);
+  if (!revalidatedData) {
+    console.error(`Failed to fetch or validate data for ID: ${idToCheck}`);
+  }
+
   // Fetch anime info with force-cache and revalidation
-  const datao = await fetchDataFromAPI(
-    `https://hianimes.animoon.me/anime/info?id=${params.id}`,
-    18000 // Revalidate after 5 hours
-  );
+  const datao = revalidatedData.animeInfo;
 
   // Fetch episodes with force-cache and revalidation
-  const data = await fetchDataFromAPI(
-    `https://hianimes.animoon.me/anime/episodes/${params.id}`,
-    3600 // Revalidate after 1 hour
-  );
+  const data = revalidatedData.episodes;
 
   // Determine the episode ID
   const epId = episodeIdParam || data?.episodes[0]?.episodeId;
@@ -65,34 +167,25 @@ export default async function page({ params, searchParams }) {
 
   // Fetch stream data (real-time, no caching)
   let dataj = [];
-  const maxRetries = 2; // Number of additional retry attempts
-  let attempts = 0;
-  
-  while (attempts <= maxRetries) {
-    try {
-      const respStream = await fetch(
-        `https://vimal.animoon.me/api/stream?id=${epId}`,
-        { cache: "no-store" } // No cache for real-time streaming data
-      );
-      dataj = await respStream.json();
-      break; // Exit loop if fetch is successful
-    } catch (error) {
-      console.error(`Attempt ${attempts + 1} - Error fetching stream data: `, error);
-      attempts += 1;
-      if (attempts > maxRetries) {
-        dataj = []; // Set to empty array after max retries
-      }
-    }
+  try {
+    const respStream = await fetch(
+      `https://vimalking.vercel.app/api/stream?id=${epId}`,
+      { cache: "force-cache" } // No cache for real-time streaming data
+    );
+    dataj = await respStream.json();
+  } catch (error) {
+    console.error("Error fetching stream data: ", error);
+    dataj = [];
   }
   
 
   let datau = [];
   try {
-    const respS = await fetchDataFromAPI(
-      `https://hianimes.animoon.me/anime/search/suggest?q=${params.id}`,
-      18000
+    const respS = await fetch(
+      `https://hianimes.vercel.app/anime/search/suggest?q=${params.id}`,
+      { cache: "force-cache" }
     );
-    datau = respS;
+    datau = await respS.json();
   } catch (error) {
     datau = [];
   }
@@ -114,11 +207,11 @@ export default async function page({ params, searchParams }) {
   }
   let gogoEP = [];
   try {
-    const gogoTP = await fetchDataFromAPI(
+    const gogoTP = await fetch(
       `https://newgogoking.vercel.app/${datao?.anime?.info?.name}?page=1`,
-      3600
+      { cache: "force-cache" }
     );
-    gogoEP = gogoTP;
+    gogoEP = await gogoTP.json();
   } catch (error) {
     gogoEP = [];
   }
@@ -149,7 +242,7 @@ export default async function page({ params, searchParams }) {
   } catch (error) {
     gogoSub = [];
   }
-  console.log(gogoSub)
+  console.log(gogoSub);
 
   let gogoDub = [];
   try {
@@ -160,12 +253,12 @@ export default async function page({ params, searchParams }) {
   } catch (error) {
     gogoDub = [];
   }
-  console.log('sub',gogoSub)
+  console.log("sub", gogoSub);
 
   let subPri = [];
   try {
     let gogoMC = await fetch(
-      `https://hianimes.animoon.me/anime/episode-srcs?id=${epId}&serverId=4&category=sub`,
+      `https://hianimes.vercel.app/anime/episode-srcs?id=${epId}&serverId=4&category=sub`,
       {
         cache: "force-cache",
       }
@@ -179,7 +272,7 @@ export default async function page({ params, searchParams }) {
 
   // Fetch homepage data with force-cache and revalidation
   const datapp = await fetchDataFromAPI(
-    "https://hianimes.animoon.me/anime/home",
+    "https://hianimes.vercel.app/anime/home",
     3600 // Revalidate after 1 hour
   );
 

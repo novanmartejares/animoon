@@ -20,8 +20,8 @@ export default async function page({ params, searchParams }) {
 
   try {
     const url = searchParams.sort
-      ? `https://vimal.animoon.me/api/az-list/${searchParams.sort}?page=${searchParams.page || "1"}`
-      : `https://vimal.animoon.me/api/az-list?page=${searchParams.page || "1"}`;
+      ? `https://vimalking.vercel.app/api/az-list/${searchParams.sort}?page=${searchParams.page || "1"}`
+      : `https://vimalking.vercel.app/api/az-list?page=${searchParams.page || "1"}`;
 
     const data = await fetch(url, {
       cache: "force-cache",

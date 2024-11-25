@@ -6,7 +6,7 @@ export async function GET(
   { params }
 ) {
   const resp = await fetch(
-    `https://hianimes.animoon.me/anime/search/suggest?q=${params.id}`
+    `https://hianimes.vercel.app/anime/search/suggest?q=${params.id}`
   );
   const data = await resp.json();
   console.log(data);
