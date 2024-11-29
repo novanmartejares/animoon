@@ -1,6 +1,6 @@
 "use client";
 import Link from "next/link";
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import "./createLive.css";
 import {
   FaCircle,
@@ -11,9 +11,140 @@ import {
 import { AiFillAudio } from "react-icons/ai";
 import { FaCircleCheck } from "react-icons/fa6";
 
+import Calendar from "react-calendar";
+import "react-calendar/dist/Calendar.css";
+
 const CreateLive = (props) => {
+  // const localStorageWrapper = () => {
+  //   if (typeof window !== "undefined" && window.localStorage) {
+  //     return {
+  //       getItem: (key) => localStorage.getItem(key),
+  //       setItem: (key, value) => localStorage.setItem(key, value),
+  //       removeItem: (key) => localStorage.removeItem(key),
+  //       clear: () => localStorage.clear(),
+  //     };
+  //   } else {
+  //     // Handle the case when localStorage is not available
+  //     return {
+  //       getItem: () => null,
+  //       setItem: () => {},
+  //       removeItem: () => {},
+  //       clear: () => {},
+  //     };
+  //   }
+  // };
+
+  // // Usage
+  // const ls = localStorageWrapper();
   const [subIsSelected, setSubIsSelected] = useState(true);
   const [byTime, setByTime] = useState(true);
+  const [openCal, setOpenCal] = useState(false);
+  const [newTime, setNewTime] = useState(false);
+  const [cachedData, setCachedData] = useState(null); // State to store cached data
+
+  const [value, setValue] = useState(new Date());
+
+  const hours = Array.from({ length: 24 }, (_, i) =>
+    String(i).padStart(2, "0")
+  );
+  const minutes = Array.from({ length: 60 }, (_, i) =>
+    String(i).padStart(2, "0")
+  );
+
+  const [selectedHourIndex, setSelectedHourIndex] = useState(0);
+  const [selectedMinuteIndex, setSelectedMinuteIndex] = useState(0);
+
+  const handleHourScroll = (direction) => {
+    setSelectedHourIndex((prev) =>
+      direction === "up"
+        ? Math.max(prev - 1, 0)
+        : Math.min(prev + 1, hours.length - 1)
+    );
+  };
+
+  const handleMinuteScroll = (direction) => {
+    setSelectedMinuteIndex((prev) =>
+      direction === "up"
+        ? Math.max(prev - 1, 0)
+        : Math.min(prev + 1, minutes.length - 1)
+    );
+  };
+
+  const saveObject = async () => {
+    const myObject = {
+      id: props.data.anime.info.id,
+      time: hours[selectedHourIndex] + ":" + minutes[selectedMinuteIndex],
+      date: value?.toDateString(),
+      sub: subIsSelected,
+    };
+
+    try {
+      const response = await fetch(
+        `/api/createLive/${props.data.anime.info.id}`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ data: myObject }),
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to save object");
+      }
+
+      const result = await response.json();
+      console.log(result); // { success: true }
+    } catch (error) {
+      console.error("Error:", error);
+    }
+  };
+
+  const fetchCachedData = async () => {
+    try {
+      const response = await fetch(
+        `/api/createLive/${props.data.anime.info.id}`,
+        {
+          method: "GET",
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to fetch cached data");
+      }
+
+      const data = await response.json();
+      setCachedData(data.data); // Set the cached data
+      console.log(data); // { data: {...} } or { data: 'No cached data' }
+      return data.data;
+    } catch (error) {
+      console.error("Error:", error);
+      return null;
+    }
+  };
+
+  useEffect(() => {
+    const checkAndSaveObject = async () => {
+      const existingData = await fetchCachedData();
+
+      // Only save the object if it doesn't already exist or has changed
+      if (
+        !existingData ||
+        existingData.time !== hours[selectedHourIndex] + ":" + minutes[selectedMinuteIndex] ||
+        existingData.date !== value ||
+        existingData.sub !== subIsSelected
+      ) {
+        saveObject();
+      }
+    };
+
+    checkAndSaveObject();
+  }, [
+    value,
+    selectedHourIndex,
+    selectedMinuteIndex,
+    subIsSelected,
+    props.data.anime.info.id,
+  ]); // Dependency array updated
 
   return (
     <div className="kinj">
@@ -100,7 +231,7 @@ const CreateLive = (props) => {
                 <input
                   className="rn-input"
                   type="text"
-                  placeholder={`Watch ${props.data.anime.info.name} together`}
+                  defaultValue={`Watch ${props.data.anime.info.name} together`}
                   name="text"
                 />
               </div>
@@ -147,23 +278,49 @@ const CreateLive = (props) => {
           <div className="rb1">
             <div className="upp-bi">
               <div className="upp-bi1" onClick={() => setByTime(true)}>
-                <div className={`${byTime ? "subi-col" : "subi"}`}>{byTime ? <FaCircleCheck /> : <FaCircle />}</div>
+                <div className={`${byTime ? "subi-col" : "subi"}`}>
+                  {byTime ? <FaCircleCheck /> : <FaCircle />}
+                </div>
                 <div>Start by time</div>
               </div>
               <div className="upp-bi1" onClick={() => setByTime(false)}>
-                <div className={`${byTime ? "subi" : "subi-col"}`}>{byTime ? <FaCircle /> : <FaCircleCheck />}</div>
+                <div className={`${byTime ? "subi" : "subi-col"}`}>
+                  {byTime ? <FaCircle /> : <FaCircleCheck />}
+                </div>
                 <div>Start manual</div>
               </div>
             </div>
-            <div className="rn-sugg">
-              This room will be automatically started, please schedule it
-            </div>
-            <div className="str-t">Start Time</div>
+            {byTime ? (
+              <div>
+                <div className="rn-sugg rn-is">
+                  This room will be automatically started, please schedule it
+                </div>
+                <div
+                  className="str-t"
+                  onClick={() => setOpenCal(true)}
+                  style={{ marginTop: "20px" }}
+                >
+                  {value
+                    ? hours[selectedHourIndex] +
+                      ":" +
+                      minutes[selectedMinuteIndex] +
+                      " " +
+                      value.toDateString()
+                    : `Start Time`}
+                </div>
+              </div>
+            ) : (
+              <div className="rn-sugg rn-is">
+                You can start this room whenever you want
+              </div>
+            )}
           </div>
           <div className="rb1">
             <div className="rby">
               <div>Public</div>
-              <div className="rn-sug tyi">With OFF, only who has the link can see this room.</div>
+              <div className="rn-sug tyi">
+                With OFF, only who has the link can see this room.
+              </div>
             </div>
             <div className="upp-bi1">
               <div className="cr1">Create Room</div>
@@ -172,6 +329,147 @@ const CreateLive = (props) => {
           </div>
         </div>
       </div>
+      {openCal ? (
+        <div className="overlay">
+          <div className="cal-all">
+            <h1>React Calendar</h1>
+            <Calendar onChange={setValue} value={value} />
+            <div className="cal-ut">
+              <div className="cal-ut1" onClick={() => setOpenCal(false)}>
+                Cancel
+              </div>
+              <div
+                className="cal-ut1"
+                onClick={() => setNewTime(true) & setOpenCal(false)}
+              >
+                OK
+              </div>
+            </div>
+            <div style={{ marginTop: "20px" }}>
+              <h2>Selected Date:</h2>
+              <p>{value.toDateString()}</p>
+            </div>
+          </div>
+        </div>
+      ) : (
+        ""
+      )}
+      {newTime ? (
+        <div className="overlay">
+          <div className="ti-all">
+            <div style={{ textAlign: "center", marginTop: "20px" }}>
+              <h2>Select Time</h2>
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "center",
+                  gap: "20px",
+                  alignItems: "center",
+                }}
+              >
+                {/* Hour Selector */}
+                <div>
+                  <button
+                    className="middHo"
+                    style={{ marginTop: "20px", marginBottom: "20px" }}
+                    onClick={() => handleHourScroll("up")}
+                  >
+                    ▲
+                  </button>
+                  <div
+                    style={{
+                      height: "100px",
+                      display: "flex",
+                      flexDirection: "column",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      fontSize: "24px",
+                    }}
+                  >
+                    <span className="topHo">
+                      {hours[selectedHourIndex - 1] || ""}
+                    </span>
+                    <span
+                      className="middHo"
+                      style={{ fontSize: "32px", fontWeight: "bold" }}
+                    >
+                      {hours[selectedHourIndex]}
+                    </span>
+                    <span className="topHo">
+                      {hours[selectedHourIndex + 1] || ""}
+                    </span>
+                  </div>
+                  <button
+                    className="middHo"
+                    style={{ marginTop: "20px", marginBottom: "0px" }}
+                    onClick={() => handleHourScroll("down")}
+                  >
+                    ▼
+                  </button>
+                </div>
+                <span style={{ fontSize: "32px", fontWeight: "bold" }}>:</span>
+                {/* Minute Selector */}
+                <div>
+                  <button
+                    className="middHo"
+                    style={{ marginTop: "20px", marginBottom: "20px" }}
+                    onClick={() => handleMinuteScroll("up")}
+                  >
+                    ▲
+                  </button>
+                  <div
+                    style={{
+                      height: "100px",
+                      display: "flex",
+                      flexDirection: "column",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      fontSize: "24px",
+                    }}
+                  >
+                    <span className="topHo">
+                      {minutes[selectedMinuteIndex - 1] || ""}
+                    </span>
+                    <span
+                      className="middHo"
+                      style={{ fontSize: "32px", fontWeight: "bold" }}
+                    >
+                      {minutes[selectedMinuteIndex]}
+                    </span>
+                    <span className="topHo">
+                      {minutes[selectedMinuteIndex + 1] || ""}
+                    </span>
+                  </div>
+                  <button
+                    className="middHo"
+                    style={{ marginTop: "20px", marginBottom: "0px" }}
+                    onClick={() => handleMinuteScroll("down")}
+                  >
+                    ▼
+                  </button>
+                </div>
+              </div>
+              <div style={{ marginTop: "20px", marginBottom: "20px" }}>
+                <h3>
+                  Selected Time:{" "}
+                  {`${hours[selectedHourIndex]}:${minutes[selectedMinuteIndex]}`}
+                </h3>
+              </div>
+              <div className="cal-ut">
+                <div className="cal-ut1" onClick={() => setNewTime(false)}>
+                  Cancel
+                </div>
+                <div className="cal-ut1" onClick={() => setNewTime(false)}>
+                  OK
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      ) : (
+        ""
+      )}
+      <div>{JSON.stringify(cachedData)}</div>
     </div>
   );
 };

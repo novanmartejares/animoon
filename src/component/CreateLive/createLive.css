@@ -190,6 +190,10 @@
   padding: 10px;
   border-radius: 5px;
   width: 350px;
+  color: black;
+  outline: none;
+  font-size: 14px;
+  font-weight: 500;
 }
 .rn-input::placeholder {
   color: black;
@@ -312,4 +316,115 @@
 }
 .subi {
   color: #c7bebe;
+}
+
+
+.react-calendar {
+  background-color: #000; /* Black background */
+  color: #000; /* White text for contrast */
+  border: none; /* Remove border for a sleek look */
+  padding: 10px;
+}
+
+.react-calendar__tile {
+  background-color: #1c1c1c; /* Dark gray tiles */
+  color: #000; /* Text color */
+  border-radius: 6px;
+}
+
+.react-calendar__tile--active {
+  background-color: #333; /* Highlight for active date */
+  color: #61dafb; /* Accent color for active text */
+}
+
+.react-calendar__tile:hover {
+  background-color: #444; /* Hover effect */
+}
+
+/* .react-calendar__navigation button {
+  background-color: #111; /* Navigation buttons */
+  /* color: #61dafb; Navigation text color */
+/* } */ 
+
+/* .react-calendar__month-view__weekdays {
+  /* background-color: #000; /* Weekday background */
+  /* color: #888; Dimmed weekday labels */ 
+/* } */
+/* Overlay to dim the background */
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+}
+
+/* Pop-up styling */
+.cal-all {
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  padding: 20px;
+  width: 320px;
+  text-align: center;
+  position: relative;
+  z-index: 1000;
+}
+.cal-ut {
+  display: flex;
+  align-items: center;
+  justify-content: end;
+  background: #e9e4e4;
+  padding: 5px;
+  /* margin: 0.5px; */
+  margin-top: -5px;
+  padding-right: 20px;
+  gap: 20px;
+}
+
+.cal-ut1{
+  /* background: red; */
+  color: #000;
+} 
+
+/* select {
+  width: 80px;
+  overflow-y: auto;
+  height: 300px; /* Ensures select element has fixed height */
+/* } */ 
+
+option {
+  height: 50px; /* Set a fixed height for options */
+  display: flex; /* Ensure the text aligns properly */
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+}
+
+.ti-all {
+  background-color: #ffffff; /* Pop-up background */
+  color: #000;
+  border-radius: 8px; /* Smooth edges */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Shadow effect */
+  padding: 20px; /* Internal spacing */
+  width: 320px; /* Fixed width for pop-up */
+  text-align: center;
+  z-index: 1000; /* Above the overlay */
+}
+
+.middHo {
+  color: #000;
+}
+
+.topHo {
+  color: #5e5959 !important;
+}
+
+.rn-is {
+  font-size: 13px;
 }

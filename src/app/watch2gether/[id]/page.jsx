@@ -11,7 +11,7 @@ export default async function page({ params, searchParams }) {
   }
   return (
     <div>
-      <CreateLive data={data} />
+      <CreateLive data={data}/>
     </div>
   );
 }
