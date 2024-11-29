@@ -9,14 +9,22 @@ async function fetchAnimeSchedulesAndValidate(idToCheck) {
   const infoURL = "https://hianimes.vercel.app/anime/info?id=";
   const episURL = "https://hianimes.vercel.app/anime/episodes/";
   const today = new Date();
+  const currentYear = today.getFullYear();
+  const currentMonth = today.getMonth(); // 0-indexed for months
 
-  for (let i = 0; i < 7; i++) {
-    const currentDate = new Date(today);
-    currentDate.setDate(today.getDate() + i);
+  // Function to get the number of days in a given month
+  const getDaysInMonth = (year, month) =>
+    new Date(year, month + 1, 0).getDate();
+
+  const daysInMonth = getDaysInMonth(currentYear, currentMonth);
+
+  // Iterate over all days in the current month
+  for (let day = 1; day <= daysInMonth; day++) {
+    const currentDate = new Date(currentYear, currentMonth, day);
     const formattedDate = currentDate.toISOString().split("T")[0];
 
     try {
-      // Fetch the schedule
+      // Fetch the schedule for the current date
       const response = await fetch(`${baseURL}${formattedDate}`, {
         cache: "force-cache",
       });
@@ -27,21 +35,17 @@ async function fetchAnimeSchedulesAndValidate(idToCheck) {
 
       const scheduleData = await response.json();
 
-      // Check if anime ID exists in the schedule
+      // Check if the anime ID exists in the schedule
       if (scheduleData?.scheduledAnimes) {
         for (const anime of scheduleData.scheduledAnimes) {
           if (anime.id === idToCheck) {
             const now = new Date();
             const [hour, minute] = anime.time.split(":").map(Number);
-            const scheduledTime = new Date(now);
+            const scheduledTime = new Date(currentYear, currentMonth, day);
             scheduledTime.setHours(hour, minute);
 
-            // Check if the time falls within the 30-minute window
-            if (
-              formattedDate === now.toISOString().split("T")[0] &&
-              now >= scheduledTime &&
-              now <= new Date(scheduledTime.getTime() + 30 * 60000)
-            ) {
+            // Check if the current time exceeds the scheduled time
+            if (now >= scheduledTime) {
               const revalidatedResponse = await fetch(
                 `${infoURL}${idToCheck}`,
                 {
@@ -52,9 +56,12 @@ async function fetchAnimeSchedulesAndValidate(idToCheck) {
                 const animeInfo = await revalidatedResponse.json();
 
                 // Fetch episodes for the anime
-                const episodesResponse = await fetch(`${episURL}${idToCheck}`, {
-                  cache: "no-cache",
-                });
+                const episodesResponse = await fetch(
+                  `${episURL}${idToCheck}`,
+                  {
+                    cache: "no-cache",
+                  }
+                );
                 const episodes = episodesResponse.ok
                   ? await episodesResponse.json()
                   : null;
@@ -102,6 +109,7 @@ async function fetchAnimeSchedulesAndValidate(idToCheck) {
 
   return null;
 }
+
 
 async function fetchDataFromAPI(url, revalidate) {
   try {

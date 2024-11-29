@@ -15,34 +15,38 @@ import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
 
 const CreateLive = (props) => {
-  // const localStorageWrapper = () => {
-  //   if (typeof window !== "undefined" && window.localStorage) {
-  //     return {
-  //       getItem: (key) => localStorage.getItem(key),
-  //       setItem: (key, value) => localStorage.setItem(key, value),
-  //       removeItem: (key) => localStorage.removeItem(key),
-  //       clear: () => localStorage.clear(),
-  //     };
-  //   } else {
-  //     // Handle the case when localStorage is not available
-  //     return {
-  //       getItem: () => null,
-  //       setItem: () => {},
-  //       removeItem: () => {},
-  //       clear: () => {},
-  //     };
-  //   }
-  // };
+  const localStorageWrapper = () => {
+    if (typeof window !== "undefined" && window.localStorage) {
+      return {
+        getItem: (key) => localStorage.getItem(key),
+        setItem: (key, value) => localStorage.setItem(key, value),
+        removeItem: (key) => localStorage.removeItem(key),
+        clear: () => localStorage.clear(),
+      };
+    } else {
+      // Handle the case when localStorage is not available
+      return {
+        getItem: () => null,
+        setItem: () => {},
+        removeItem: () => {},
+        clear: () => {},
+      };
+    }
+  };
 
-  // // Usage
-  // const ls = localStorageWrapper();
+  // Usage
+  const ls = localStorageWrapper();
   const [subIsSelected, setSubIsSelected] = useState(true);
   const [byTime, setByTime] = useState(true);
   const [openCal, setOpenCal] = useState(false);
   const [newTime, setNewTime] = useState(false);
   const [cachedData, setCachedData] = useState(null); // State to store cached data
 
-  const [value, setValue] = useState(new Date());
+  const [value, setValue] = useState(
+    ls.getItem("calendarValue")
+      ? new Date(ls.getItem("calendarValue")) 
+      : new Date()
+  );
 
   const hours = Array.from({ length: 24 }, (_, i) =>
     String(i).padStart(2, "0")
@@ -51,8 +55,16 @@ const CreateLive = (props) => {
     String(i).padStart(2, "0")
   );
 
-  const [selectedHourIndex, setSelectedHourIndex] = useState(0);
-  const [selectedMinuteIndex, setSelectedMinuteIndex] = useState(0);
+  const [selectedHourIndex, setSelectedHourIndex] = useState(
+    ls.getItem("selectedHourIndex")
+      ? parseInt(ls.getItem("selectedHourIndex"))
+      : 0
+  );
+  const [selectedMinuteIndex, setSelectedMinuteIndex] = useState(
+    ls.getItem("selectedMinuteIndex")
+      ? parseInt(ls.getItem("selectedMinuteIndex"))
+      : 0
+  );
 
   const handleHourScroll = (direction) => {
     setSelectedHourIndex((prev) =>
@@ -60,6 +72,7 @@ const CreateLive = (props) => {
         ? Math.max(prev - 1, 0)
         : Math.min(prev + 1, hours.length - 1)
     );
+    ls.setItem("selectedHourIndex", selectedHourIndex.toString());
   };
 
   const handleMinuteScroll = (direction) => {
@@ -68,6 +81,7 @@ const CreateLive = (props) => {
         ? Math.max(prev - 1, 0)
         : Math.min(prev + 1, minutes.length - 1)
     );
+    ls.setItem("selectedMinuteIndex", selectedMinuteIndex.toString());
   };
 
   const saveObject = async () => {
@@ -129,7 +143,8 @@ const CreateLive = (props) => {
       // Only save the object if it doesn't already exist or has changed
       if (
         !existingData ||
-        existingData.time !== hours[selectedHourIndex] + ":" + minutes[selectedMinuteIndex] ||
+        existingData.time !==
+          hours[selectedHourIndex] + ":" + minutes[selectedMinuteIndex] ||
         existingData.date !== value ||
         existingData.sub !== subIsSelected
       ) {
@@ -333,7 +348,13 @@ const CreateLive = (props) => {
         <div className="overlay">
           <div className="cal-all">
             <h1>React Calendar</h1>
-            <Calendar onChange={setValue} value={value} />
+            <Calendar
+              onChange={(newValue) => {
+                setValue(newValue); // Update state
+                ls.setItem("calendarValue", newValue); // Update localStorage
+              }}
+              value={value}
+            />
             <div className="cal-ut">
               <div className="cal-ut1" onClick={() => setOpenCal(false)}>
                 Cancel
