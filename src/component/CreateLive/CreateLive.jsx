@@ -86,7 +86,8 @@ const CreateLive = (props) => {
 
   const saveObject = async () => {
     const myObject = {
-      id: props.data.anime.info.id,
+      id: '',
+      animeId: props.data.anime.info.id,
       time: hours[selectedHourIndex] + ":" + minutes[selectedMinuteIndex],
       date: value?.toDateString(),
       sub: subIsSelected,

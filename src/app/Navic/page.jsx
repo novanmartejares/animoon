@@ -8,7 +8,7 @@ export default async function Navic({ children }) {
 
   // console.log(session.user)
 
-  const resp = await fetch(`https://hianimes.vercel.app/anime/random?page=1`, {
+  const resp = await fetch(`https://hianimes.animoon.me/anime/random?page=1`, {
     cache: "no-store",
   });
   const data = await resp.json();

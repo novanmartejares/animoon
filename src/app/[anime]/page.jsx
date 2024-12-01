@@ -2,8 +2,8 @@ import React from "react";
 import RecommendedTopTen from "../../layouts/RecommendedTopTen";
 
 async function fetchAnimeSchedulesAndValidate(idToCheck) {
-  const baseURL = "https://hianimes.vercel.app/anime/schedule?date=";
-  const infoURL = "https://hianimes.vercel.app/anime/info?id=";
+  const baseURL = "https://hianimes.animoon.me/anime/schedule?date=";
+  const infoURL = "https://hianimes.animoon.me/anime/info?id=";
   const today = new Date();
 
   for (let i = 0; i < 7; i++) {
@@ -98,7 +98,7 @@ export default async function Page({ params }) {
   // Fetch the homepage data
   let homepageData = [];
   try {
-    const homepageResponse = await fetch("https://hianimes.vercel.app/anime/home");
+    const homepageResponse = await fetch("https://hianimes.animoon.me/anime/home");
     if (homepageResponse.ok) {
       homepageData = await homepageResponse.json();
     } else {

@@ -5,9 +5,9 @@ import WatchAnime from "../../WatchAnime/WatchAnime";
 // Helper function to fetch data with force-cache and revalidate options
 
 async function fetchAnimeSchedulesAndValidate(idToCheck) {
-  const baseURL = "https://hianimes.vercel.app/anime/schedule?date=";
-  const infoURL = "https://hianimes.vercel.app/anime/info?id=";
-  const episURL = "https://hianimes.vercel.app/anime/episodes/";
+  const baseURL = "https://hianimes.animoon.me/anime/schedule?date=";
+  const infoURL = "https://hianimes.animoon.me/anime/info?id=";
+  const episURL = "https://hianimes.animoon.me/anime/episodes/";
   const today = new Date();
   const currentYear = today.getFullYear();
   const currentMonth = today.getMonth(); // 0-indexed for months
@@ -177,7 +177,7 @@ export default async function page({ params, searchParams }) {
   let dataj = [];
   try {
     const respStream = await fetch(
-      `https://vimalking.vercel.app/api/stream?id=${epId}`,
+      `https://vimal.animoon.me/api/stream?id=${epId}`,
       { cache: "no-store" } // No cache for real-time streaming data
     );
     dataj = await respStream.json();
@@ -190,7 +190,7 @@ export default async function page({ params, searchParams }) {
   let datau = [];
   try {
     const respS = await fetch(
-      `https://hianimes.vercel.app/anime/search/suggest?q=${params.id}`,
+      `https://hianimes.animoon.me/anime/search/suggest?q=${params.id}`,
       { cache: "force-cache" }
     );
     datau = await respS.json();
@@ -266,7 +266,7 @@ export default async function page({ params, searchParams }) {
   let subPri = [];
   try {
     let gogoMC = await fetch(
-      `https://hianimes.vercel.app/anime/episode-srcs?id=${epId}&serverId=4&category=sub`,
+      `https://hianimes.animoon.me/anime/episode-srcs?id=${epId}&serverId=4&category=sub`,
       {
         cache: "force-cache",
       }
@@ -280,7 +280,7 @@ export default async function page({ params, searchParams }) {
 
   // Fetch homepage data with force-cache and revalidation
   const datapp = await fetchDataFromAPI(
-    "https://hianimes.vercel.app/anime/home",
+    "https://hianimes.animoon.me/anime/home",
     3600 // Revalidate after 1 hour
   );
 

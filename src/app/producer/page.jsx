@@ -25,13 +25,13 @@ export default async function Producer({ searchParams }) {
   try {
     // Fetch producer-specific anime list and homepage data concurrently
     const [producerResp, homeResp] = await Promise.all([
-      fetch(`https://hianimes.vercel.app/anime/producer/${formattedProducerName}?page=${pageParam}`, {
+      fetch(`https://hianimes.animoon.me/anime/producer/${formattedProducerName}?page=${pageParam}`, {
         cache: "force-cache",
         headers: {
           "Cache-Control": `public, max-age=${cacheMaxAge}, stale-while-revalidate=${cacheMaxAge}`,
         },
       }),
-      fetch("https://hianimes.vercel.app/anime/home", {
+      fetch("https://hianimes.animoon.me/anime/home", {
         cache: "force-cache",
         headers: {
           "Cache-Control": `public, max-age=${cacheMaxAge}, stale-while-revalidate=${cacheMaxAge}`,

@@ -45,7 +45,7 @@ export default function useAnime() {
   }
   async function getEpiZoro(id) {
     const resp = await fetch(
-      `https://aniwatch-api-8fti.onrender.com/anime/episodes/${id}`
+      `https://hianimes.animoon.me/anime/episodes/${id}`
     );
     const data = await resp.json();
     console.log(data);
@@ -53,7 +53,7 @@ export default function useAnime() {
   }
   async function getSuggest(id) {
     const respu = await fetch(
-      `https://aniwatch-api-8fti.onrender.com/anime/search/suggest?q=${id}`,
+      `https://hianimes.animoon.me/anime/search/suggest?q=${id}`,
       { cache: "force-cache" }
     );
     const datau = await respu.json();
@@ -61,7 +61,7 @@ export default function useAnime() {
   }
   async function getZoroStream(episo, server, sub) {
     const resp = await fetch(
-      `https://aniwatch-api-8fti.onrender.com/anime/episode-srcs?id=${episo}&serverId=${server}&category=${sub}`,
+      `https://hianimes.animoon.me/anime/episode-srcs?id=${episo}&serverId=${server}&category=${sub}`,
       { cache: "force-cache" }
     );
     const data = await resp.json();
