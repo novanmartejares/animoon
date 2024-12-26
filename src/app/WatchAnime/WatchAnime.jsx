@@ -63,36 +63,50 @@ export default function WatchAnime(props) {
     const isDubSelected = ls.getItem("subordub") === "false";
     // Check if dub episodes exist in `props.datao`
     const hasDubEpisodes = props.datao?.anime?.info?.stats?.episodes?.dub > 0;
-  
+
     // Check if dub data exists in `props.dataStr`
     const hasDubData = props.dataStr?.dub?.length > 0;
-  
+
     // Return the initial state
     if (isDubSelected) {
       if (hasDubEpisodes && hasDubData) {
-        return false
+        return false;
       } else {
-        return true
+        return true;
       }
     } else {
-      return true
+      return true;
     }
   });
-  
+
   const [selectedServer, setSelectedServer] = useState(0);
   const [bhaiLink, setBhaiLink] = useState(() => {
     const isDubSelected = ls.getItem("subordub") === "false";
 
     // If props.dataj is empty, use props.dubPri for dub or props.subPri for sub
+    // Check if dub episodes exist in `props.datao`
+    const hasDubEpisodes = props.datao?.anime?.info?.stats?.episodes?.dub > 0;
+
+    // Check if dub data exists in `props.dataStr`
+    const hasDubData = props.dataStr?.dub?.length > 0;
 
     // Handle Dub selection
     if (isDubSelected) {
-      // Check if there's a dub available in props.dataj
-      const dubLink = props.dataStr.dub[0].url;
+      if (hasDubEpisodes && hasDubData) {
+        // Check if there's a dub available in props.dataj
+        const dubLink = props.dataStr.dub[0].url;
 
-      // If not found in dataj, fallback to gogoDub
-      if (dubLink) {
-        return dubLink;
+        // If not found in dataj, fallback to gogoDub
+        if (dubLink) {
+          return dubLink;
+        }
+      } else {
+        const subLink = props.dataStr.sub[0].url;
+
+        // If not found in dataj, fallback to gogoSub
+        if (subLink) {
+          return subLink;
+        }
       }
     }
     // Handle Sub/Raw selection
@@ -254,27 +268,25 @@ export default function WatchAnime(props) {
   }
 
   useEffect(() => {
-    setSubIsSelected(
-      () => {
-        const isDubSelected = ls.getItem("subordub") === "false";
-        // Check if dub episodes exist in `props.datao`
-        const hasDubEpisodes = props.datao?.anime?.info?.stats?.episodes?.dub > 0;
-      
-        // Check if dub data exists in `props.dataStr`
-        const hasDubData = props.dataStr?.dub?.length > 0;
-      
-        // Return the initial state
-        if (isDubSelected) {
-          if (hasDubEpisodes && hasDubData) {
-            return false
-          } else {
-            return true
-          }
+    setSubIsSelected(() => {
+      const isDubSelected = ls.getItem("subordub") === "false";
+      // Check if dub episodes exist in `props.datao`
+      const hasDubEpisodes = props.datao?.anime?.info?.stats?.episodes?.dub > 0;
+
+      // Check if dub data exists in `props.dataStr`
+      const hasDubData = props.dataStr?.dub?.length > 0;
+
+      // Return the initial state
+      if (isDubSelected) {
+        if (hasDubEpisodes && hasDubData) {
+          return false;
         } else {
-          return true
+          return true;
         }
+      } else {
+        return true;
       }
-    );
+    });
   }, [props.datao]);
 
   let episodeList = props.dataj.results?.streamingInfo.some(
@@ -387,15 +399,30 @@ export default function WatchAnime(props) {
           const isDubSelected = ls.getItem("subordub") === "false";
 
           // If props.dataj is empty, use props.dubPri for dub or props.subPri for sub
+          // Check if dub episodes exist in `props.datao`
+          const hasDubEpisodes =
+            props.datao?.anime?.info?.stats?.episodes?.dub > 0;
+
+          // Check if dub data exists in `props.dataStr`
+          const hasDubData = props.dataStr?.dub?.length > 0;
 
           // Handle Dub selection
           if (isDubSelected) {
-            // Check if there's a dub available in props.dataj
-            const dubLink = props.dataStr.dub[0].url;
+            if (hasDubEpisodes && hasDubData) {
+              // Check if there's a dub available in props.dataj
+              const dubLink = props.dataStr.dub[0].url;
 
-            // If not found in dataj, fallback to gogoDub
-            if (dubLink) {
-              return dubLink;
+              // If not found in dataj, fallback to gogoDub
+              if (dubLink) {
+                return dubLink;
+              }
+            } else {
+              const subLink = props.dataStr.sub[0].url;
+
+              // If not found in dataj, fallback to gogoSub
+              if (subLink) {
+                return subLink;
+              }
             }
           }
           // Handle Sub/Raw selection
@@ -453,6 +480,10 @@ export default function WatchAnime(props) {
       }
     }
   }, [trutie]);
+
+  // Retrieve the value from local storage
+  const valu = ls.getItem("vc_129285_time");
+  console.log("Value:", valu);
 
   return (
     <>
@@ -621,159 +652,166 @@ export default function WatchAnime(props) {
                         <div className=" flex flex-col serves">
                           <>
                             <>
-                              <div
-                                className={`serveSub ${
-                                  props.dataStr?.dub?.length > 0
-                                    ? "borderDot"
-                                    : ""
-                                } flex gap-5 items-center`}
-                              >
-                                <div className="subb flex gap-1 items-center">
-                                  <div>SUB</div>
-                                  <div>:</div>
-                                </div>
-                                <div className="flex flex-wrap gap-2">
-                                  <div
-                                    className={`subDub ${
-                                      subIsSelected
-                                        ? selectedServer === 0
-                                          ? "selected"
-                                          : ""
-                                        : ""
-                                    }`}
-                                    onClick={
-                                      () =>
-                                        setSelectedServer(0) &
-                                        setSubIsSelected(true) &
-                                        setServerName("Vidstreaming") &
-                                        setBhaiLink(props.dataStr.sub[0].url)
-                                      // setQuality("") &
-                                      // setSubtitles(
-                                      //   props.subPrio ||
-                                      //     no.value.decryptionResult.source
-                                      //       .tracks
-                                      // ) &
-                                      // // setIntrod(
-                                      //   no.value.decryptionResult.source
-                                      //     .intro
-                                      // ) &
-                                      // setOutrod(
-                                      //   no.value.decryptionResult.source
-                                      //     .outro
-                                      // )
-                                    }
-                                  >
-                                    Vidstreaming
+                              {props.dataStr?.sub?.length > 0 ? (
+                                <div
+                                  className={`serveSub ${
+                                    props.dataStr?.dub?.length > 0
+                                      ? "borderDot"
+                                      : ""
+                                  } flex gap-5 items-center`}
+                                >
+                                  <div className="subb flex gap-1 items-center">
+                                    <div>SUB</div>
+                                    <div>:</div>
                                   </div>
-                                  <div
-                                    className={`subDub ${
-                                      subIsSelected
-                                        ? selectedServer === 1
-                                          ? "selected"
+                                  <div className="flex flex-wrap gap-2">
+                                    <div
+                                      className={`subDub ${
+                                        subIsSelected
+                                          ? selectedServer === 0
+                                            ? "selected"
+                                            : ""
                                           : ""
-                                        : ""
-                                    }`}
-                                    onClick={
-                                      () =>
-                                        setSelectedServer(1) &
-                                        setSubIsSelected(true) &
-                                        setServerName("Vidcloud") &
-                                        setBhaiLink(props.dataStr.sub[1].url)
-                                      // setQuality("") &
-                                      // setSubtitles(
-                                      //   props.subPrio ||
-                                      //     no.value.decryptionResult.source
-                                      //       .tracks
-                                      // ) &
-                                      // // setIntrod(
-                                      //   no.value.decryptionResult.source
-                                      //     .intro
-                                      // ) &
-                                      // setOutrod(
-                                      //   no.value.decryptionResult.source
-                                      //     .outro
-                                      // )
-                                    }
-                                  >
-                                    Vidcloud
-                                  </div>
-                                </div>
-                              </div>
-
-                              <div
-                                className={`serveSub flex gap-5 items-center`}
-                              >
-                                <div className="subb flex gap-1 items-center">
-                                  <div>DUB</div>
-                                  <div>:</div>
-                                </div>
-                                <div className="flex flex-wrap gap-2">
-                                  <div
-                                    className={`subDub ${
-                                      !subIsSelected
-                                        ? selectedServer === 0
-                                          ? "selected"
+                                      }`}
+                                      onClick={
+                                        () =>
+                                          setSelectedServer(0) &
+                                          setSubIsSelected(true) &
+                                          setServerName("Vidstreaming") &
+                                          setBhaiLink(props.dataStr.sub[0].url)
+                                        // setQuality("") &
+                                        // setSubtitles(
+                                        //   props.subPrio ||
+                                        //     no.value.decryptionResult.source
+                                        //       .tracks
+                                        // ) &
+                                        // // setIntrod(
+                                        //   no.value.decryptionResult.source
+                                        //     .intro
+                                        // ) &
+                                        // setOutrod(
+                                        //   no.value.decryptionResult.source
+                                        //     .outro
+                                        // )
+                                      }
+                                    >
+                                      Vidstreaming
+                                    </div>
+                                    <div
+                                      className={`subDub ${
+                                        subIsSelected
+                                          ? selectedServer === 1
+                                            ? "selected"
+                                            : ""
                                           : ""
-                                        : ""
-                                    }`}
-                                    onClick={
-                                      () =>
-                                        setSelectedServer(0) &
-                                        setSubIsSelected(false) &
-                                        setServerName("Vidstreaming") &
-                                        setBhaiLink(props.dataStr.dub[0].url)
-                                      // setQuality("") &
-                                      // setSubtitles(
-                                      //   props.subPrio ||
-                                      //     no.value.decryptionResult.source
-                                      //       .tracks
-                                      // ) &
-                                      // // setIntrod(
-                                      //   no.value.decryptionResult.source
-                                      //     .intro
-                                      // ) &
-                                      // setOutrod(
-                                      //   no.value.decryptionResult.source
-                                      //     .outro
-                                      // )
-                                    }
-                                  >
-                                    Vidstreaming
-                                  </div>
-                                  <div
-                                    className={`subDub ${
-                                      !subIsSelected
-                                        ? selectedServer === 1
-                                          ? "selected"
-                                          : ""
-                                        : ""
-                                    }`}
-                                    onClick={
-                                      () =>
-                                        setSelectedServer(1) &
-                                        setSubIsSelected(false) &
-                                        setServerName("Vidcloud") &
-                                        setBhaiLink(props.dataStr.dub[1].url)
-                                      // setQuality("") &
-                                      // setSubtitles(
-                                      //   props.subPrio ||
-                                      //     no.value.decryptionResult.source
-                                      //       .tracks
-                                      // ) &
-                                      // // setIntrod(
-                                      //   no.value.decryptionResult.source
-                                      //     .intro
-                                      // ) &
-                                      // setOutrod(
-                                      //   no.value.decryptionResult.source
-                                      //     .outro
-                                      // )
-                                    }
-                                  >
-                                    Vidcloud
+                                      }`}
+                                      onClick={
+                                        () =>
+                                          setSelectedServer(1) &
+                                          setSubIsSelected(true) &
+                                          setServerName("Vidcloud") &
+                                          setBhaiLink(props.dataStr.sub[1].url)
+                                        // setQuality("") &
+                                        // setSubtitles(
+                                        //   props.subPrio ||
+                                        //     no.value.decryptionResult.source
+                                        //       .tracks
+                                        // ) &
+                                        // // setIntrod(
+                                        //   no.value.decryptionResult.source
+                                        //     .intro
+                                        // ) &
+                                        // setOutrod(
+                                        //   no.value.decryptionResult.source
+                                        //     .outro
+                                        // )
+                                      }
+                                    >
+                                      Vidcloud
+                                    </div>
                                   </div>
                                 </div>
-                              </div>
+                              ) : (
+                                ""
+                              )}
+                              {props.dataStr?.dub?.length > 0 ? (
+                                <div
+                                  className={`serveSub flex gap-5 items-center`}
+                                >
+                                  <div className="subb flex gap-1 items-center">
+                                    <div>DUB</div>
+                                    <div>:</div>
+                                  </div>
+                                  <div className="flex flex-wrap gap-2">
+                                    <div
+                                      className={`subDub ${
+                                        !subIsSelected
+                                          ? selectedServer === 0
+                                            ? "selected"
+                                            : ""
+                                          : ""
+                                      }`}
+                                      onClick={
+                                        () =>
+                                          setSelectedServer(0) &
+                                          setSubIsSelected(false) &
+                                          setServerName("Vidstreaming") &
+                                          setBhaiLink(props.dataStr.dub[0].url)
+                                        // setQuality("") &
+                                        // setSubtitles(
+                                        //   props.subPrio ||
+                                        //     no.value.decryptionResult.source
+                                        //       .tracks
+                                        // ) &
+                                        // // setIntrod(
+                                        //   no.value.decryptionResult.source
+                                        //     .intro
+                                        // ) &
+                                        // setOutrod(
+                                        //   no.value.decryptionResult.source
+                                        //     .outro
+                                        // )
+                                      }
+                                    >
+                                      Vidstreaming
+                                    </div>
+                                    <div
+                                      className={`subDub ${
+                                        !subIsSelected
+                                          ? selectedServer === 1
+                                            ? "selected"
+                                            : ""
+                                          : ""
+                                      }`}
+                                      onClick={
+                                        () =>
+                                          setSelectedServer(1) &
+                                          setSubIsSelected(false) &
+                                          setServerName("Vidcloud") &
+                                          setBhaiLink(props.dataStr.dub[1].url)
+                                        // setQuality("") &
+                                        // setSubtitles(
+                                        //   props.subPrio ||
+                                        //     no.value.decryptionResult.source
+                                        //       .tracks
+                                        // ) &
+                                        // // setIntrod(
+                                        //   no.value.decryptionResult.source
+                                        //     .intro
+                                        // ) &
+                                        // setOutrod(
+                                        //   no.value.decryptionResult.source
+                                        //     .outro
+                                        // )
+                                      }
+                                    >
+                                      Vidcloud
+                                    </div>
+                                  </div>
+                                </div>
+                              ) : (
+                                ""
+                              )}
                             </>
                           </>
                         </div>
