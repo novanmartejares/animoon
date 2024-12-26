@@ -1,113 +1,8 @@
-import React, { cache } from "react";
+import React from "react";
 import WatchAnime from "../../WatchAnime/WatchAnime";
 import axios from "axios";
 import * as cheerio from "cheerio";
 // import { currentUser } from "@clerk/nextjs/server";
-
-// Helper function to fetch data with force-cache and revalidate options
-
-async function fetchAnimeSchedulesAndValidate(idToCheck) {
-  const baseURL = "https://hianimes.animoon.me/anime/schedule?date=";
-  const infoURL = "https://hianimes.animoon.me/anime/info?id=";
-  const episURL = "https://hianimes.animoon.me/anime/episodes/";
-  const today = new Date();
-  const currentYear = today.getFullYear();
-  const currentMonth = today.getMonth(); // 0-indexed for months
-
-  // Function to get the number of days in a given month
-  const getDaysInMonth = (year, month) =>
-    new Date(year, month + 1, 0).getDate();
-
-  const daysInMonth = getDaysInMonth(currentYear, currentMonth);
-
-  // Iterate over all days in the current month
-  for (let day = 1; day <= daysInMonth; day++) {
-    const currentDate = new Date(currentYear, currentMonth, day);
-    const formattedDate = currentDate.toISOString().split("T")[0];
-
-    try {
-      // Fetch the schedule for the current date
-      const response = await fetch(`${baseURL}${formattedDate}`, {
-        cache: "force-cache",
-      });
-      if (!response.ok) {
-        console.error(`Failed to fetch schedule for ${formattedDate}`);
-        continue;
-      }
-
-      const scheduleData = await response.json();
-
-      // Check if the anime ID exists in the schedule
-      if (scheduleData?.scheduledAnimes) {
-        for (const anime of scheduleData.scheduledAnimes) {
-          if (anime.id === idToCheck) {
-            const now = new Date();
-            const [hour, minute] = anime.time.split(":").map(Number);
-            const scheduledTime = new Date(currentYear, currentMonth, day);
-            scheduledTime.setHours(hour, minute);
-
-            // Check if the current time exceeds the scheduled time
-            if (now >= scheduledTime) {
-              const revalidatedResponse = await fetch(
-                `${infoURL}${idToCheck}`,
-                {
-                  cache: "no-cache",
-                }
-              );
-              if (revalidatedResponse.ok) {
-                const animeInfo = await revalidatedResponse.json();
-
-                // Fetch episodes for the anime
-                const episodesResponse = await fetch(`${episURL}${idToCheck}`, {
-                  cache: "no-cache",
-                });
-                const episodes = episodesResponse.ok
-                  ? await episodesResponse.json()
-                  : null;
-
-                return {
-                  animeInfo,
-                  episodes,
-                };
-              }
-            }
-          }
-        }
-      }
-    } catch (error) {
-      console.error(
-        `Error while processing schedule for ${formattedDate}: ${error.message}`
-      );
-    }
-  }
-
-  // Fallback to fetching the info and episodes directly
-  try {
-    const fallbackResponse = await fetch(`${infoURL}${idToCheck}`, {
-      cache: "force-cache",
-    });
-    if (fallbackResponse.ok) {
-      const animeInfo = await fallbackResponse.json();
-
-      // Fetch episodes for the anime
-      const episodesResponse = await fetch(`${episURL}${idToCheck}`, {
-        cache: "force-cache",
-      });
-      const episodes = episodesResponse.ok
-        ? await episodesResponse.json()
-        : null;
-
-      return {
-        animeInfo,
-        episodes,
-      };
-    }
-  } catch (error) {
-    console.error(`Error fetching anime info or episodes: ${error.message}`);
-  }
-
-  return null;
-}
 
 async function fetchDataFromAPI(url, revalidate) {
   try {
@@ -125,8 +20,11 @@ async function fetchDataFromAPI(url, revalidate) {
 // Generate metadata dynamically based on the anime info
 export async function generateMetadata({ params }) {
   try {
-    const dat = await fetchAnimeSchedulesAndValidate(params.id); // Revalidate after 1 hour
-    const daty = dat.animeInfo;
+    const datao = await fetchDataFromAPI(
+      `https://hianimes.animoon.me/anime/info?id=${params.id}`,
+      18000 // Revalidate after 5 hours
+    );
+    const daty = datao;
 
     return {
       title: `Watch ${daty.anime.info.name} English Sub/Dub online free on Animoon.me`,
@@ -149,11 +47,6 @@ export default async function page({ params, searchParams }) {
 
   const idToCheck = params.id;
 
-  // Fetch the anime details
-  const revalidatedData = await fetchAnimeSchedulesAndValidate(idToCheck);
-  if (!revalidatedData) {
-    console.error(`Failed to fetch or validate data for ID: ${idToCheck}`);
-  }
 
   // Fetch anime info with force-cache and revalidation
   const datao = await fetchDataFromAPI(
