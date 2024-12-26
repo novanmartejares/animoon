@@ -1,0 +1,152 @@
+.foundati {
+  margin-top: 70px;
+}
+.video-player {
+  width: 70%;
+  background: red;
+}
+.hls-container {
+  min-width: 100%;
+  aspect-ratio: 16/9;
+  background: #fff;
+}
+.ott-2 {
+  font-size: 14px;
+  color: rgb(136, 129, 129);
+}
+.opt-2 {
+  font-size: 14px;
+  color: rgb(153, 146, 146);
+}
+.five-str {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 14px;
+}
+.bit-co {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 70%;
+}
+.biit-1 {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.biit-img {
+  height: 40px;
+  width: 40px;
+  border-radius: 50%;
+}
+.biit-more {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+.biit-view {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--theme);
+}
+.biit-time {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.kenpa-1 {
+  display: flex;
+  align-items: center;
+  width: 70%;
+  gap: 15px;
+  background: #3d3c3c;
+}
+.kenpa-img {
+  width: 151px;
+  min-width: 150px;
+}
+.kenpa-sts {
+  display: flex;
+  align-items: center;
+  font-size: 12px;
+  gap: 1px;
+}
+.kenpa-name {
+  font-size: 25px;
+  color: #fff;
+  font-weight: 700;
+}
+.kenpa-sts-1 {
+  padding: 1px 5px;
+  color: black;
+  background: #fff;
+  border-top-left-radius: 5px;
+  border-bottom-left-radius: 5px;
+}
+.kenpa-sts-2 {
+  padding: 1px 5px;
+  color: black;
+  background: var(--theme);
+}
+.kenpa-sts-3 {
+  padding: 1px 5px;
+  color: black;
+  background: rgb(245, 180, 245);
+}
+.kenpa-sts-4 {
+  padding: 1px 5px;
+  color: black;
+  background: rgb(151, 235, 238);
+}
+
+.kenpa-sts-6 {
+  padding: 1px 5px;
+  font-size: 14px;
+  font-weight: 300;
+}
+
+.spec {
+  margin-left: 5px;
+}
+
+.kenpa-sts-8 {
+  padding: 1px 5px;
+  font-size: 14px;
+  font-weight: 300;
+}
+
+.decro {
+  font-size: 13px;
+  color: #c9c0c0;
+  font-weight: 300;
+}
+
+.fin-buut {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  color: black;
+  background: #fff;
+  font-size: 14px;
+  padding: 2px 4px;
+  border-radius: 10px;
+  padding-left: 8px;
+  width: 112px;
+}
+.kenpa-soul {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 15px;
+}
+.user-N {
+  font-size: 20px;
+  font-weight: 600;
+}
+.time-N {
+  font-size: 14px;
+  color: #c9c0c0;
+  font-weight: 300;
+}

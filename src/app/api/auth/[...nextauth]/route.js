@@ -1,6 +1,6 @@
 import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
-import { db } from "@/lib/firebase";
+import { db } from "../../../../../firebase";
 import { query, collection, where, getDocs } from "firebase/firestore";
 
 const authOptions = {

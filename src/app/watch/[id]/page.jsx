@@ -1,5 +1,7 @@
 import React, { cache } from "react";
 import WatchAnime from "../../WatchAnime/WatchAnime";
+import axios from "axios";
+import * as cheerio from "cheerio";
 // import { currentUser } from "@clerk/nextjs/server";
 
 // Helper function to fetch data with force-cache and revalidate options
@@ -56,12 +58,9 @@ async function fetchAnimeSchedulesAndValidate(idToCheck) {
                 const animeInfo = await revalidatedResponse.json();
 
                 // Fetch episodes for the anime
-                const episodesResponse = await fetch(
-                  `${episURL}${idToCheck}`,
-                  {
-                    cache: "no-cache",
-                  }
-                );
+                const episodesResponse = await fetch(`${episURL}${idToCheck}`, {
+                  cache: "no-cache",
+                });
                 const episodes = episodesResponse.ok
                   ? await episodesResponse.json()
                   : null;
@@ -110,7 +109,6 @@ async function fetchAnimeSchedulesAndValidate(idToCheck) {
   return null;
 }
 
-
 async function fetchDataFromAPI(url, revalidate) {
   try {
     const response = await fetch(url, {
@@ -158,10 +156,18 @@ export default async function page({ params, searchParams }) {
   }
 
   // Fetch anime info with force-cache and revalidation
-  const datao = revalidatedData.animeInfo;
+  const datao = await fetchDataFromAPI(
+    `https://hianimes.animoon.me/anime/info?id=${params.id}`,
+    18000 // Revalidate after 5 hours
+  );
+  console.log(datao);
 
   // Fetch episodes with force-cache and revalidation
-  const data = revalidatedData.episodes;
+  const data = await fetchDataFromAPI(
+    `https://hianimes.animoon.me/anime/episodes/${params.id}`,
+    3600 // Revalidate after 1 hour
+  );
+  console.log(data);
 
   // Determine the episode ID
   const epId = episodeIdParam || data?.episodes[0]?.episodeId;
@@ -173,39 +179,6 @@ export default async function page({ params, searchParams }) {
     episodeNumber = currentEpisode ? currentEpisode.number : 0;
   }
 
-  // Fetch stream data (real-time, no caching)
-  let dataj = [];
-  try {
-    const respStream = await fetch(
-      `https://vimal.animoon.me/api/stream?id=${epId}`,
-      { cache: "no-store" } // No cache for real-time streaming data
-    );
-    dataj = await respStream.json();
-  } catch (error) {
-    console.error("Error fetching stream data: ", error);
-    dataj = [];
-  }
-  
-
-  let datau = [];
-  try {
-    const respS = await fetch(
-      `https://hianimes.animoon.me/anime/search/suggest?q=${params.id}`,
-      { cache: "force-cache" }
-    );
-    datau = await respS.json();
-  } catch (error) {
-    datau = [];
-  }
-
-  let jname = "";
-  datau &&
-    datau.suggestions &&
-    datau?.suggestions?.map((i) => {
-      if (i.id === params.id) {
-        jname = i.jname;
-      }
-    });
   let epiod = 0;
   let i = 0;
   for (i > 0; i < data.episodes.length; i++) {
@@ -213,67 +186,173 @@ export default async function page({ params, searchParams }) {
       epiod = data.episodes[i].number;
     }
   }
-  let gogoEP = [];
-  try {
-    const gogoTP = await fetch(
-      `https://newgogoking.vercel.app/${datao?.anime?.info?.name}?page=1`,
-      { cache: "force-cache" }
-    );
-    gogoEP = await gogoTP.json();
-  } catch (error) {
-    gogoEP = [];
-  }
 
-  const caseEP = gogoEP?.results?.length > 0 ? gogoEP.results[0]?.id : "";
-  let gogoId =
-    "/" +
-    (
-      caseEP.replace(":", "").toLocaleLowerCase().replaceAll(" ", "-") +
-      `-dub-episode-${epiod}`
-    ).replace(/[^a-zA-Z0-9\-]/g, "");
-  let caseId =
-    "/" +
-    (
-      caseEP.replace(":", "").toLocaleLowerCase().replaceAll(" ", "-") +
-      `-episode-${epiod}`
-    ).replace(/[^a-zA-Z0-9\-]/g, "");
+  // Fetch stream data (real-time, no caching)
+  let dataj = [];
+  // try {
+  //   const respStream = await fetch(
+  //     `https://vimal.animoon.me/api/stream?id=${epId}`,
+  //     { cache: "no-store" } // No cache for real-time streaming data
+  //   );
+  //   dataj = await respStream.json();
+  // } catch (error) {
+  //   console.error("Error fetching stream data: ", error);
+  //   dataj = [];
+  // }
+
+  const dataStr = { sub: [], dub: [] }; // Separate arrays for sub and dub URLs
+
+  try {
+    // Step 1: Fetch the server list for the episode
+    const episodeId = epis ? epis : data.episodes[0].episodeId.split("ep=")[1];
+    const serversResponse = await axios.get(
+      `https://hianime.to/ajax/v2/episode/servers?episodeId=${episodeId}`
+    );
+    const serversData = serversResponse.data;
+  
+    if (serversData?.html) {
+      const $ = cheerio.load(serversData.html);
+  
+      // Extract SUB and DUB server data
+      ["sub", "dub"].forEach((type) => {
+        $(`div.ps_-block-sub.servers-${type} div.server-item`).each((_, element) => {
+          const dataId = $(element).attr("data-id");
+          if (dataId) {
+            dataStr[type].push({ id: dataId, url: null }); // Initialize URL as null
+          }
+        });
+      });
+  
+      // Step 2: Fetch sources for all `data-id`s in parallel
+      for (const type of ["sub", "dub"]) {
+        await Promise.all(
+          dataStr[type].map(async (server) => {
+            try {
+              const sourcesResponse = await axios.get(
+                `https://hianime.to/ajax/v2/episode/sources?id=${server.id}`
+              );
+              const sourcesData = sourcesResponse.data;
+  
+              if (sourcesData?.link) {
+                const match = sourcesData.link.match(/e-1\/(.*?)\?k=1/);
+                if (match && match[1]) {
+                  const extractedText = match[1];
+                  server.url = `https://ea.bunniescdn.online/embed-2/e-1/${extractedText}?k=1&ep_id=${server.id}&autostart=true`;
+                }
+              }
+            } catch (err) {
+              console.error(`Error fetching sources for server ID ${server.id}:`, err.message);
+            }
+          })
+        );
+      }
+  
+      console.log("Extracted EA URLs:", dataStr);
+    } else {
+      console.error("Invalid servers response or missing HTML.");
+    }
+  } catch (error) {
+    console.error("Error:", error.message);
+  }
+  
+
+  let datau = [];
+  // try {
+  //   const respS = await fetch(
+  //     `https://hianimes.animoon.me/anime/search/suggest?q=${params.id}`,
+  //     { cache: "force-cache" }
+  //   );
+  //   datau = await respS.json();
+  // } catch (error) {
+  //   datau = [];
+  // }
+
+  let jname = "";
+  // datau &&
+  //   datau.suggestions &&
+  //   datau?.suggestions?.map((i) => {
+  //     if (i.id === params.id) {
+  //       jname = i.jname;
+  //     }
+  //   });
+
+  let gogoEP = [];
+  // try {
+  //   const gogoTP = await fetch(
+  //     `https://newgogoking.vercel.app/${datao?.anime?.info?.name}?page=1`,
+  //     { cache: "force-cache" }
+  //   );
+  //   gogoEP = await gogoTP.json();
+  // } catch (error) {
+  //   gogoEP = [];
+  // }
+
+  // const caseEP = gogoEP?.results?.length > 0 ? gogoEP.results[0]?.id : "";
+  // let gogoId =
+  //   "/" +
+  //   (
+  //     caseEP.replace(":", "").toLocaleLowerCase().replaceAll(" ", "-") +
+  //     `-dub-episode-${epiod}`
+  //   ).replace(/[^a-zA-Z0-9\-]/g, "");
+  // let caseId =
+  //   "/" +
+  //   (
+  //     caseEP.replace(":", "").toLocaleLowerCase().replaceAll(" ", "-") +
+  //     `-episode-${epiod}`
+  //   ).replace(/[^a-zA-Z0-9\-]/g, "");
   // Example data from your `datao` object
 
   // Example gogoData (with sub and dub information)
-
   let gogoSub = [];
-  try {
-    let gogoSC = await fetch(`https://newgogoking.vercel.app/watch/${caseId}`, {
-      cache: "force-cache",
-    });
-    gogoSub = await gogoSC.json();
-  } catch (error) {
-    gogoSub = [];
-  }
-  console.log(gogoSub);
+  // try {
+  //   let gogoSC = await fetch(`https://newgogoking.vercel.app/watch/${caseId}`, {
+  //     cache: "force-cache",
+  //   });
+  //   gogoSub = await gogoSC.json();
+  // } catch (error) {
+  //   gogoSub = [];
+  // }
+  // console.log(gogoSub);
 
   let gogoDub = [];
-  try {
-    let gogoSC = await fetch(`https://newgogoking.vercel.app/watch/${gogoId}`, {
-      cache: "force-cache",
-    });
-    gogoDub = await gogoSC.json();
-  } catch (error) {
-    gogoDub = [];
-  }
-  console.log("sub", gogoSub);
+  // try {
+  //   let gogoSC = await fetch(`https://newgogoking.vercel.app/watch/${gogoId}`, {
+  //     cache: "force-cache",
+  //   });
+  //   gogoDub = await gogoSC.json();
+  // } catch (error) {
+  //   gogoDub = [];
+  // }
+  // console.log("sub", gogoSub);
 
   let subPri = [];
-  try {
-    let gogoMC = await fetch(
-      `https://hianimes.animoon.me/anime/episode-srcs?id=${epId}&serverId=4&category=sub`,
-      {
-        cache: "force-cache",
-      }
-    );
-    subPri = await gogoMC.json();
-  } catch (error) {
-    subPri = [];
+  // try {
+  //   let gogoMC = await fetch(
+  //     `https://hianimes.animoon.me/anime/episode-srcs?id=${epId}&serverId=4&category=sub`,
+  //     {
+  //       cache: "force-cache",
+  //     }
+  //   );
+  //   subPri = await gogoMC.json();
+  // } catch (error) {
+  //   console.error("Error fetching subtitle data:", error);
+  //   subPri = [];
+  // }
+
+  // Check if subPri is empty or null before making the second fetch
+  if (!subPri || subPri.length === 0) {
+    // try {
+    //   let gogoMC = await fetch(
+    //     `https://hianimes.animoon.me/anime/episode-srcs?id=${epId}&serverId=4&category=raw`,
+    //     {
+    //       cache: "force-cache",
+    //     }
+    //   );
+    //   subPri = await gogoMC.json();
+    // } catch (error) {
+    //   console.error("Error fetching raw data:", error);
+    //   subPri = [];
+    // }
   }
 
   const subPrio = subPri && subPri.tracks ? subPri.tracks : "";
@@ -295,6 +374,7 @@ export default async function page({ params, searchParams }) {
         data={data}
         anId={params.id}
         subPrio={subPrio}
+        dataStr={dataStr}
         datao={datao}
         epiod={episodeNumber}
         epId={epId}

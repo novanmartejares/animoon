@@ -34,7 +34,7 @@ export async function GET(req, { params }) {
   const key = `message:${id}`; // Cache key will be unique for each id
 
   // Retrieve the cached object
-  const cachedObject = cache.get(key) || 'No cached data';
+  const cachedObject = cache.get(key);
 
   return new Response(JSON.stringify({ data: cachedObject }), {
     status: 200,

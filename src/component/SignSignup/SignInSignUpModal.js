@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 import { signIn, signOut, useSession } from "next-auth/react";
-import { auth, db } from "@/lib/firebase";
+import { auth, db } from "../../../firebase";
 import {
   createUserWithEmailAndPassword,
   sendPasswordResetEmail,

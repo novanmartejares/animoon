@@ -163,7 +163,7 @@ function ArtPlayer(props, { ...rest }) {
     const art = new Artplayer({
       title: "hahahaha",
       container: ".artplayer-app",
-      url: finalUrl,
+      url: "https://tt57.biananset.net/_v7/1cd5a3f0f1adbaa004882549fe75947b19a57c07c2aac9328f009cf028a2467a4570a3aac1b64dcb1d32c4a57b26eca4a83754d381e42cec177a1e45892fbb775b8a4883f73c4d8e48b8738ca8eeb43fb0906ddd3535808609ba3d5be0f31c3c302cd5587da0187d3e056843fc6312388f8e51ff2cb72f464cb0f868d29dab03/master.m3u8",
       type: "m3u8",
       quality: qualities?.length > 0 ? qualities : [],
       plugins: [

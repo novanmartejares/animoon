@@ -1,6 +1,6 @@
 "use client";
 import Link from "next/link";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./createLive.css";
 import {
   FaCircle,
@@ -13,8 +13,20 @@ import { FaCircleCheck } from "react-icons/fa6";
 
 import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
+import { useSession } from "next-auth/react";
+import {
+  collection,
+  doc,
+  setDoc,
+  getDoc,
+  serverTimestamp,
+} from "firebase/firestore"; // Import Firestore instance and methods
+import { db } from "../../../firebase"; // Import Firestore instance
 
 const CreateLive = (props) => {
+  const { data: session } = useSession();
+
+  // Helper for localStorage wrapper
   const localStorageWrapper = () => {
     if (typeof window !== "undefined" && window.localStorage) {
       return {
@@ -24,7 +36,6 @@ const CreateLive = (props) => {
         clear: () => localStorage.clear(),
       };
     } else {
-      // Handle the case when localStorage is not available
       return {
         getItem: () => null,
         setItem: () => {},
@@ -34,17 +45,26 @@ const CreateLive = (props) => {
     }
   };
 
-  // Usage
   const ls = localStorageWrapper();
   const [subIsSelected, setSubIsSelected] = useState(true);
   const [byTime, setByTime] = useState(true);
   const [openCal, setOpenCal] = useState(false);
   const [newTime, setNewTime] = useState(false);
-  const [cachedData, setCachedData] = useState(null); // State to store cached data
+  const [cachedData, setCachedData] = useState(null);
+  const [userData, setUserData] = useState(
+    ls.getItem("user-animoon")
+      ? JSON.parse(ls.getItem("user-animoon")).user
+      : null
+  );
+  const [roomName, setRoomName] = useState(
+    ls.getItem("roomName")
+      ? ls.getItem("roomName")
+      : `Watch ${props.data.anime.info.name} together`
+  );
 
   const [value, setValue] = useState(
     ls.getItem("calendarValue")
-      ? new Date(ls.getItem("calendarValue")) 
+      ? new Date(ls.getItem("calendarValue"))
       : new Date()
   );
 
@@ -86,53 +106,54 @@ const CreateLive = (props) => {
 
   const saveObject = async () => {
     const myObject = {
-      id: '',
-      animeId: props.data.anime.info.id,
-      time: hours[selectedHourIndex] + ":" + minutes[selectedMinuteIndex],
+      id: session
+        ? `${session?.user.id || userData?.id}`
+        : `guest-${Date.now()}`,
+      poster: props.data.anime.info.poster || "defaultPoster.jpg",
+      episode: "Episode 1",
+      name: props.data.anime.info.name,
+      animeId: props?.data?.anime?.info?.id || "unknownAnimeId",
+      userName: session?.user.username || userData?.username || "Anonymous",
+      randomImage:
+        session?.user.randomImage ||
+        userData?.randomImage ||
+        "defaultPoster.jpg",
+      createTime: serverTimestamp(),
+      time: `${hours[selectedHourIndex]}:${minutes[selectedMinuteIndex]}`,
       date: value?.toDateString(),
-      sub: subIsSelected,
+      sub: subIsSelected || false,
+      selectedByTime: byTime,
+      roomName: roomName,
     };
 
     try {
-      const response = await fetch(
-        `/api/createLive/${props.data.anime.info.id}`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ data: myObject }),
-        }
-      );
-
-      if (!response.ok) {
-        throw new Error("Failed to save object");
-      }
-
-      const result = await response.json();
-      console.log(result); // { success: true }
+      const docRef = doc(collection(db, "liveRooms"), myObject.id);
+      await setDoc(docRef, myObject, { merge: true });
+      console.log("Object saved successfully to Firestore:", myObject);
     } catch (error) {
-      console.error("Error:", error);
+      console.error("Error saving object to Firestore:", error);
     }
   };
 
   const fetchCachedData = async () => {
     try {
-      const response = await fetch(
-        `/api/createLive/${props.data.anime.info.id}`,
-        {
-          method: "GET",
-        }
+      const docRef = doc(
+        collection(db, "liveRooms"),
+        session?.user.id || userData?.id
       );
+      const docSnap = await getDoc(docRef);
 
-      if (!response.ok) {
-        throw new Error("Failed to fetch cached data");
+      if (docSnap.exists()) {
+        const data = docSnap.data();
+        setCachedData(data);
+        console.log("Cached data:", data);
+        return data;
+      } else {
+        console.log("No cached data found.");
+        return null;
       }
-
-      const data = await response.json();
-      setCachedData(data.data); // Set the cached data
-      console.log(data); // { data: {...} } or { data: 'No cached data' }
-      return data.data;
     } catch (error) {
-      console.error("Error:", error);
+      console.error("Error fetching cached data from Firestore:", error);
       return null;
     }
   };
@@ -141,16 +162,9 @@ const CreateLive = (props) => {
     const checkAndSaveObject = async () => {
       const existingData = await fetchCachedData();
 
-      // Only save the object if it doesn't already exist or has changed
-      if (
-        !existingData ||
-        existingData.time !==
-          hours[selectedHourIndex] + ":" + minutes[selectedMinuteIndex] ||
-        existingData.date !== value ||
-        existingData.sub !== subIsSelected
-      ) {
-        saveObject();
-      }
+      // if (!existingData) {
+      saveObject();
+      // }
     };
 
     checkAndSaveObject();
@@ -160,7 +174,13 @@ const CreateLive = (props) => {
     selectedMinuteIndex,
     subIsSelected,
     props.data.anime.info.id,
-  ]); // Dependency array updated
+    roomName,
+  ]);
+
+  const handleInputChange = (e) => {
+    setRoomName(e.target.value);
+    ls.setItem("roomName", roomName);
+  };
 
   return (
     <div className="kinj">
@@ -247,7 +267,8 @@ const CreateLive = (props) => {
                 <input
                   className="rn-input"
                   type="text"
-                  defaultValue={`Watch ${props.data.anime.info.name} together`}
+                  value={roomName} // Controlled input
+                  onChange={handleInputChange} // Update state on change
                   name="text"
                 />
               </div>

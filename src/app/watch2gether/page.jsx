@@ -1,11 +1,11 @@
-import React from 'react'
+import React from "react";
+import AllLive from "@/component/AllLive/page";
 
-const page = () => {
+export default async function page() {
+
   return (
     <div>
-      king
+      <AllLive />
     </div>
-  )
+  );
 }
-
-export default page
