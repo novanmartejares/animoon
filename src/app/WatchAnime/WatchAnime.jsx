@@ -59,12 +59,26 @@ export default function WatchAnime(props) {
   const [serverName, setServerName] = useState("Vidstreaming");
   const [descIsCollapsed, setDescIsCollapsed] = useState(true);
   const [quality, setQuality] = useState("");
-  const [subIsSelected, setSubIsSelected] = useState(
-    props.datao.anime.info.stats.episodes.dub > 0 &&
-      props.dataStr?.dub?.length > 0
-      ? ls.getItem("subordub") === "true"
-      : true
-  );
+  const [subIsSelected, setSubIsSelected] = useState(() => {
+    const isDubSelected = ls.getItem("subordub") === "false";
+    // Check if dub episodes exist in `props.datao`
+    const hasDubEpisodes = props.datao?.anime?.info?.stats?.episodes?.dub > 0;
+  
+    // Check if dub data exists in `props.dataStr`
+    const hasDubData = props.dataStr?.dub?.length > 0;
+  
+    // Return the initial state
+    if (isDubSelected) {
+      if (hasDubEpisodes && hasDubData) {
+        return false
+      } else {
+        return true
+      }
+    } else {
+      return true
+    }
+  });
+  
   const [selectedServer, setSelectedServer] = useState(0);
   const [bhaiLink, setBhaiLink] = useState(() => {
     const isDubSelected = ls.getItem("subordub") === "false";
@@ -241,14 +255,27 @@ export default function WatchAnime(props) {
 
   useEffect(() => {
     setSubIsSelected(
-      props.datao.anime.info.stats.episodes.dub > 0 &&
-        props.dataj.results?.streamingInfo.some(
-          (info) => info.value.decryptionResult?.type === "dub"
-        )
-        ? ls.getItem("subordub") === "true"
-        : true
+      () => {
+        const isDubSelected = ls.getItem("subordub") === "false";
+        // Check if dub episodes exist in `props.datao`
+        const hasDubEpisodes = props.datao?.anime?.info?.stats?.episodes?.dub > 0;
+      
+        // Check if dub data exists in `props.dataStr`
+        const hasDubData = props.dataStr?.dub?.length > 0;
+      
+        // Return the initial state
+        if (isDubSelected) {
+          if (hasDubEpisodes && hasDubData) {
+            return false
+          } else {
+            return true
+          }
+        } else {
+          return true
+        }
+      }
     );
-  }, [props.datao, props.dataj]);
+  }, [props.datao]);
 
   let episodeList = props.dataj.results?.streamingInfo.some(
     (info) => info.value.decryptionResult?.type === "raw"
@@ -674,11 +701,7 @@ export default function WatchAnime(props) {
                               </div>
 
                               <div
-                                className={`serveSub ${
-                                  props.dataStr?.dub?.length > 0
-                                    ? "borderDot"
-                                    : ""
-                                } flex gap-5 items-center`}
+                                className={`serveSub flex gap-5 items-center`}
                               >
                                 <div className="subb flex gap-1 items-center">
                                   <div>DUB</div>
