@@ -414,14 +414,24 @@ export default function WatchAnime(props) {
 
               // If not found in dataj, fallback to gogoDub
               if (dubLink) {
-                return dubLink;
+                if (onn1 === "Off") {
+                  return dubLink + "&autoPlay=0&oa=0&asi=1";
+                }
+                if (onn1 === "On") {
+                  return dubLink + "&autoPlay=1&oa=0&asi=1";
+                }
               }
             } else {
               const subLink = props.dataStr.sub[0].url;
 
               // If not found in dataj, fallback to gogoSub
               if (subLink) {
-                return subLink;
+                if (onn1 === "Off") {
+                  return subLink + "&autoPlay=0&oa=0&asi=1";
+                }
+                if (onn1 === "On") {
+                  return subLink + "&autoPlay=1&oa=0&asi=1";
+                }
               }
             }
           }
@@ -431,7 +441,12 @@ export default function WatchAnime(props) {
 
             // If not found in dataj, fallback to gogoSub
             if (subLink) {
-              return subLink;
+              if (onn1 === "Off") {
+                return subLink + "&autoPlay=0&oa=0&asi=1";
+              }
+              if (onn1 === "On") {
+                return subLink + "&autoPlay=1&oa=0&asi=1";
+              }
             }
           }
 
