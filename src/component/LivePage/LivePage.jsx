@@ -14,10 +14,55 @@ import { db } from "../../../firebase";
 import "./live.css";
 import Link from "next/link";
 import Image from "next/image";
-import { FaClock, FaEye, FaInfoCircle } from "react-icons/fa";
+import {
+  FaClock,
+  FaClosedCaptioning,
+  FaCopy,
+  FaEye,
+  FaInfoCircle,
+} from "react-icons/fa";
+import Comments from "@/component/Comments/Comments";
+import copy from "copy-to-clipboard";
+import Chat from "@/component/Chat/Chat";
+import CountdownTimer from "@/component/CountDown/CountDown";
+import { AiFillAudio } from "react-icons/ai";
 
 export default function LivePage(props) {
   const { data: session } = useSession();
+
+  const [isLoading, setIsLoading] = useState(false);
+  const IsLoading = (data) => {
+    if (data) {
+      setIsLoading(true);
+      setTimeout(() => {
+        setIsLoading(false);
+      }, [20000]);
+    }
+  };
+  const handleNavigation = () => {
+    IsLoading(true);
+  };
+  const localStorageWrapper = () => {
+    if (typeof window !== "undefined" && window.localStorage) {
+      return {
+        getItem: (key) => localStorage.getItem(key),
+        setItem: (key, value) => localStorage.setItem(key, value),
+        removeItem: (key) => localStorage.removeItem(key),
+        clear: () => localStorage.clear(),
+      };
+    } else {
+      // Handle the case when localStorage is not available
+      return {
+        getItem: () => null,
+        setItem: () => {},
+        removeItem: () => {},
+        clear: () => {},
+      };
+    }
+  };
+
+  // Usage
+  const ls = localStorageWrapper();
 
   const [cachedData, setCachedData] = useState(null);
   const fetchCachedData = async (id) => {
@@ -77,7 +122,7 @@ export default function LivePage(props) {
         const difference = now - startTime;
 
         if (difference < 0) {
-          setTimeElapsed("Timer not started yet!");
+          setTimeElapsed("Not started yet!");
           return;
         }
 
@@ -109,8 +154,12 @@ export default function LivePage(props) {
       return () => clearInterval(timerId);
     }, [date, time]);
 
-    return <div>{timeElapsed}</div>;
+    return timeElapsed;
   }
+
+  const message = Timer(cachedData?.date, cachedData?.time);
+
+  console.log("Message", message);
 
   function ViewerCounter() {
     const [viewers, setViewers] = useState(0);
@@ -155,28 +204,145 @@ export default function LivePage(props) {
     );
   }
 
+  const [subIsSelected, setSubIsSelected] = useState(() => {
+    const isDubSelected = ls.getItem("subordub") === "false";
+    // Check if dub episodes exist in `props.datao`
+    const hasDubEpisodes = props.datao?.anime?.info?.stats?.episodes?.dub > 0;
+
+    // Check if dub data exists in `props.dataStr`
+    const hasDubData = props.dataStr?.dub?.length > 0;
+
+    // Return the initial state
+    if (isDubSelected) {
+      if (hasDubEpisodes && hasDubData) {
+        return false;
+      } else {
+        return true;
+      }
+    } else {
+      return true;
+    }
+  });
+
+  const [selectedServer, setSelectedServer] = useState(0);
+  const [bhaiLink, setBhaiLink] = useState(() => {
+    const isDubSelected = ls.getItem("subordub") === "false";
+
+    // If props.dataj is empty, use props.dubPri for dub or props.subPri for sub
+    // Check if dub episodes exist in `props.datao`
+    const hasDubEpisodes = props.datao?.anime?.info?.stats?.episodes?.dub > 0;
+
+    // Check if dub data exists in `props.dataStr`
+    const hasDubData = props.dataStr?.dub?.length > 0;
+
+    // Handle Dub selection
+    if (isDubSelected) {
+      if (hasDubEpisodes && hasDubData) {
+        // Check if there's a dub available in props.dataj
+        const dubLink = props.dataStr?.dub[0]?.url;
+
+        // If not found in dataj, fallback to gogoDub
+        if (dubLink) {
+          return dubLink;
+        }
+      } else {
+        const subLink = props.dataStr?.sub[0]?.url;
+
+        // If not found in dataj, fallback to gogoSub
+        if (subLink) {
+          return subLink;
+        }
+      }
+    }
+    // Handle Sub/Raw selection
+    else {
+      const subLink = props.dataStr?.sub[0]?.url;
+
+      // If not found in dataj, fallback to gogoSub
+      if (subLink) {
+        return subLink;
+      }
+    }
+
+    // Default to an empty string if nothing is found
+    return "";
+  });
+
+  const copyText = () => {
+    const textToCopy = "https://example.com";
+    copy(textToCopy);
+    alert("Text copied to clipboard!");
+  };
+
   return (
     <div className="foundati">
-      <div>
+      <div className="inen">
         <div>
-          <div>
-            <div className="five-str">
-              <div>
-                <PiBroadcastFill />
+          <div className="al-33">
+            <div className="five-str five-stn">
+              <div className="kilO">
+                <PiBroadcastFill size={20} />
               </div>
               <div>{cachedData?.roomName}</div>
             </div>
-            <div className="five-str">
-              <div>{props.datal.anime.info.name}</div>
+            <div className="five-str five-22">
+              <div className="opt-11">{props.datal?.anime?.info?.name}</div>
               <div className="opt-2">&#x2022;</div>
-              <div>{cachedData?.sub ? "SUB" : "DUB"}</div>
+              <div className="opt-22">
+                <div>
+                  <FaClosedCaptioning size={14} />
+                </div>
+                <div className="oppt-22">{cachedData?.sub ? "SUB" : "DUB"}</div>
+              </div>
               <div className="opt-2">&#x2022;</div>
-              <div>{cachedData?.episode}</div>
+              <div className="opt-33">{cachedData?.episode}</div>
             </div>
           </div>
           <div>
             <div className="video-player">
               <div className="hls-container">
+                {message === "Not started yet!" ? (
+                  <div className="timl-P">
+                    <img
+                      src={props.datal.anime?.info?.poster}
+                      alt="Background"
+                      className="background-image"
+                    />
+                    <div className="content">
+                      <div className="timl-1">The show will start in</div>
+                      <div className="timl-2">
+                        <CountdownTimer
+                          targetDate={cachedData?.date}
+                          targetTime={cachedData?.time}
+                        />
+                      </div>
+                      <div className="timl-3">
+                        <div className="timl-31">Share live to friends</div>
+                        <div className="timl-32">
+                          <div className="timl-321">
+                            https://hianime.to/watch2gether...
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ) : (
+                  <iframe
+                    src={bhaiLink}
+                    frameBorder="0"
+                    allow="autoplay; fullscreen; encrypted-media; picture-in-picture"
+                    allowFullScreen
+                    width="100%"
+                    height="100%"
+                    style={{
+                      border: "none",
+                      display: "block",
+                    }}
+                    loading="lazy"
+                    sandbox="allow-scripts allow-same-origin allow-presentation"
+                    title="Video Player"
+                  ></iframe>
+                )}
                 {/* {clickedId === props.epId && props.dataj ? (
                   <ArtPlayer
                     data={props.data}
@@ -254,42 +420,57 @@ export default function LivePage(props) {
             </div>
           </div>
 
+          <div className="chatC">
+            <Chat liveId={props.id} session={session} />
+          </div>
+
           <div className="kenpa-1">
             <div>
               <img
                 className="kenpa-img"
-                src={props.datal.anime.info.poster}
+                src={props.datal.anime?.info?.poster}
                 alt=""
               />
             </div>
             <div className="kenpa-soul">
-              <div className="kenpa-name">{props.datal.anime.info.name}</div>
+              <div className="kenpa-name">{props.datal.anime?.info?.name}</div>
               <div className="kenpa-sts">
                 <div className="kenpa-sts-1">
-                  {props.datal.anime.info.stats.rating}
+                  {props.datal.anime?.info?.stats.rating}
                 </div>
                 <div className="kenpa-sts-2">
-                  {props.datal.anime.info.stats.quality}
+                  {props.datal.anime?.info?.stats.quality}
                 </div>
                 <div className="kenpa-sts-3">
-                  {props.datal.anime.info.stats.episodes.sub}
+                  <div>
+                    <FaClosedCaptioning />
+                  </div>
+                  <div>{props.datal.anime?.info?.stats.episodes.sub}</div>
                 </div>
                 <div className="kenpa-sts-4">
-                  {props.datal.anime.info.stats.episodes.dub}
+                  <div>
+                    <AiFillAudio />
+                  </div>
+                  <div>{props.datal.anime?.info?.stats.episodes.dub}</div>
                 </div>
                 <div className="opt-2 spec">&#x2022;</div>
                 <div className="kenpa-sts-6">
-                  {props.datal.anime.info.stats.type}
+                  {props.datal.anime?.info?.stats.type}
                 </div>
                 <div className="opt-2">&#x2022;</div>
                 <div className="kenpa-sts-8">
-                  {props.datal.anime.info.stats.duration}
+                  {props.datal.anime?.info?.stats.duration}
                 </div>
               </div>
               <div className="decro">
-                {props.datal.anime.info.description.length < 300
-                  ? props.datal.anime.info.description
-                  : props.datal.anime.info.description.slice(0, 300)}
+                {props.datal.anime?.info?.description.length < 300
+                  ? props.datal.anime?.info?.description
+                  : props.datal.anime?.info?.description.slice(0, 300)}
+              </div>
+              <div className="decrol">
+                {props.datal.anime?.info?.description.length < 100
+                  ? props.datal.anime?.info?.description
+                  : props.datal.anime?.info?.description.slice(0, 100)}
               </div>
               <div className="fin-buut">
                 <div>
@@ -301,7 +482,9 @@ export default function LivePage(props) {
           </div>
         </div>
       </div>
-      <div></div>
+      <div className="chatB">
+        <Chat liveId={props.id} session={session} />
+      </div>
     </div>
   );
 }
