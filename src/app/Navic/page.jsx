@@ -10,7 +10,7 @@ export default async function Navic({ children }) {
   let data = [];
 
   try {
-    const resp = await fetch(`https://hianime.animoon.me/anime/random?page=1`, {
+    const resp = await fetch(`https://hianimes.animoon.me/anime/random?page=1`, {
       next: { revalidate: 60 },
     });
 
