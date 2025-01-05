@@ -7,29 +7,29 @@ export default async function Navic({ children }) {
   const session = await getServerSession(authOptions);
 
   // console.log(session.user)
-  let data = []
+  let data = [];
 
   try {
-    const resp = await fetch(`https://hianime.onrender.com/anime/random?page=1`, {
-      cache: "force-cache",
+    const resp = await fetch(`https://hianime.animoon.me/anime/random?page=1`, {
+      next: { revalidate: 60 },
     });
-  
+
     if (!resp.ok) {
       // Handle HTTP errors (e.g., 404, 500)
       throw new Error(`HTTP error! Status: ${resp.status}`);
     }
-  
+
     data = await resp.json();
-  
+
     // Proceed with further processing of the `data` if needed
   } catch (error) {
     console.error("Error fetching data:", error.message);
     // Handle the error (e.g., show a user-friendly message or retry logic)
   }
-  
+
   return (
     <div>
-      <Nav session={session} children={children} data={data}/>
+      <Nav session={session} children={children} data={data} />
     </div>
   );
 }

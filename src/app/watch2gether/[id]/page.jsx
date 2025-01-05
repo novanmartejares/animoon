@@ -8,7 +8,7 @@ export default async function page({ params, searchParams }) {
   let data = [];
   if (searchParams.animeId) {
     const resp = await fetch(
-      `https://hianime.onrender.com/anime/info?id=${searchParams.animeId}`
+      `https://hianime.animoon.me/anime/info?id=${searchParams.animeId}`
     );
     data = await resp.json();
   }
@@ -21,13 +21,13 @@ export default async function page({ params, searchParams }) {
     const episodeIdParam = epis ? `${params.id}?ep=${epis}` : null;
 
     const resp = await fetch(
-      `https://hianime.onrender.com/anime/info?id=${searchParams.anId}`,
+      `https://hianime.animoon.me/anime/info?id=${searchParams.anId}`,
       { next: { revalidate: 3600 } }
     );
     datal = await resp.json();
 
     const respo = await fetch(
-      `https://hianime.onrender.com/anime/episodes/${searchParams.anId}`,
+      `https://hianime.animoon.me/anime/episodes/${searchParams.anId}`,
       { next: { revalidate: 3600 } }
     );
     dataEpi = await respo.json();
