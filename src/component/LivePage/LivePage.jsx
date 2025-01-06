@@ -239,14 +239,14 @@ export default function LivePage(props) {
     if (isDubSelected) {
       if (hasDubEpisodes && hasDubData) {
         // Check if there's a dub available in props.dataj
-        const dubLink = props.dataStr?.dub[0]?.url;
+        const dubLink = props.dataStr?.dub[0]?.url + "&autoPlay=1&oa=0&asi=1";
 
         // If not found in dataj, fallback to gogoDub
         if (dubLink) {
           return dubLink;
         }
       } else {
-        const subLink = props.dataStr?.sub[0]?.url;
+        const subLink = props.dataStr?.sub[0]?.url + "&autoPlay=1&oa=0&asi=1";
 
         // If not found in dataj, fallback to gogoSub
         if (subLink) {
@@ -256,7 +256,7 @@ export default function LivePage(props) {
     }
     // Handle Sub/Raw selection
     else {
-      const subLink = props.dataStr?.sub[0]?.url;
+      const subLink = props.dataStr?.sub[0]?.url + "&autoPlay=1&oa=0&asi=1";
 
       // If not found in dataj, fallback to gogoSub
       if (subLink) {
@@ -330,17 +330,18 @@ export default function LivePage(props) {
                   <iframe
                     src={bhaiLink}
                     frameBorder="0"
-                    allow="autoplay; fullscreen; encrypted-media; picture-in-picture"
-                    allowFullScreen
-                    width="100%"
-                    height="100%"
+                    allow="autoplay; fullscreen; encrypted-media; picture-in-picture" // Features for interactivity
+                    allowFullScreen // Enable fullscreen mode
+                    width="100%" // Full width
+                    height="100%" // Full height
                     style={{
-                      border: "none",
-                      display: "block",
+                      border: "none", // Remove border
+                      display: "block", // Ensure proper layout
+                      zIndex: 150, 
                     }}
-                    loading="lazy"
-                    sandbox="allow-scripts allow-same-origin allow-presentation"
-                    title="Video Player"
+                    loading="lazy" // Improve performance by deferring loading
+                    sandbox="allow-scripts allow-same-origin allow-presentation" // Security controls
+                    title="Video Player" // Accessible title for the iframe
                   ></iframe>
                 )}
                 {/* {clickedId === props.epId && props.dataj ? (

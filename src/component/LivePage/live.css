@@ -263,16 +263,15 @@
 }
 .inen {
   width: 70%;
-  z-index: 1;
+  z-index: 2;
 }
 .chatB {
   height: calc(100vh - 70px);
-  width: 30%;
   position: fixed;
+  width: 30%;
   top: 70px;
   right: 0;
-  z-index: 2;
-  background: red;
+  z-index: 1;
 }
 .chatC {
   display: none;
