@@ -320,7 +320,7 @@ export default function LivePage(props) {
                         <div className="timl-31">Share live to friends</div>
                         <div className="timl-32">
                           <div className="timl-321">
-                            https://hianime.to/watch2gether...
+                            https://animoon.me/watch2gether...
                           </div>
                         </div>
                       </div>
@@ -337,7 +337,7 @@ export default function LivePage(props) {
                     style={{
                       border: "none", // Remove border
                       display: "block", // Ensure proper layout
-                      zIndex: 150, 
+                      zIndex: 150,
                     }}
                     loading="lazy" // Improve performance by deferring loading
                     sandbox="allow-scripts allow-same-origin allow-presentation" // Security controls
